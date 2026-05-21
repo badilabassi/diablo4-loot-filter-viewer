@@ -1,0 +1,213 @@
+@font-face {
+  font-family: "Exocet";
+  font-weight: 500;
+  src: url("/Exocet-Medium.ttf");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Old Fenris";
+  font-weight: 400;
+  src: url("/OldFenris-Regular.otf");
+  font-display: swap;
+}
+
+
+@import "tailwindcss";
+
+/* shadcn/ui semantic variables — authentic D4 theme */
+:root {
+  --background: #100c0b;
+  --foreground: #d2c8ae;
+  --card: #1a1514;
+  --card-foreground: #d2c8ae;
+  --popover: #1a1514;
+  --popover-foreground: #d2c8ae;
+  --primary: #7a1010;
+  --primary-foreground: #e5e0c8;
+  --secondary: #231f1b;
+  --secondary-foreground: #d2c8ae;
+  --muted: #1e1a17;
+  --muted-foreground: #636160;
+  --accent: #231f1b;
+  --accent-foreground: #d2c8ae;
+  --destructive: #7a1010;
+  --destructive-foreground: #e5e0c8;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: #9b7644;
+  --radius: 0.5rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@theme {
+  --font-cinzel: "Old Fenris", serif;
+  --font-crimson: "Exocet", serif;
+
+  /* D4 palette — sourced from official Blizzard D4 design system */
+  /* backgrounds: dark-elements scale */
+  --color-d4-bg: var(--background);
+  --color-d4-bg2: var(--card);
+  --color-d4-bg3: var(--muted);
+  --color-d4-surface: var(--secondary);
+  /* borders: neutral dark, barely visible */
+  --color-d4-border: var(--border);
+  --color-d4-border2: rgba(255, 255, 255, 0.14);
+  /* gold: section-header amber → antique gold → sandy highlight */
+  --color-d4-gold: #c47820;
+  --color-d4-gold2: #9b7644;
+  --color-d4-gold3: #d7ab6d;
+  /* text: ivory heading / ashen body scale (matches D4 reference) */
+  --color-d4-text: #d2c8ae;
+  --color-d4-text2: #878582;
+  --color-d4-text3: #555351;
+  /* item rarities */
+  --color-d4-common: #c0c0c0;
+  --color-d4-magic: #7c7cfb;
+  --color-d4-rare: #ff0;
+  --color-d4-mythic: #cda1d8;
+  --color-d4-unique: #dca779;
+  --color-d4-ancestral: #fff;
+  --color-d4-set: #50d839;
+  --color-d4-leg: #ff8000;
+  --color-d4-ga: #29d2ff;
+  /* affix categories */
+  --color-d4-offense: #f17b33;
+  --color-d4-defense: #2ec98d;
+  --color-d4-utility: #7f81cd;
+  --color-d4-stat: #f6c844;
+
+  --animate-fade-in: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-slide-down: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-pulse-slow: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-d4-bg text-d4-text font-crimson min-h-screen antialiased;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.012'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6z'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
+}
+
+@layer components {
+  /* ── Tags ──────────────────────────────────────────────────────────────── */
+  .tag {
+    @apply font-cinzel text-xs tracking-[.1em] uppercase px-2 py-0.5 rounded-full border font-bold;
+  }
+
+  /* ── Buttons ───────────────────────────────────────────────────────────── */
+  .btn-primary {
+    @apply font-cinzel text-xs font-bold tracking-[.1em] uppercase px-5 py-2 rounded-lg cursor-pointer transition-all duration-150 active:scale-95 text-d4-text hover:text-d4-gold3;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+  .btn-primary:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+  .btn-secondary {
+    @apply font-cinzel text-xs tracking-[.08em] uppercase px-4 py-1.5 rounded-lg cursor-pointer transition-all duration-150 text-d4-text3 hover:text-d4-text;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  /* ── Cards ─────────────────────────────────────────────────────────────── */
+  .card {
+    @apply rounded-xl mb-2 overflow-hidden border transition-all duration-200;
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.07);
+  }
+  .card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .card-section {
+    background: linear-gradient(90deg, rgba(196, 120, 32, 0.07) 0%, transparent 60%);
+    border-color: rgba(196, 120, 32, 0.25) !important;
+  }
+  .card-open {
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.04),
+      0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  /* ── Labels ────────────────────────────────────────────────────────────── */
+  .meta-label {
+    @apply font-cinzel text-xs tracking-wider uppercase text-d4-text3;
+  }
+
+  /* ── Condition blocks ──────────────────────────────────────────────────── */
+  .cond-block {
+    @apply rounded-lg border p-3.5 mb-1.5;
+    background: rgba(255, 255, 255, 0.015);
+    border-color: rgba(255, 255, 255, 0.07);
+  }
+}
