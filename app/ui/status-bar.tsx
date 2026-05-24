@@ -8,6 +8,8 @@ export function StatusBar() {
     if (status !== 'ready' || !data) {
       return (
         <div
+          role="status"
+          aria-live="polite"
           mix={css({
             display: 'flex',
             alignItems: 'center',
@@ -19,6 +21,7 @@ export function StatusBar() {
           })}
         >
           <span
+            aria-hidden="true"
             mix={css({
               width: '6px',
               height: '6px',
@@ -49,6 +52,7 @@ export function StatusBar() {
         })}
       >
         <span
+          aria-hidden="true"
           mix={css({
             width: '6px',
             height: '6px',

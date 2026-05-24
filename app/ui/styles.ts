@@ -92,6 +92,24 @@ export const btnPrimary = css({
   '&:disabled': { opacity: 0.35, cursor: 'not-allowed', filter: 'none', transform: 'none' },
 })
 
+/** Minimum touch target for icon-only controls (WCAG 2.5.8). */
+export const iconBtn = css({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minWidth: '44px',
+  minHeight: '44px',
+  padding: '8px',
+  border: 0,
+  background: 'transparent',
+  cursor: 'pointer',
+  color: 'var(--d4-text3)',
+  font: 'inherit',
+  borderRadius: '6px',
+  '&:disabled': { opacity: 0.35, cursor: 'not-allowed' },
+  '&:hover:not(:disabled)': { color: 'var(--d4-gold3)' },
+})
+
 export const btnSecondary = css({
   fontFamily: 'var(--font-cinzel)',
   fontSize: '12px',

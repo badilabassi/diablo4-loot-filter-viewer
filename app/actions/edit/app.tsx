@@ -17,6 +17,7 @@ import {
   btnPrimary,
   btnSecondary,
   cardSection,
+  iconBtn,
   inputStyle,
   metaLabel,
   ornateFrame,
@@ -91,22 +92,29 @@ export const EditApp = clientEntry(
               </div>
               <h1 mix={titleHero}>Diablo IV</h1>
               <p mix={titleSub}>Filter Editor</p>
-              <div mix={[navTabs, ornateFrame, ornateFrameStrong]}>
+              <nav aria-label="Primary" mix={[navTabs, ornateFrame, ornateFrameStrong]}>
                 <a href={homeHref} mix={navTabLink}>
                   View
                 </a>
-                <span mix={navTabActive}>Edit</span>
-              </div>
+                <span mix={navTabActive} aria-current="page">
+                  Edit
+                </span>
+              </nav>
             </div>
           </header>
 
-          <div
+          <main
+            id="main-content"
             mix={[
               containerStyle,
               css({ padding: '24px 24px 64px', display: 'flex', flexDirection: 'column', gap: '16px' }),
             ]}
           >
-            <div mix={css({ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' })}>
+            <div
+              mix={css({ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' })}
+              role="toolbar"
+              aria-label="Editor actions"
+            >
               {viewerFilter && (
                 <button type="button" data-edit-action="import" mix={btnSecondary}>
                   ↓ Import from Viewer
@@ -115,16 +123,18 @@ export const EditApp = clientEntry(
               <button
                 type="button"
                 data-edit-action="undo"
-                mix={btnSecondary}
+                mix={[iconBtn, btnSecondary]}
                 disabled={!editorStore.canUndo()}
+                aria-label="Undo"
               >
                 ↩
               </button>
               <button
                 type="button"
                 data-edit-action="redo"
-                mix={btnSecondary}
+                mix={[iconBtn, btnSecondary]}
                 disabled={!editorStore.canRedo()}
+                aria-label="Redo"
               >
                 ↪
               </button>
@@ -143,7 +153,9 @@ export const EditApp = clientEntry(
                   css({ position: 'relative', flexDirection: 'column', alignItems: 'stretch' }),
                 ]}
               >
-                <p mix={[metaLabel, css({ margin: '0 0 6px' })]}>Filter Code (base64)</p>
+                <label mix={[metaLabel, css({ margin: '0 0 6px' })]} htmlFor="export-b64">
+                  Filter Code (base64)
+                </label>
                 <textarea
                   id="export-b64"
                   readOnly
@@ -161,16 +173,8 @@ export const EditApp = clientEntry(
                 <button
                   type="button"
                   data-edit-action="clear-export"
-                  mix={css({
-                    position: 'absolute',
-                    top: '8px',
-                    right: '8px',
-                    border: 0,
-                    background: 'transparent',
-                    color: 'var(--d4-text3)',
-                    cursor: 'pointer',
-                    fontSize: '18px',
-                  })}
+                  aria-label="Dismiss exported filter code"
+                  mix={[iconBtn, css({ position: 'absolute', top: '0', right: '0', fontSize: '18px' })]}
                 >
                   ×
                 </button>
@@ -253,7 +257,7 @@ export const EditApp = clientEntry(
                 </p>
               </div>
             )}
-          </div>
+          </main>
         </div>
       )
     }

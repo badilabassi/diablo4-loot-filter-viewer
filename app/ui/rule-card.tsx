@@ -23,6 +23,11 @@ export const RuleCard = clientEntry(
       const highlightHex = r.color.isDefault ? '#0000FF' : r.color.hex
       const tags = inferRuleTags(r)
       const glowTag = dominantGlowTag(tags)
+      const ruleLabel =
+        r.name.trim() || (r.type === 3 ? 'HIDE ALL' : r.type === 1 ? 'HIDE TEXT LABEL' : 'Unnamed rule')
+      const toggleLabel = open
+        ? `Collapse rule: ${ruleLabel}`
+        : `Expand rule: ${ruleLabel}`
 
       return (
         <div
@@ -41,6 +46,8 @@ export const RuleCard = clientEntry(
         >
           <button
             type="button"
+            aria-expanded={open}
+            aria-label={toggleLabel}
             mix={[
               css({
                 width: '100%',
@@ -64,10 +71,12 @@ export const RuleCard = clientEntry(
             ]}
           >
             <span
+              aria-hidden="true"
               mix={css({ width: '12px', height: '12px', borderRadius: '50%', flexShrink: 0 })}
               style={{ background: swatchColor, boxShadow: `0 0 10px ${swatchColor}aa` }}
             />
             <span
+              aria-hidden="true"
               mix={css({ width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0 })}
               style={{
                 background: r.enabled ? '#4caf50' : '#3a3a3a',
@@ -128,6 +137,7 @@ export const RuleCard = clientEntry(
               </span>
             )}
             <span
+              aria-hidden="true"
               mix={css({
                 color: 'var(--d4-gold2)',
                 transition: 'transform 200ms ease, color 150ms ease',

@@ -3,7 +3,7 @@ import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix
 import { COND_TYPES, QUALITY_FLAGS, QUALITY_TIERS } from '../../filter/constants.ts'
 import type { FilterCondition } from '../../filter/schemas.ts'
 import { editorStore } from '../../state/editor-store.ts'
-import { selectStyle } from '../styles.ts'
+import { iconBtn, selectStyle } from '../styles.ts'
 import { MultiPicker } from './multi-picker.tsx'
 
 interface ConditionEditorProps extends SerializableProps {
@@ -41,6 +41,7 @@ export const ConditionEditor = clientEntry(
           <div mix={[css({ display: 'flex', alignItems: 'center', gap: '8px' })]}>
             <select
               value={String(c.filterType)}
+              aria-label="Condition type"
               mix={[selectStyle, css({ flex: 1 }), on('change', (e) => {
                 const ft = Number((e.target as HTMLSelectElement).value)
                 patch({
@@ -65,10 +66,14 @@ export const ConditionEditor = clientEntry(
             </select>
             <button
               type="button"
-              mix={[css({ border: 0, background: 'transparent', color: 'var(--d4-text3)', cursor: 'pointer' }), on('click', () => {
-                editorStore.removeCondition(handle.props.ruleIndex, handle.props.condIndex)
-                handle.update()
-              })]}
+              aria-label="Remove condition"
+              mix={[
+                iconBtn,
+                on('click', () => {
+                  editorStore.removeCondition(handle.props.ruleIndex, handle.props.condIndex)
+                  handle.update()
+                }),
+              ]}
             >
               ×
             </button>
@@ -136,6 +141,7 @@ export const ConditionEditor = clientEntry(
               <span style={{ fontSize: '12px', color: 'var(--d4-text3)' }}>Min Tier</span>
               <select
                 value={String(c.minQualityTier ?? 0)}
+                aria-label="Minimum item quality tier"
                 mix={[selectStyle, on('change', (e) => {
                   patch({ minQualityTier: Number(e.currentTarget.value) })
                 })]}

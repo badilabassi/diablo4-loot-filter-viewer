@@ -19,6 +19,7 @@ import {
   btnSecondary,
   cardSection,
   errorBanner,
+  iconBtn,
   inputStyle,
   metaLabel,
   ornateFrame,
@@ -77,8 +78,10 @@ export const HomeApp = clientEntry(
               </div>
               <h1 mix={titleHero}>Diablo IV</h1>
               <p mix={titleSub}>Filter Viewer & Editor</p>
-              <div mix={[navTabs, ornateFrame, ornateFrameStrong]}>
-                <span mix={navTabActive}>View</span>
+              <nav aria-label="Primary" mix={[navTabs, ornateFrame, ornateFrameStrong]}>
+                <span mix={navTabActive} aria-current="page">
+                  View
+                </span>
                 <a
                   href={editHref}
                   mix={[
@@ -91,11 +94,11 @@ export const HomeApp = clientEntry(
                 >
                   Edit
                 </a>
-              </div>
+              </nav>
             </div>
           </header>
 
-          <div mix={[containerStyle, css({ paddingBottom: '80px' })]}>
+          <main id="main-content" mix={[containerStyle, css({ paddingBottom: '80px' })]}>
             <div
               mix={[
                 ornateFrame,
@@ -119,6 +122,8 @@ export const HomeApp = clientEntry(
                   rows={3}
                   spellCheck={false}
                   placeholder="Paste base64 filter code here…"
+                  aria-invalid={error ? true : undefined}
+                  aria-describedby={error ? 'filter-input-error' : undefined}
                   mix={[inputStyle, css({ flex: 1, height: '72px', minWidth: 0 })]}
                 />
                 <div mix={css({ display: 'flex', flexDirection: 'column', gap: '6px' })}>
@@ -128,27 +133,33 @@ export const HomeApp = clientEntry(
                   <button type="button" data-home-action="example" mix={btnSecondary}>
                     Example
                   </button>
-                  <div mix={css({ display: 'flex', gap: '4px' })}>
+                  <div mix={css({ display: 'flex', gap: '4px' })} role="group" aria-label="History">
                     <button
                       type="button"
                       data-home-action="undo"
-                      mix={btnSecondary}
+                      mix={[iconBtn, btnSecondary]}
                       disabled={!filterStore.canUndo()}
+                      aria-label="Undo"
                     >
                       ↩
                     </button>
                     <button
                       type="button"
                       data-home-action="redo"
-                      mix={btnSecondary}
+                      mix={[iconBtn, btnSecondary]}
                       disabled={!filterStore.canRedo()}
+                      aria-label="Redo"
                     >
                       ↪
                     </button>
                   </div>
                 </div>
               </div>
-              {error && <p mix={errorBanner}>{error}</p>}
+              {error && (
+                <p id="filter-input-error" role="alert" mix={errorBanner}>
+                  {error}
+                </p>
+              )}
             </div>
 
             <StatusBar />
@@ -223,7 +234,9 @@ export const HomeApp = clientEntry(
                   }),
                 ]}
               >
-                <div style={{ fontSize: '48px', marginBottom: '20px', opacity: 0.2 }}>🜏</div>
+                <div aria-hidden="true" style={{ fontSize: '48px', marginBottom: '20px', opacity: 0.2 }}>
+                  🜏
+                </div>
                 <p
                   mix={css({
                     fontFamily: 'var(--font-cinzel)',
@@ -236,7 +249,7 @@ export const HomeApp = clientEntry(
                 </p>
               </div>
             )}
-          </div>
+          </main>
         </div>
       )
     }

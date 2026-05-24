@@ -2,6 +2,7 @@ import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix
 
 import { tocStore } from '../../state/toc-store.ts'
 import { editorStore } from '../../state/editor-store.ts'
+import { iconBtn } from '../styles.ts'
 
 interface MultiPickerProps extends SerializableProps {
   ruleIndex: number
@@ -84,12 +85,12 @@ export const MultiPicker = clientEntry(
                     {item.label}
                     <button
                       type="button"
-                      mix={[css({
-                        border: 0,
-                        background: 'transparent',
-                        cursor: 'pointer',
-                        padding: 0,
-                      }), on('click', () => setSelected(sel.filter((x) => x !== id)))]}
+                      aria-label={`Remove ${item.label}`}
+                      mix={[
+                        iconBtn,
+                        css({ minWidth: '32px', minHeight: '32px', padding: '4px' }),
+                        on('click', () => setSelected(sel.filter((x) => x !== id))),
+                      ]}
                     >
                       ×
                     </button>
@@ -101,12 +102,17 @@ export const MultiPicker = clientEntry(
 
           <button
             type="button"
+            aria-expanded={open}
+            aria-haspopup="listbox"
+            aria-label={handle.props.placeholder}
             mix={[
               css({
                 width: '100%',
                 display: 'flex',
                 justifyContent: 'space-between',
-                padding: '4px 8px',
+                alignItems: 'center',
+                minHeight: '44px',
+                padding: '8px 12px',
                 borderRadius: '6px',
                 border: '1px solid var(--d4-border)',
                 background: 'var(--d4-bg)',
@@ -121,7 +127,7 @@ export const MultiPicker = clientEntry(
             ]}
           >
             <span>{handle.props.placeholder}</span>
-            <span>▼</span>
+            <span aria-hidden="true">▼</span>
           </button>
 
           {open && (
@@ -138,6 +144,7 @@ export const MultiPicker = clientEntry(
               <input
                 type="search"
                 placeholder={handle.props.placeholder}
+                aria-label={`Search ${handle.props.placeholder}`}
                 value={query}
                 mix={[css({
                   width: '100%',

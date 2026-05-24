@@ -7,6 +7,13 @@ import { routes } from '../routes.ts'
 import { EditPage } from './edit/page.tsx'
 import { HomePage } from './home/page.tsx'
 
+function canonicalUrl(request: Request): string {
+  const url = new URL(request.url)
+  url.search = ''
+  url.hash = ''
+  return url.href
+}
+
 export default createController(routes, {
   actions: {
     async assets(context) {
@@ -25,14 +32,24 @@ export default createController(routes, {
     },
     async home(context) {
       const clientEntryHref = await getClientEntryHref()
+      const canonical = canonicalUrl(context.request)
       return context.render(
-        <HomePage clientEntryHref={clientEntryHref} editHref={routes.edit.href()} />,
+        <HomePage
+          clientEntryHref={clientEntryHref}
+          editHref={routes.edit.href()}
+          canonical={canonical}
+        />,
       )
     },
     async edit(context) {
       const clientEntryHref = await getClientEntryHref()
+      const canonical = canonicalUrl(context.request)
       return context.render(
-        <EditPage clientEntryHref={clientEntryHref} homeHref={routes.home.href()} />,
+        <EditPage
+          clientEntryHref={clientEntryHref}
+          homeHref={routes.home.href()}
+          canonical={canonical}
+        />,
       )
     },
   },

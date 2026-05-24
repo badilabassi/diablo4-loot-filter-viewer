@@ -1,16 +1,30 @@
 import { css, type RemixNode } from 'remix/ui'
 
 import { pageStyle, themeVars } from './styles.ts'
+import { SiteFooter } from './site-footer.tsx'
 
 export interface DocumentProps {
   children?: RemixNode
   head?: RemixNode
   title?: string
+  /** Short summary for search results and social previews. */
+  description?: string
+  /** Absolute URL for this page (dedupes www/http variants in search indexes). */
+  canonical?: string
+  /** Defaults to `index, follow`. Use `noindex` for pages that should stay out of search. */
+  robots?: string
+  /** Absolute or root-relative image for Open Graph / Twitter (optional). */
+  ogImage?: string
   /** Resolved by the asset server in route actions — do not hard-code deployment paths. */
   clientEntryHref: string
 }
 
-const DEFAULT_TITLE = 'D4 Filter Viewer'
+const SITE_NAME = 'D4 Filter Viewer'
+const DEFAULT_TITLE = SITE_NAME
+const DEFAULT_DESCRIPTION =
+  'View and edit Diablo IV loot filters in your browser — inspect rules, conditions, affixes, and item types, then export filter code for the game.'
+const DEFAULT_ROBOTS = 'index, follow'
+const THEME_COLOR = '#100c0b'
 
 const globalStyles = `
   @keyframes d4-pulse {
@@ -41,21 +55,87 @@ const globalStyles = `
   * {
     box-sizing: border-box;
   }
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    padding: 8px 16px;
+    background: var(--d4-surface);
+    color: var(--d4-gold3);
+    border: 1px solid var(--d4-border-gold);
+    border-radius: 6px;
+    font-family: var(--font-cinzel);
+    font-size: 12px;
+    text-decoration: none;
+  }
+  .skip-link:focus {
+    left: 12px;
+    top: 12px;
+  }
+  :focus-visible {
+    outline: 2px solid var(--d4-gold3);
+    outline-offset: 2px;
+  }
 `
+
+function DocumentHead() {
+  return ({
+    title,
+    description,
+    canonical,
+    robots,
+    ogImage,
+  }: Pick<DocumentProps, 'title' | 'description' | 'canonical' | 'robots' | 'ogImage'>) => {
+    const resolvedTitle = title ?? DEFAULT_TITLE
+    const resolvedDescription = description ?? DEFAULT_DESCRIPTION
+    const resolvedRobots = robots ?? DEFAULT_ROBOTS
+
+    return (
+      <>
+      <meta charSet="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="description" content={resolvedDescription} />
+      <meta name="robots" content={resolvedRobots} />
+      <meta name="theme-color" content={THEME_COLOR} />
+      {canonical ? <link rel="canonical" href={canonical} /> : null}
+      <meta property="og:title" content={resolvedTitle} />
+      <meta property="og:description" content={resolvedDescription} />
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content={SITE_NAME} />
+      {canonical ? <meta property="og:url" content={canonical} /> : null}
+      {ogImage ? <meta property="og:image" content={ogImage} /> : null}
+      <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+      <meta name="twitter:title" content={resolvedTitle} />
+      <meta name="twitter:description" content={resolvedDescription} />
+      {ogImage ? <meta name="twitter:image" content={ogImage} /> : null}
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <title>{resolvedTitle}</title>
+      </>
+    )
+  }
+}
 
 export function Document() {
   return ({
     children,
     head,
     title = DEFAULT_TITLE,
+    description,
+    canonical,
+    robots,
+    ogImage,
     clientEntryHref,
   }: DocumentProps) => (
     <html lang="en">
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <title>{title}</title>
+        <DocumentHead
+          title={title}
+          description={description}
+          canonical={canonical}
+          robots={robots}
+          ogImage={ogImage}
+        />
         <style>{`
           @font-face {
             font-family: "Exocet";
@@ -74,7 +154,17 @@ export function Document() {
         {head}
       </head>
       <body mix={[themeVars, pageStyle]}>
+        <a href="#main-content" class="skip-link">
+          Skip to content
+        </a>
+        <noscript>
+          <p>
+            {SITE_NAME} requires JavaScript. Enable scripts to view and edit Diablo IV loot
+            filters.
+          </p>
+        </noscript>
         {children}
+        <SiteFooter />
         <script type="module" src={clientEntryHref}></script>
       </body>
     </html>
