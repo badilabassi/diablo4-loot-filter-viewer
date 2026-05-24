@@ -5,18 +5,22 @@ import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
 
-// Trace runtime packages for Vercel's file bundler.
+// Trace runtime packages for Vercel's file bundler (@remix-run/assets deps are not all under @remix-run/).
 const tracedPackages = [
   'remix/node-tsx',
   '@remix-run/node-tsx',
-  '@oxc-project/runtime',
   '@remix-run/assets',
+  '@oxc-project/runtime',
+  'picomatch',
+  'magic-string',
+  'es-module-lexer',
+  'source-map-js',
+  'get-tsconfig',
   'lightningcss',
   'oxc-parser',
   'oxc-transform',
   'oxc-minify',
   'oxc-resolver',
-  'get-tsconfig',
   'lightningcss-linux-x64-gnu',
   'lightningcss-linux-arm64-gnu',
   '@oxc-parser/binding-linux-x64-gnu',

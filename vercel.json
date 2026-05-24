@@ -7,7 +7,7 @@
   "functions": {
     "api/index.js": {
       "maxDuration": 60,
-      "includeFiles": "{app/**,node_modules/remix/**,node_modules/@remix-run/**,node_modules/@oxc-project/**,node_modules/lightningcss*/**,node_modules/oxc-*/**}"
+      "includeFiles": "{app/**,node_modules/remix/**,node_modules/@remix-run/**,node_modules/@oxc-project/**,node_modules/lightningcss*/**,node_modules/oxc-*/**,node_modules/{picomatch,magic-string,es-module-lexer,get-tsconfig,source-map-js}/**}"
     }
   }
 }
