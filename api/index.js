@@ -2,9 +2,24 @@ import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
 
-// @remix-run/assets pulls in lightningcss + oxc native bindings at runtime.
-// Vercel's bundler does not trace optional platform packages unless we resolve them here.
-const linuxNativePackages = [
+// Packages @remix-run/assets resolves at runtime (Vercel's tracer skips many of these).
+const assetRuntimePackages = [
+  '@oxc-project/runtime',
+  '@remix-run/assets',
+  '@remix-run/file-storage',
+  '@remix-run/headers',
+  '@remix-run/mime',
+  '@remix-run/route-pattern',
+  'es-module-lexer',
+  'get-tsconfig',
+  'lightningcss',
+  'magic-string',
+  'oxc-minify',
+  'oxc-parser',
+  'oxc-resolver',
+  'oxc-transform',
+  'picomatch',
+  'source-map-js',
   'lightningcss-linux-x64-gnu',
   'lightningcss-linux-arm64-gnu',
   '@oxc-parser/binding-linux-x64-gnu',
@@ -17,11 +32,11 @@ const linuxNativePackages = [
   '@oxc-resolver/binding-linux-arm64-gnu',
 ]
 
-for (const pkg of linuxNativePackages) {
+for (const pkg of assetRuntimePackages) {
   try {
     require.resolve(pkg)
   } catch {
-    // Different bindings are installed on macOS/Windows dev machines.
+    // Platform-specific bindings differ on local dev machines.
   }
 }
 
