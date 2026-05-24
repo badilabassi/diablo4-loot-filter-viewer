@@ -3,14 +3,11 @@
   "framework": null,
   "installCommand": "npm install --include=optional",
   "buildCommand": "npm run typecheck",
-  "env": {
-    "NODE_OPTIONS": "--import=remix/node-tsx"
-  },
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
     "api/index.js": {
       "maxDuration": 60,
-      "includeFiles": "{app/**,node_modules/@oxc-project/**,node_modules/@remix-run/{assets,file-storage,headers,mime,route-pattern}/**,node_modules/lightningcss*/**,node_modules/oxc-*/**,node_modules/{magic-string,es-module-lexer,get-tsconfig,picomatch,source-map-js}/**}"
+      "includeFiles": "{app/**,node_modules/remix/**,node_modules/@remix-run/**,node_modules/@oxc-project/**,node_modules/lightningcss*/**,node_modules/oxc-*/**}"
     }
   }
 }

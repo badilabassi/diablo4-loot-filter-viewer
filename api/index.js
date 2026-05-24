@@ -1,9 +1,14 @@
+// Register the TS/TSX loader (must be imported from the function entry so Vercel traces it).
+import 'remix/node-tsx'
+
 import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
 
-// Trace native + asset-server packages for Vercel's file bundler.
-const assetRuntimePackages = [
+// Trace runtime packages for Vercel's file bundler.
+const tracedPackages = [
+  'remix/node-tsx',
+  '@remix-run/node-tsx',
   '@oxc-project/runtime',
   '@remix-run/assets',
   'lightningcss',
@@ -11,6 +16,7 @@ const assetRuntimePackages = [
   'oxc-transform',
   'oxc-minify',
   'oxc-resolver',
+  'get-tsconfig',
   'lightningcss-linux-x64-gnu',
   'lightningcss-linux-arm64-gnu',
   '@oxc-parser/binding-linux-x64-gnu',
@@ -23,7 +29,7 @@ const assetRuntimePackages = [
   '@oxc-resolver/binding-linux-arm64-gnu',
 ]
 
-for (const pkg of assetRuntimePackages) {
+for (const pkg of tracedPackages) {
   try {
     require.resolve(pkg)
   } catch {
