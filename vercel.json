@@ -7,7 +7,7 @@
   "functions": {
     "api/index.js": {
       "maxDuration": 60,
-      "includeFiles": "{app/**,node_modules/**}"
+      "includeFiles": "{app/**,node_modules/**,tsconfig.json,package.json}"
     }
   }
 }

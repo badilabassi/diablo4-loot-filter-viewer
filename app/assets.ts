@@ -5,6 +5,7 @@ const rootDir = process.cwd()
 export const assetServer = createAssetServer({
   basePath: '/assets',
   rootDir,
+  watch: process.env.NODE_ENV !== 'production',
   fileMap: {
     'app/*path': 'app/*path',
     'node_modules/*path': 'node_modules/*path',
