@@ -1,7 +1,4 @@
 import { run } from 'remix/ui'
-import { inject } from '@vercel/analytics'
-
-inject()
 
 run({
   async loadModule(moduleUrl, exportName) {
