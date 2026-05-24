@@ -9,8 +9,8 @@ lerna-debug.log*
 
 node_modules
 dist
-api/index.js
-api/index.js.map
+api/bundle.js
+api/bundle.js.map
 *.local
 
 # Editor directories and files
