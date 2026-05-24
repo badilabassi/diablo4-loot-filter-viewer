@@ -1,5 +1,7 @@
 // Register the TS/TSX loader (must be imported from the function entry so Vercel traces it).
 import 'remix/node-tsx'
+// Pull @remix-run/assets and its transitive deps (e.g. picomatch) into the serverless bundle.
+import '@remix-run/assets'
 
 import { createRequire } from 'node:module'
 
