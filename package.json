@@ -18,6 +18,18 @@
     "remix": "3.0.0-beta.2",
     "zod": "^4.4.2"
   },
+  "optionalDependencies": {
+    "lightningcss-linux-arm64-gnu": "1.32.0",
+    "lightningcss-linux-x64-gnu": "1.32.0",
+    "@oxc-minify/binding-linux-arm64-gnu": "0.121.0",
+    "@oxc-minify/binding-linux-x64-gnu": "0.121.0",
+    "@oxc-parser/binding-linux-arm64-gnu": "0.121.0",
+    "@oxc-parser/binding-linux-x64-gnu": "0.121.0",
+    "@oxc-resolver/binding-linux-arm64-gnu": "11.19.1",
+    "@oxc-resolver/binding-linux-x64-gnu": "11.19.1",
+    "@oxc-transform/binding-linux-arm64-gnu": "0.121.0",
+    "@oxc-transform/binding-linux-x64-gnu": "0.121.0"
+  },
   "devDependencies": {
     "@types/node": "^24.12.2",
     "esbuild": "^0.28.0",

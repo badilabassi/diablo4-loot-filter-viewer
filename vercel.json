@@ -1,13 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "npm install",
+  "installCommand": "npm install --include=optional",
   "buildCommand": "npm run build && npm run typecheck",
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
     "api/index.js": {
       "maxDuration": 60,
-      "includeFiles": "app/**"
+      "includeFiles": "{app/**,node_modules/lightningcss*/**,node_modules/@oxc-parser/binding-*/**,node_modules/@oxc-transform/binding-*/**,node_modules/@oxc-minify/binding-*/**,node_modules/@oxc-resolver/binding-*/**}"
     }
   }
 }
