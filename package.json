@@ -7,7 +7,6 @@
     "dev": "NODE_ENV=development node --watch --import remix/node-tsx server.ts",
     "start": "node --import remix/node-tsx server.ts",
     "test": "node --import remix/node-tsx --test",
-    "build": "node scripts/build-vercel.mjs",
     "typecheck": "tsc --noEmit",
     "seed": "node --import remix/node-tsx scripts/seed.ts"
   },
@@ -33,7 +32,6 @@
   },
   "devDependencies": {
     "@types/node": "^24.12.2",
-    "esbuild": "^0.28.0",
     "typescript": "~6.0.2"
   }
 }

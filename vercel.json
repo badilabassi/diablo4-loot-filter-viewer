@@ -2,7 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "npm install --include=optional",
-  "buildCommand": "npm run build && npm run typecheck",
+  "buildCommand": "npm run typecheck",
+  "env": {
+    "NODE_OPTIONS": "--import=remix/node-tsx"
+  },
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
     "api/index.js": {

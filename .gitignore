@@ -9,8 +9,6 @@ lerna-debug.log*
 
 node_modules
 dist
-api/bundle.js
-api/bundle.js.map
 *.local
 
 # Editor directories and files
@@ -33,3 +31,4 @@ api/bundle.js.map
 # Cursor
 .cursor/
 .vercel
+.env*.local
