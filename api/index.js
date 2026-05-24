@@ -1,28 +1,15 @@
 // Register the TS/TSX loader (must be imported from the function entry so Vercel traces it).
 import 'remix/node-tsx'
-// Pull @remix-run/assets and its transitive deps (e.g. picomatch) into the serverless bundle.
-import '@remix-run/assets'
+
+// Side-effect imports for the full dependency tree (generated at build time).
+import './trace-deps.js'
 
 import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
 
-// Trace runtime packages for Vercel's file bundler (@remix-run/assets deps are not all under @remix-run/).
-const tracedPackages = [
-  'remix/node-tsx',
-  '@remix-run/node-tsx',
-  '@remix-run/assets',
-  '@oxc-project/runtime',
-  'picomatch',
-  'magic-string',
-  'es-module-lexer',
-  'source-map-js',
-  'get-tsconfig',
-  'lightningcss',
-  'oxc-parser',
-  'oxc-transform',
-  'oxc-minify',
-  'oxc-resolver',
+// Linux native bindings for @remix-run/assets (optional on local macOS/Windows).
+const linuxNativePackages = [
   'lightningcss-linux-x64-gnu',
   'lightningcss-linux-arm64-gnu',
   '@oxc-parser/binding-linux-x64-gnu',
@@ -35,11 +22,11 @@ const tracedPackages = [
   '@oxc-resolver/binding-linux-arm64-gnu',
 ]
 
-for (const pkg of tracedPackages) {
+for (const pkg of linuxNativePackages) {
   try {
     require.resolve(pkg)
   } catch {
-    // Platform-specific bindings differ on local dev machines.
+    // Not installed on this platform.
   }
 }
 
