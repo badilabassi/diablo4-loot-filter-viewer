@@ -30,3 +30,4 @@ dist
 
 # Cursor
 .cursor/
+.vercel
