@@ -17,7 +17,7 @@ import {
   fetchMaxrollEtag,
   processCoreTOC,
   REPOS,
-} from '../src/lib/toc.js'
+} from '../app/data/toc.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
