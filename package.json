@@ -20,7 +20,7 @@
     "zod": "^4.4.2"
   },
   "optionalDependencies": {
-    "@oxc-minify/binding-linux-arm64-gnu": "0.121.0",
+    "@oxc-minify/binding-linux-arm64-gnu": "0.132.0",
     "@oxc-minify/binding-linux-x64-gnu": "0.132.0",
     "@oxc-parser/binding-linux-arm64-gnu": "0.132.0",
     "@oxc-parser/binding-linux-x64-gnu": "0.132.0",
