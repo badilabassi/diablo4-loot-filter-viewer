@@ -1,5 +1,5 @@
 import { createRequire } from 'node:module'
-import { writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 
 const require = createRequire(import.meta.url)
 
@@ -62,5 +62,6 @@ const lines = [
   '',
 ]
 
-writeFileSync('api/trace-deps.js', lines.join('\n'))
-console.log(`Wrote api/trace-deps.js (${importable.length} packages)`)
+mkdirSync('vercel', { recursive: true })
+writeFileSync('vercel/trace-deps.js', lines.join('\n'))
+console.log(`Wrote vercel/trace-deps.js (${importable.length} packages)`)
