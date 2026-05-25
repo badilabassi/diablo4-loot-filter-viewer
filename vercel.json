@@ -1,11 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
   "installCommand": "npm install --include=optional",
   "buildCommand": "npm run build && npm run typecheck",
-  "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
-    "api/index.js": {
+    "server.ts": {
       "maxDuration": 60,
       "includeFiles": "{app/**,node_modules/**,tsconfig.json,package.json}"
     }
