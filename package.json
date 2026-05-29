@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@oxc-project/runtime": "0.132.0",
+    "@vercel/analytics": "^2.0.1",
     "remix": "3.0.0-beta.2",
     "zod": "^4.4.2"
   },
