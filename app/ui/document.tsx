@@ -1,4 +1,4 @@
-import { css, type RemixNode } from 'remix/ui'
+import { css, type Handle, type RemixNode } from 'remix/ui'
 
 import { pageStyle, themeVars } from './styles.ts'
 import { SiteFooter } from './site-footer.tsx'
@@ -79,14 +79,11 @@ const globalStyles = `
   }
 `
 
-function DocumentHead() {
-  return ({
-    title,
-    description,
-    canonical,
-    robots,
-    ogImage,
-  }: Pick<DocumentProps, 'title' | 'description' | 'canonical' | 'robots' | 'ogImage'>) => {
+function DocumentHead(
+  handle: Handle<Pick<DocumentProps, 'title' | 'description' | 'canonical' | 'robots' | 'ogImage'>>,
+) {
+  return () => {
+    const { title, description, canonical, robots, ogImage } = handle.props
     const resolvedTitle = title ?? DEFAULT_TITLE
     const resolvedDescription = description ?? DEFAULT_DESCRIPTION
     const resolvedRobots = robots ?? DEFAULT_ROBOTS
@@ -116,60 +113,63 @@ function DocumentHead() {
   }
 }
 
-export function Document() {
-  return ({
-    children,
-    head,
-    title = DEFAULT_TITLE,
-    description,
-    canonical,
-    robots,
-    ogImage,
-    clientEntryHref,
-  }: DocumentProps) => (
-    <html lang="en">
-      <head>
-        <DocumentHead
-          title={title}
-          description={description}
-          canonical={canonical}
-          robots={robots}
-          ogImage={ogImage}
-        />
-        <style>{`
-          @font-face {
-            font-family: "Exocet";
-            font-weight: 500;
-            src: url("/Exocet-Medium.ttf");
-            font-display: swap;
-          }
-          @font-face {
-            font-family: "Old Fenris";
-            font-weight: 400;
-            src: url("/OldFenris-Regular.otf");
-            font-display: swap;
-          }
-          ${globalStyles}
-        `}</style>
-        {head}
-      </head>
-      <body mix={[themeVars, pageStyle]}>
-        <a href="#main-content" class="skip-link">
-          Skip to content
-        </a>
-        <noscript>
-          <p>
-            {SITE_NAME} requires JavaScript. Enable scripts to view and edit Diablo IV loot
-            filters.
-          </p>
-        </noscript>
-        {children}
-        <SiteFooter />
-        <script type="module" src="/analytics.js"></script>
-        <script type="module" src={clientEntryHref}></script>
-      </body>
-    </html>
-  )
+export function Document(handle: Handle<DocumentProps>) {
+  return () => {
+    const {
+      children,
+      head,
+      title = DEFAULT_TITLE,
+      description,
+      canonical,
+      robots,
+      ogImage,
+      clientEntryHref,
+    } = handle.props
+    return (
+      <html lang="en">
+        <head>
+          <DocumentHead
+            title={title}
+            description={description}
+            canonical={canonical}
+            robots={robots}
+            ogImage={ogImage}
+          />
+          <style>{`
+            @font-face {
+              font-family: "Exocet";
+              font-weight: 500;
+              src: url("/Exocet-Medium.ttf");
+              font-display: swap;
+            }
+            @font-face {
+              font-family: "Old Fenris";
+              font-weight: 400;
+              src: url("/OldFenris-Regular.otf");
+              font-display: swap;
+            }
+            ${globalStyles}
+          `}</style>
+          {head}
+        </head>
+        <body mix={[themeVars, pageStyle]}>
+          <a href="#main-content" class="skip-link">
+            Skip to content
+          </a>
+          <noscript>
+            <p>
+              {SITE_NAME} requires JavaScript. Enable scripts to view and edit Diablo IV loot
+              filters.
+            </p>
+          </noscript>
+          {children}
+          <SiteFooter />
+          <script type="module" src="/analytics.js"></script>
+          <script type="module" src={clientEntryHref}></script>
+        </body>
+      </html>
+    )
+  }
 }
 
 export const headerGlow = css({

@@ -1,4 +1,4 @@
-import { css } from 'remix/ui'
+import { css, type Handle } from 'remix/ui'
 
 import { COND_TYPES, ITEM_TYPES, QUALITY_FLAGS, QUALITY_TIERS } from '../filter/constants.ts'
 import { tocStore } from '../state/toc-store.ts'
@@ -6,8 +6,9 @@ import type { FilterCondition } from '../filter/schemas.ts'
 import { AffixChip } from './affix-chip.tsx'
 import { condBlockStyle, metaLabel, ornateFrame } from './styles.ts'
 
-export function ConditionBlock() {
-  return ({ cond }: { cond: FilterCondition }) => {
+export function ConditionBlock(handle: Handle<{ cond: FilterCondition }>) {
+  return () => {
+    const { cond } = handle.props
     const ct = COND_TYPES[cond.filterType] ?? { label: `Filter ${cond.filterType}`, icon: '?' }
     const qMatched =
       cond.qualityFlags != null
