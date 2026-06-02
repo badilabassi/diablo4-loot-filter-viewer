@@ -1,4 +1,9 @@
+import { inject } from '@vercel/analytics'
+import { injectSpeedInsights } from '@vercel/speed-insights'
 import { run } from 'remix/ui'
+
+inject()
+injectSpeedInsights()
 
 run({
   async loadModule(moduleUrl, exportName) {
