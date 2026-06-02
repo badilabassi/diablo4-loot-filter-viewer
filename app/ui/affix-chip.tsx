@@ -1,4 +1,4 @@
-import { css } from 'remix/ui'
+import { css, type Handle } from 'remix/ui'
 
 import { tocStore } from '../state/toc-store.ts'
 
@@ -9,8 +9,9 @@ const CAT_STYLE: Record<string, ReturnType<typeof css>> = {
   stat: css({ color: '#f6c844', borderColor: 'rgba(246,200,68,0.35)', background: 'rgba(246,200,68,0.1)' }),
 }
 
-export function AffixChip() {
-  return ({ snoId }: { snoId: number }) => {
+export function AffixChip(handle: Handle<{ snoId: number }>) {
+  return () => {
+    const { snoId } = handle.props
     const entry = tocStore.getAffix(snoId)
     const catStyle = entry ? CAT_STYLE[entry.cat] : undefined
 
