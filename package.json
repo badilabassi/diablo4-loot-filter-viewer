@@ -23,7 +23,7 @@
   "optionalDependencies": {
     "@oxc-minify/binding-linux-arm64-gnu": "0.133.0",
     "@oxc-minify/binding-linux-x64-gnu": "0.133.0",
-    "@oxc-parser/binding-linux-arm64-gnu": "0.133.0",
+    "@oxc-parser/binding-linux-arm64-gnu": "0.134.0",
     "@oxc-parser/binding-linux-x64-gnu": "0.133.0",
     "@oxc-resolver/binding-linux-arm64-gnu": "11.20.0",
     "@oxc-resolver/binding-linux-x64-gnu": "11.20.0",
