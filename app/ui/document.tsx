@@ -164,7 +164,6 @@ export function Document(handle: Handle<DocumentProps>) {
           </noscript>
           {children}
           <SiteFooter />
-          <script type="module" src="/analytics.js"></script>
           <script type="module" src={clientEntryHref}></script>
         </body>
       </html>
