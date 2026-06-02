@@ -7,6 +7,7 @@
     "dev": "NODE_ENV=development node --watch --import remix/node-tsx server.ts",
     "start": "node --import remix/node-tsx server.ts",
     "test": "node --import remix/node-tsx --test",
+    "postinstall": "node scripts/fix-package-tsconfigs.mjs",
     "build": "node scripts/sync-vercel-traces.mjs",
     "typecheck": "tsc --noEmit",
     "seed": "node --import remix/node-tsx scripts/seed.ts"
