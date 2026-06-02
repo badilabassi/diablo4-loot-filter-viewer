@@ -15,20 +15,20 @@
     "node": ">=24.3.0"
   },
   "dependencies": {
-    "@oxc-project/runtime": "0.132.0",
+    "@oxc-project/runtime": "0.133.0",
     "@vercel/analytics": "^2.0.1",
     "remix": "3.0.0-beta.3",
     "zod": "^4.4.2"
   },
   "optionalDependencies": {
-    "@oxc-minify/binding-linux-arm64-gnu": "0.132.0",
-    "@oxc-minify/binding-linux-x64-gnu": "0.132.0",
-    "@oxc-parser/binding-linux-arm64-gnu": "0.132.0",
-    "@oxc-parser/binding-linux-x64-gnu": "0.132.0",
-    "@oxc-resolver/binding-linux-arm64-gnu": "11.19.1",
-    "@oxc-resolver/binding-linux-x64-gnu": "11.19.1",
-    "@oxc-transform/binding-linux-arm64-gnu": "0.132.0",
-    "@oxc-transform/binding-linux-x64-gnu": "0.132.0",
+    "@oxc-minify/binding-linux-arm64-gnu": "0.133.0",
+    "@oxc-minify/binding-linux-x64-gnu": "0.133.0",
+    "@oxc-parser/binding-linux-arm64-gnu": "0.133.0",
+    "@oxc-parser/binding-linux-x64-gnu": "0.133.0",
+    "@oxc-resolver/binding-linux-arm64-gnu": "11.20.0",
+    "@oxc-resolver/binding-linux-x64-gnu": "11.20.0",
+    "@oxc-transform/binding-linux-arm64-gnu": "0.133.0",
+    "@oxc-transform/binding-linux-x64-gnu": "0.133.0",
     "lightningcss-linux-arm64-gnu": "1.32.0",
     "lightningcss-linux-x64-gnu": "1.32.0"
   },
