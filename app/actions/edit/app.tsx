@@ -424,7 +424,8 @@ export const EditApp = clientEntry(
                             background: isSelected
                               ? 'linear-gradient(90deg, rgba(196, 120, 32, 0.12) 0%, rgba(196, 120, 32, 0.04) 100%)'
                               : 'transparent',
-                            opacity: dragSrcIndex === i ? 0.35 : 1,
+                            opacity: dragSrcIndex === i ? 0.35 : rule.enabled ? 1 : 0.5,
+                            filter: rule.enabled ? undefined : 'grayscale(0.5)',
                             cursor: 'grab',
                             padding: '8px',
                             display: 'flex',
@@ -535,6 +536,20 @@ export const EditApp = clientEntry(
                         </div>
 
                         <span
+                          aria-hidden="true"
+                          style={{
+                            width: '8px',
+                            height: '8px',
+                            borderRadius: '50%',
+                            flexShrink: 0,
+                            boxSizing: 'border-box',
+                            background: rule.enabled ? '#4caf50' : 'transparent',
+                            border: rule.enabled ? 'none' : '1.5px solid var(--d4-text3)',
+                            boxShadow: rule.enabled ? '0 0 5px #4caf50aa' : 'none',
+                          }}
+                        />
+
+                        <span
                           style={{
                             flex: 1,
                             fontFamily: 'var(--font-cinzel)',
@@ -560,6 +575,23 @@ export const EditApp = clientEntry(
                         >
                           {(['Show', 'Hide Text', 'Recolor', 'Hide All'] as const)[rule.type] ?? 'Show'}
                         </span>
+
+                        {!rule.enabled && (
+                          <span
+                            style={{
+                              fontSize: '10px',
+                              fontWeight: 700,
+                              letterSpacing: '0.05em',
+                              color: 'var(--d4-text3)',
+                              border: '1px solid var(--d4-border)',
+                              padding: '1px 5px',
+                              borderRadius: '3px',
+                              flexShrink: 0,
+                            }}
+                          >
+                            OFF
+                          </span>
+                        )}
 
                         <button
                           type="button"

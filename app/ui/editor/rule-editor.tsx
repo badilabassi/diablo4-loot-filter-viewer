@@ -61,7 +61,11 @@ export const RuleEditor = clientEntry(
             qualityGlow(glowTag),
             css({ marginBottom: 0 }),
           ]}
-          style={{ animationDelay: `${Math.min(i * 30, 500)}ms` }}
+          style={{
+            animationDelay: `${Math.min(i * 30, 500)}ms`,
+            '--entrance-opacity': r.enabled ? 1 : 0.5,
+            filter: r.enabled ? undefined : 'grayscale(0.6)',
+          }}
         >
           <div
             mix={css({
@@ -173,16 +177,33 @@ export const RuleEditor = clientEntry(
                 />
               </label>
             )}
-            <label mix={[css({ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' })]}>
+            <label
+              mix={[css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '12px',
+                fontFamily: 'var(--font-cinzel)',
+                fontWeight: 700,
+                letterSpacing: '0.05em',
+                padding: '4px 10px',
+                borderRadius: '999px',
+                cursor: 'pointer',
+                border: `1px solid ${r.enabled ? 'rgba(76, 175, 80, 0.4)' : 'var(--d4-border)'}`,
+                background: r.enabled ? 'rgba(76, 175, 80, 0.12)' : 'rgba(255, 255, 255, 0.03)',
+                color: r.enabled ? '#4caf50' : 'var(--d4-text3)',
+              })]}
+            >
               <input
                 type="checkbox"
                 checked={r.enabled}
+                aria-label={r.enabled ? 'Rule enabled — click to disable' : 'Rule disabled — click to enable'}
                 mix={on('change', (e) => {
                   editorStore.updateRule(i, { enabled: e.currentTarget.checked })
                   refresh()
                 })}
               />
-              On
+              {r.enabled ? 'On' : 'Off'}
             </label>
             <button
               type="button"

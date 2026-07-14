@@ -37,7 +37,7 @@ const globalStyles = `
       transform: translateY(12px) scale(0.98);
     }
     to {
-      opacity: 1;
+      opacity: var(--entrance-opacity, 1);
       transform: translateY(0) scale(1);
     }
   }
@@ -47,7 +47,7 @@ const globalStyles = `
       transform: translateY(-6px);
     }
     to {
-      opacity: 1;
+      opacity: var(--entrance-opacity, 1);
       transform: translateY(0);
     }
   }

@@ -43,7 +43,11 @@ export const RuleCard = clientEntry(
                 })
               : undefined,
           ]}
-          style={{ animationDelay: `${Math.min(handle.props.delay, 600)}ms` }}
+          style={{
+            animationDelay: `${Math.min(handle.props.delay, 600)}ms`,
+            '--entrance-opacity': r.enabled ? 1 : 0.55,
+            filter: r.enabled ? undefined : 'grayscale(0.6)',
+          }}
         >
           <button
             type="button"
@@ -80,12 +84,36 @@ export const RuleCard = clientEntry(
             )}
             <span
               aria-hidden="true"
-              mix={css({ width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0 })}
+              mix={css({
+                width: '9px',
+                height: '9px',
+                borderRadius: '50%',
+                flexShrink: 0,
+                boxSizing: 'border-box',
+              })}
               style={{
-                background: r.enabled ? '#4caf50' : '#3a3a3a',
+                background: r.enabled ? '#4caf50' : 'transparent',
+                border: r.enabled ? 'none' : '1.5px solid var(--d4-text3)',
                 boxShadow: r.enabled ? '0 0 6px #4caf50aa' : 'none',
               }}
             />
+            {!r.enabled && (
+              <span
+                mix={css({
+                  fontFamily: 'var(--font-cinzel)',
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  color: 'var(--d4-text3)',
+                  border: '1px solid var(--d4-border)',
+                  borderRadius: '3px',
+                  padding: '1px 5px',
+                  flexShrink: 0,
+                })}
+              >
+                OFF
+              </span>
+            )}
             <span
               mix={css({
                 fontFamily: 'var(--font-cinzel)',
