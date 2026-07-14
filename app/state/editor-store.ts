@@ -14,6 +14,7 @@ const BLANK_CONDITION: FilterCondition = {
   affixIds: [],
   itemIds: [],
   talismanSetIds: [],
+  optionalAffixIds: [],
 }
 
 const BLANK_RULE: FilterRule = {

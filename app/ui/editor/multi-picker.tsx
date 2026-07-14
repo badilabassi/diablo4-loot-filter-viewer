@@ -7,7 +7,7 @@ import { iconBtn } from '../styles.ts'
 interface MultiPickerProps extends SerializableProps {
   ruleIndex: number
   condIndex: number
-  field: 'affixIds' | 'subtypeIds' | 'itemIds' | 'talismanSetIds'
+  field: 'affixIds' | 'subtypeIds' | 'itemIds' | 'talismanSetIds' | 'optionalAffixIds'
   kind: 'affix' | 'itemType' | 'item' | 'talismanSet'
   placeholder: string
   pillColor?: string

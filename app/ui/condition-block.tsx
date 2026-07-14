@@ -15,6 +15,7 @@ export function ConditionBlock(handle: Handle<{ cond: FilterCondition }>) {
         ? QUALITY_FLAGS.filter(([flag]) => ((cond.qualityFlags ?? 0) & flag) !== 0)
         : []
     const uniqueAffixes: number[] = [...new Set(cond.affixIds)]
+    const uniqueOptionalAffixes: number[] = [...new Set(cond.optionalAffixIds)]
     const uniqueSubtypes: number[] = [...new Set(cond.subtypeIds)]
     const uniqueItemIds: number[] = [...new Set(cond.itemIds)]
     const uniqueTalismanSets: number[] = [...new Set(cond.talismanSetIds)]
@@ -22,6 +23,7 @@ export function ConditionBlock(handle: Handle<{ cond: FilterCondition }>) {
     const hasContent =
       qMatched.length > 0 ||
       uniqueAffixes.length > 0 ||
+      uniqueOptionalAffixes.length > 0 ||
       uniqueSubtypes.length > 0 ||
       uniqueItemIds.length > 0 ||
       uniqueTalismanSets.length > 0 ||
@@ -131,6 +133,14 @@ export function ConditionBlock(handle: Handle<{ cond: FilterCondition }>) {
         {uniqueAffixes.length > 0 && (
           <div mix={css({ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' })}>
             {uniqueAffixes.map((id) => (
+              <AffixChip snoId={id} />
+            ))}
+          </div>
+        )}
+
+        {uniqueOptionalAffixes.length > 0 && (
+          <div mix={css({ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' })}>
+            {uniqueOptionalAffixes.map((id) => (
               <AffixChip snoId={id} />
             ))}
           </div>

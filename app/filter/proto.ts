@@ -145,6 +145,7 @@ function parseCondition(raw: Uint8Array): FilterCondition {
     minGaFromList: filterType === 6 ? (field4 ?? 1) : undefined,
     itemIds: filterType === 8 ? fixed32s : [],
     talismanSetIds: filterType === 9 ? fixed32s : [],
+    optionalAffixIds: filterType === 7 ? fixed32s : [],
     affixRanges: affixRanges.length > 0 ? affixRanges : undefined,
     field6,
   };
@@ -229,11 +230,13 @@ function serializeCondition(cond: FilterCondition): Uint8Array {
       ? cond.subtypeIds
       : cond.filterType === 6
         ? cond.affixIds
-        : cond.filterType === 8
-          ? cond.itemIds
-          : cond.filterType === 9
-            ? cond.talismanSetIds
-            : [];
+        : cond.filterType === 7
+          ? cond.optionalAffixIds
+          : cond.filterType === 8
+            ? cond.itemIds
+            : cond.filterType === 9
+              ? cond.talismanSetIds
+              : [];
   for (const id of ids) bytes.push(...encodeFixed32Field(2, id));
 
   // field=3: affix range sub-messages (filterType=6). Each sub-message has

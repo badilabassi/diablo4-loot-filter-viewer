@@ -55,6 +55,7 @@ export const ConditionEditor = clientEntry(
                   affixIds: [],
                   itemIds: [],
                   talismanSetIds: [],
+                  optionalAffixIds: [],
                   minGaFromList: ft === 6 ? 1 : undefined,
                 })
               })]}
@@ -210,6 +211,16 @@ export const ConditionEditor = clientEntry(
                 />
               </label>
             </>
+          )}
+
+          {c.filterType === 7 && (
+            <MultiPicker
+              ruleIndex={handle.props.ruleIndex}
+              condIndex={handle.props.condIndex}
+              field="optionalAffixIds"
+              kind="affix"
+              placeholder="Add optional affix…"
+            />
           )}
 
           {c.filterType === 8 && (

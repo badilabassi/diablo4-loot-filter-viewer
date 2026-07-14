@@ -102,6 +102,7 @@ export const COND_TYPES: Record<number, { label: string; icon: string }> = {
   4: { label: "Greater Affix Count", icon: "⭐" },
   5: { label: "Item Subtype", icon: "🔷" },
   6: { label: "Greater Affixes", icon: "⭐" },
+  7: { label: "Optional Affixes", icon: "☆" },
   8: { label: "Specific Items", icon: "🔱" },
   9: { label: "Talisman Set Bonus", icon: "🎴" },
 };

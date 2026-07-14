@@ -22,6 +22,10 @@ export const FilterConditionSchema = z.object({
   minGaFromList: z.number().optional(),
   itemIds: z.array(z.number()),
   talismanSetIds: z.array(z.number()),
+  /** filterType=7 (Has Optional Affixes) affix SNOs. Only the field-2 ID list
+   * is confirmed against real data; unlike filterType=6 there's no confirmed
+   * min-from-list scalar or field-3 range structure for this type. */
+  optionalAffixIds: z.array(z.number()),
   /** SNO ID min/max ranges from condition field 3 (filterType=6). Preserved for lossless round-trips. */
   affixRanges: z.array(z.object({ min: z.number(), max: z.number() })).optional(),
   /** Opaque varint from condition field 6 (seen in filterType=3 and filterType=4). Preserved for lossless round-trips. */

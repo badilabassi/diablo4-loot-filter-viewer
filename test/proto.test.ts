@@ -102,6 +102,46 @@ function buildTalismanSetFixture(setIds: number[]): string {
   return toBase64(new Uint8Array(top))
 }
 
+/**
+ * Builds a filter with one rule containing a single filterType=7 condition
+ * (Has Optional Affixes), using the same fixed32 field-2 encoding already
+ * used by filterType 6/9. Only the ID list is confirmed for this filterType —
+ * no field-3 range or field-4 scalar is exercised here.
+ */
+function buildOptionalAffixFixture(affixIds: number[]): string {
+  const condition = [
+    ...encodeVarint(1, 7), // filterType = 7 (Has Optional Affixes)
+    ...affixIds.flatMap((id) => encodeFixed32(2, id)),
+  ]
+  const rule = [
+    ...encodeString(1, 'Optional Affix Rule'),
+    ...encodeVarint(2, 0),
+    ...encodeBytes(4, condition),
+    ...encodeVarint(5, 1),
+  ]
+  const top = [...encodeBytes(1, rule), ...encodeString(2, 'Optional Affix Test')]
+  return toBase64(new Uint8Array(top))
+}
+
+describe('proto: filterType=7 Has Optional Affixes', () => {
+  it('captures field-2 SNO IDs into optionalAffixIds instead of discarding them', () => {
+    const b64 = buildOptionalAffixFixture([1829570, 1829574])
+    const parsed = parseFilterB64(b64)
+
+    const cond = parsed.rules[0]?.conditions[0]
+    assert.equal(cond?.filterType, 7)
+    assert.deepEqual(cond?.optionalAffixIds, [1829570, 1829574])
+    assert.deepEqual(cond?.affixIds, [])
+  })
+
+  it('round-trips optionalAffixIds through the encoder', () => {
+    const b64 = buildOptionalAffixFixture([1829570, 1829574])
+    const reParsed = parseFilterB64(serializeFilter(parseFilterB64(b64)))
+
+    assert.deepEqual(reParsed.rules[0]?.conditions[0]?.optionalAffixIds, [1829570, 1829574])
+  })
+})
+
 describe('proto: filterType=9 Talisman Set Bonus', () => {
   it('captures field-2 SNO IDs into talismanSetIds instead of discarding them', () => {
     const b64 = buildTalismanSetFixture([2245567, 2292501])
