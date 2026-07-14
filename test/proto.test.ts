@@ -172,3 +172,38 @@ describe('proto: filterType=9 Talisman Set Bonus', () => {
     assert.deepEqual(parsed.rules[0]?.conditions[0]?.talismanSetIds, [])
   })
 })
+
+// ── Rule.color byte order (field 3) ──────────────────────────────────────────
+
+/**
+ * Regression test for the color channel order: R is bits 16-23, not bits 0-7.
+ * Confirmed against a real user-supplied filter where rules are literally
+ * named after their highlight color — e.g. four separate "Pink Good X" rules
+ * all share raw=0xffff38a0, and a "Red Good Uniques" rule has raw=0xffff3b3b.
+ * Getting the channel order backwards decodes these as purple and blue.
+ */
+describe('proto: rule color channel order', () => {
+  it('decodes a real "Pink Good" rule color to a pink hex, not purple', () => {
+    const rule = [...encodeString(1, 'Pink Good Rama'), ...encodeVarint(2, 2), ...encodeFixed32(3, 0xffff38a0), ...encodeVarint(5, 1)]
+    const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
+    const parsed = parseFilterB64(toBase64(new Uint8Array(top)))
+
+    assert.deepEqual(parsed.rules[0]?.color, { hex: '#ff38a0', isDefault: false })
+  })
+
+  it('decodes a real "Red Good Uniques" rule color to a red hex, not blue', () => {
+    const rule = [...encodeString(1, 'Red Good Uniques'), ...encodeVarint(2, 2), ...encodeFixed32(3, 0xffff3b3b), ...encodeVarint(5, 1)]
+    const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
+    const parsed = parseFilterB64(toBase64(new Uint8Array(top)))
+
+    assert.deepEqual(parsed.rules[0]?.color, { hex: '#ff3b3b', isDefault: false })
+  })
+
+  it('round-trips a real custom color losslessly', () => {
+    const rule = [...encodeString(1, 'Pink Good Rama'), ...encodeVarint(2, 2), ...encodeFixed32(3, 0xffff38a0), ...encodeVarint(5, 1)]
+    const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
+    const b64 = toBase64(new Uint8Array(top))
+
+    assert.equal(serializeFilter(parseFilterB64(b64)), b64)
+  })
+})

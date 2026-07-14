@@ -80,9 +80,9 @@ function getV(fields: Field[], f: number, t: FieldType) {
 }
 
 function decodeColor(uint: number): ParsedColor {
-  const r = uint & 0xff;
+  const r = (uint >> 16) & 0xff;
   const g = (uint >> 8) & 0xff;
-  const b = (uint >> 16) & 0xff;
+  const b = uint & 0xff;
   const hex = "#" + [r, g, b].map((c) => c.toString(16).padStart(2, "0")).join("");
   return { hex, isDefault: uint === 0xffff_0000 };
 }
@@ -214,7 +214,7 @@ function encodeColor(color: ParsedColor): number[] {
   const g = Number.parseInt(hex.slice(2, 4), 16);
   const b = Number.parseInt(hex.slice(4, 6), 16);
   // High byte = 0xff (alpha, always fully opaque)
-  const uint = ((r & 0xff) | ((g & 0xff) << 8) | ((b & 0xff) << 16) | 0xff00_0000) >>> 0;
+  const uint = ((b & 0xff) | ((g & 0xff) << 8) | ((r & 0xff) << 16) | 0xff00_0000) >>> 0;
   return encodeFixed32Field(3, uint);
 }
 
