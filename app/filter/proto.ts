@@ -61,6 +61,10 @@ function decodeMsg(data: Uint8Array): Field[] {
       const v = new DataView(data.buffer, data.byteOffset + pos, 4).getUint32(0, true);
       pos += 4;
       fields.push({ f: fn, t: "f", v });
+    } else if (wt === 1) {
+      // fixed64 — not used by any known field in this schema, but must be skipped
+      // (not aborted) so later fields in the same message still get parsed.
+      pos += 8;
     } else {
       break;
     }
