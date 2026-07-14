@@ -7,8 +7,8 @@ import { iconBtn } from '../styles.ts'
 interface MultiPickerProps extends SerializableProps {
   ruleIndex: number
   condIndex: number
-  field: 'affixIds' | 'subtypeIds' | 'itemIds'
-  kind: 'affix' | 'itemType' | 'item'
+  field: 'affixIds' | 'subtypeIds' | 'itemIds' | 'talismanSetIds'
+  kind: 'affix' | 'itemType' | 'item' | 'talismanSet'
   placeholder: string
   pillColor?: string
 }
@@ -28,6 +28,8 @@ export const MultiPicker = clientEntry(
         return data.affixes.map((a) => ({ id: a.id, label: a.name, sub: a.cat }))
       if (handle.props.kind === 'itemType')
         return data.itemTypes.map((it) => ({ id: it.id, label: it.name }))
+      if (handle.props.kind === 'talismanSet')
+        return data.talismanSets.map((ts) => ({ id: ts.id, label: ts.name }))
       return data.items.map((it) => ({ id: it.id, label: it.name }))
     }
 
@@ -53,6 +55,9 @@ export const MultiPicker = clientEntry(
         .filter((it) => !sel.includes(it.id))
         .filter((it) => !query || it.label.toLowerCase().includes(query.toLowerCase()))
         .slice(0, 80)
+
+      const listboxId = `picker-lb-${handle.props.ruleIndex}-${handle.props.condIndex}-${handle.props.field}`
+      const searchId = `picker-search-${handle.props.ruleIndex}-${handle.props.condIndex}-${handle.props.field}`
 
       return (
         <div mix={[css({ display: 'flex', flexDirection: 'column', gap: '6px' })]}>
@@ -104,6 +109,7 @@ export const MultiPicker = clientEntry(
             type="button"
             aria-expanded={open}
             aria-haspopup="listbox"
+            aria-controls={listboxId}
             aria-label={handle.props.placeholder}
             mix={[
               css({
@@ -123,6 +129,7 @@ export const MultiPicker = clientEntry(
               on('click', async () => {
                 open = !open
                 await handle.update()
+                if (open) requestAnimationFrame(() => document.getElementById(searchId)?.focus())
               }),
             ]}
           >
@@ -132,6 +139,9 @@ export const MultiPicker = clientEntry(
 
           {open && (
             <div
+              id={listboxId}
+              role="listbox"
+              aria-label={handle.props.placeholder}
               mix={[css({
                 border: '1px solid var(--d4-border)',
                 borderRadius: '6px',
@@ -139,9 +149,15 @@ export const MultiPicker = clientEntry(
                 padding: '8px',
                 maxHeight: '240px',
                 overflow: 'auto',
+              }), on('keydown', (e) => {
+                if ((e as KeyboardEvent).key === 'Escape') {
+                  open = false
+                  void handle.update()
+                }
               })]}
             >
               <input
+                id={searchId}
                 type="search"
                 placeholder={handle.props.placeholder}
                 aria-label={`Search ${handle.props.placeholder}`}
@@ -163,6 +179,8 @@ export const MultiPicker = clientEntry(
                 <button
                   key={item.id}
                   type="button"
+                  role="option"
+                  aria-selected={false}
                   mix={[css({
                     display: 'flex',
                     width: '100%',

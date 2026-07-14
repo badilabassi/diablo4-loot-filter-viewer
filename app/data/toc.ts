@@ -2,9 +2,9 @@
 
 import { inferCat } from '../filter/toc-labels.ts'
 import { ITEM_TYPES } from '../filter/constants.ts'
-import type { TocAffix, TocData, TocItem, TocItemType } from '../filter/toc-types.ts'
+import type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet } from '../filter/toc-types.ts'
 
-export type { TocAffix, TocData, TocItem, TocItemType }
+export type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet }
 
 const D4C_BASE =
   'https://raw.githubusercontent.com/josdemmers/Diablo4Companion/master/D4Companion/Data'
@@ -101,6 +101,36 @@ function humanizeItem(filename: string): string {
   return [cls, rarity || 'Item', slot].filter(Boolean).join(' ') || filename
 }
 
+// ── Talisman Set name derivation for CoreTOC section 109 entries ────────────
+
+const TALISMAN_CLASS_NAMES: Record<string, string> = {
+  Sorc: 'Sorcerer',
+  Barb: 'Barbarian',
+  Druid: 'Druid',
+  Rogue: 'Rogue',
+  Necro: 'Necromancer',
+  Spirit: 'Spiritborn',
+  Pala: 'Paladin',
+  Warlock: 'Warlock',
+  Amazon: 'Amazon',
+}
+
+/**
+ * "Talisman_Sorc_02" -> "Sorcerer Talisman Set II"
+ * "Talisman_Small_Generic03" -> "Talisman Set (Generic 03)"
+ */
+function humanizeTalismanSet(raw: string): string {
+  const classMatch = raw.match(/^Talisman_([A-Za-z]+)_(\d+)$/)
+  if (classMatch) {
+    const cls = TALISMAN_CLASS_NAMES[classMatch[1]!] ?? classMatch[1]!
+    const roman = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'][Number(classMatch[2])] ?? classMatch[2]
+    return `${cls} Talisman Set ${roman}`
+  }
+  const genericMatch = raw.match(/^Talisman_Small_Generic(\d+)$/)
+  if (genericMatch) return `Talisman Set (Generic ${genericMatch[1]})`
+  return raw.replace(/^Talisman_/, '').replace(/_/g, ' ')
+}
+
 // ── Build TocData ─────────────────────────────────────────────────────────────
 
 export async function buildTocData(): Promise<TocData> {
@@ -163,5 +193,15 @@ export async function buildTocData(): Promise<TocData> {
     name,
   }))
 
-  return { affixes, itemTypes, items, ts: Date.now() }
+  // Talisman Set definitions (Charm / Horadric Seal set-bonus groups), referenced
+  // by filterType=9 (Talisman Set Bonus) conditions as field-2 fixed32 values.
+  // Group 109 also contains one unrelated junk entry ("Axe Bad Data") that doesn't
+  // match the Talisman_ naming convention, so it's filtered out here.
+  const talismanSets: TocTalismanSet[] = []
+  for (const [sno, fname] of Object.entries(coreToc['109'] ?? {})) {
+    if (!fname.startsWith('Talisman_')) continue
+    talismanSets.push({ id: Number(sno), name: humanizeTalismanSet(fname) })
+  }
+
+  return { affixes, itemTypes, items, talismanSets, ts: Date.now() }
 }

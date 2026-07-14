@@ -13,6 +13,7 @@ const BLANK_CONDITION: FilterCondition = {
   subtypeIds: [],
   affixIds: [],
   itemIds: [],
+  talismanSetIds: [],
 }
 
 const BLANK_RULE: FilterRule = {

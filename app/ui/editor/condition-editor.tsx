@@ -54,6 +54,7 @@ export const ConditionEditor = clientEntry(
                   subtypeIds: [],
                   affixIds: [],
                   itemIds: [],
+                  talismanSetIds: [],
                   minGaFromList: ft === 6 ? 1 : undefined,
                 })
               })]}
@@ -230,6 +231,17 @@ export const ConditionEditor = clientEntry(
                 pillColor="#ef972f"
               />
             </>
+          )}
+
+          {c.filterType === 9 && (
+            <MultiPicker
+              ruleIndex={handle.props.ruleIndex}
+              condIndex={handle.props.condIndex}
+              field="talismanSetIds"
+              kind="talismanSet"
+              placeholder="Add Talisman set… (leave empty to match any)"
+              pillColor="#50d839"
+            />
           )}
         </div>
       )

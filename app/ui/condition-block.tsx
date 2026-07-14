@@ -17,12 +17,15 @@ export function ConditionBlock(handle: Handle<{ cond: FilterCondition }>) {
     const uniqueAffixes: number[] = [...new Set(cond.affixIds)]
     const uniqueSubtypes: number[] = [...new Set(cond.subtypeIds)]
     const uniqueItemIds: number[] = [...new Set(cond.itemIds)]
+    const uniqueTalismanSets: number[] = [...new Set(cond.talismanSetIds)]
 
     const hasContent =
       qMatched.length > 0 ||
       uniqueAffixes.length > 0 ||
       uniqueSubtypes.length > 0 ||
       uniqueItemIds.length > 0 ||
+      uniqueTalismanSets.length > 0 ||
+      cond.filterType === 9 ||
       cond.minPower != null ||
       cond.minQualityTier != null ||
       cond.minGaCount != null
@@ -137,6 +140,46 @@ export function ConditionBlock(handle: Handle<{ cond: FilterCondition }>) {
           <p style={{ fontSize: '14px', color: 'var(--d4-text2)', marginTop: '4px' }}>
             <strong style={{ color: 'var(--d4-unique)' }}>Is Ancestral</strong>
           </p>
+        )}
+
+        {cond.filterType === 9 && uniqueTalismanSets.length === 0 && (
+          <p style={{ fontSize: '14px', color: 'var(--d4-text2)', marginTop: '4px' }}>
+            <strong style={{ color: '#50d839' }}>Any Talisman Set</strong>
+          </p>
+        )}
+
+        {uniqueTalismanSets.length > 0 && (
+          <div mix={css({ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' })}>
+            {uniqueTalismanSets.map((id) => {
+              const name = tocStore.getTalismanSet(id)?.name
+              return (
+                <span
+                  key={id}
+                  mix={css({
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(80, 216, 57, 0.3)',
+                    background: 'rgba(80, 216, 57, 0.1)',
+                    fontSize: '14px',
+                    color: '#50d839',
+                  })}
+                  title={`Talisman Set SNO: 0x${id.toString(16).toUpperCase()}`}
+                >
+                  {name ?? (
+                    <>
+                      <em style={{ fontSize: '12px', opacity: 0.6 }}>Unknown set</em>
+                      <span style={{ fontFamily: 'monospace', fontSize: '12px', opacity: 0.6 }}>
+                        0x{id.toString(16).toUpperCase()}
+                      </span>
+                    </>
+                  )}
+                </span>
+              )
+            })}
+          </div>
         )}
 
         {uniqueItemIds.length > 0 && (

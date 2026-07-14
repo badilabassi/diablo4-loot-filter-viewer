@@ -19,10 +19,16 @@ export const TocItemSchema = z.object({
   name: z.string(),
 })
 
+export const TocTalismanSetSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+})
+
 export const TocDataSchema = z.object({
   affixes: z.array(TocAffixSchema),
   itemTypes: z.array(TocItemTypeSchema),
   items: z.array(TocItemSchema),
+  talismanSets: z.array(TocTalismanSetSchema).default([]),
   ts: z.number(),
   commitHash: z.string().optional(),
 })

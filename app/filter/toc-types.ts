@@ -17,10 +17,16 @@ export interface TocItem {
   name: string
 }
 
+export interface TocTalismanSet {
+  id: number
+  name: string
+}
+
 export interface TocData {
   affixes: TocAffix[]
   itemTypes: TocItemType[]
   items: TocItem[]
+  talismanSets: TocTalismanSet[]
   ts: number
   commitHash?: string
 }
