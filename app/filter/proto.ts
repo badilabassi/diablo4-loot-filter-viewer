@@ -84,7 +84,7 @@ function decodeColor(uint: number): ParsedColor {
   const g = (uint >> 8) & 0xff;
   const b = uint & 0xff;
   const hex = "#" + [r, g, b].map((c) => c.toString(16).padStart(2, "0")).join("");
-  return { hex, isDefault: uint === 0xffff_0000 };
+  return { hex };
 }
 
 function parseCondition(raw: Uint8Array): FilterCondition {
@@ -156,7 +156,8 @@ function parseRule(data: Uint8Array): FilterRule {
   const name = (getV(F, 1, "s") as string | undefined) ?? "";
   const type = (getV(F, 2, "v") as number | undefined) ?? 0;
   const enabled = !!((getV(F, 5, "v") as number | undefined) ?? 0);
-  const color = decodeColor((getV(F, 3, "f") as number | undefined) ?? 0xffff_0000);
+  const colorRaw = getV(F, 3, "f") as number | undefined;
+  const color = colorRaw != null ? decodeColor(colorRaw) : undefined;
 
   const conditions = F.filter((x) => x.f === 4).flatMap((ff) => {
     const raw = ff.t === "b" ? (ff.v as Uint8Array) : ff.raw;
@@ -208,7 +209,6 @@ function encodeFixed32Field(field: number, value: number): number[] {
 }
 
 function encodeColor(color: ParsedColor): number[] {
-  if (color.isDefault) return encodeFixed32Field(3, 0xffff_0000);
   const hex = color.hex.replace("#", "");
   const r = Number.parseInt(hex.slice(0, 2), 16);
   const g = Number.parseInt(hex.slice(2, 4), 16);
@@ -282,7 +282,7 @@ function serializeRule(rule: FilterRule): Uint8Array {
 
   bytes.push(...encodeStringField(1, rule.name));
   bytes.push(...encodeVarintField(2, rule.type));
-  bytes.push(...encodeColor(rule.color));
+  if (rule.color) bytes.push(...encodeColor(rule.color));
 
   for (const cond of rule.conditions) {
     const condBytes = serializeCondition(cond);

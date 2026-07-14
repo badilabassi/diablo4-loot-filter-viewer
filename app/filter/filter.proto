@@ -1,0 +1,203 @@
+// Diablo IV loot filter export format, reverse-engineered.
+//
+// This is NOT compiled or used at runtime — app/filter/proto.ts hand-rolls
+// the same wire format without a generated codec, since only a handful of
+// fields are needed and the rest must be preserved opaquely for lossless
+// round-trips. This file exists purely as documentation of the wire format,
+// kept in sync with proto.ts by hand.
+//
+// A filter export string is base64(serialize(Filter)).
+//
+// Field numbers, wire types, and enum values below are confirmed against a
+// real community filter ("Raxx's Torment 6+ Filter", embedded as
+// EXAMPLE_FILTER in app/filter/constants.ts) unless a comment says
+// otherwise. Anything marked UNCONFIRMED has not been observed in real
+// data — proto.ts either doesn't implement it or preserves it opaquely.
+
+syntax = "proto3";
+
+package d4filter;
+
+message Filter {
+  repeated Rule rules = 1;
+  string name = 2;
+
+  // Fields 3+ have been observed as bare varints in real exports (e.g. a
+  // trailing `field 3` / `field 4` in Raxx's filter) but their meaning is
+  // UNCONFIRMED. proto.ts preserves them opaquely as `topLevelFlags` and
+  // writes them back verbatim so re-encoded filters stay byte-compatible;
+  // it never interprets them.
+}
+
+message Rule {
+  string name = 1;
+
+  // Visibility / rule kind. See RuleType below.
+  int32 type = 2;
+
+  // Packed color, wire type 5 (fixed32), little-endian byte layout — ARGB
+  // when read MSB-first as a single hex number:
+  //   byte 0 (bits  0- 7) = B
+  //   byte 1 (bits  8-15) = G
+  //   byte 2 (bits 16-23) = R
+  //   byte 3 (bits 24-31) = alpha (always observed as 0xFF; never round-tripped
+  //                          as anything else — proto.ts always writes 0xFF
+  //                          for custom colors)
+  //
+  // Confirmed against a real user-supplied filter where rules are literally
+  // named after their highlight color — e.g. four separate "Pink Good X"
+  // rules all share raw=0xFFFF38A0, which only decodes to a pink hex
+  // (#ff38a0) under this byte order; the R/B-swapped reading decodes it to
+  // purple instead. See test/proto.test.ts "rule color channel order".
+  //
+  // Optional: the field can be genuinely absent from the wire (proto.ts
+  // preserves that distinctly from color: undefined, rather than forcing a
+  // zero value — proto3 implicit presence would otherwise decode a missing
+  // field as 0, i.e. transparent black).
+  //
+  // Only meaningful in-game when Rule.type == RULE_RECOLOR (2) — the app
+  // only shows/edits this field for Recolor rules, though it's still
+  // observed present (often with value 0xFFFF0000) on non-Recolor rules in
+  // real exports; proto.ts round-trips it regardless of rule type.
+  optional fixed32 color = 3;
+
+  repeated Condition conditions = 4;
+
+  // 0 or 1, treated as bool. Whether the rule is active.
+  int32 enabled = 5;
+}
+
+// A single filter condition. Which of the fields below are populated, and
+// what they mean, depends entirely on `filter_type` — the same field number
+// is reused with different semantics per type rather than using a oneof.
+// This mirrors the real wire format; it is not idiomatic proto3 by choice.
+message Condition {
+  // See ConditionType below.
+  int32 filter_type = 1;
+
+  // Repeated fixed32 SNO IDs. Individual fixed32 entries on the wire (not a
+  // single packed/length-delimited blob) — proto.ts falls back to unpacking
+  // a length-delimited blob of 4-byte LE values only if no individual
+  // fixed32 fields are found, as defensive handling for a form that hasn't
+  // actually been observed.
+  //
+  // Meaning by filter_type:
+  //   5 (Item Subtype)          -> item-type SNOs (app/filter/constants.ts ITEM_TYPES)
+  //   6 (Has Required Affixes)  -> affix SNOs
+  //   7 (Has Optional Affixes)  -> affix SNOs (only the ID list is confirmed;
+  //                                 see affix_ranges and param below for what
+  //                                 is still UNCONFIRMED for this type)
+  //   8 (Is Specific Unique)    -> item SNOs
+  //   9 (Talisman Set Bonus)    -> talisman-set SNOs (CoreTOC group 109);
+  //                                 empty means "any set"
+  //   all others                -> unused, empty
+  repeated fixed32 ids = 2;
+
+  // Sub-messages carrying SNO min/max ranges. Confirmed only for filter_type
+  // 6, where every observed real-world instance has min == max (i.e. this
+  // encodes an exact-match SNO, structured as a degenerate range rather than
+  // a single scalar — presumably because the game's condition-builder UI
+  // supports real ranges elsewhere and reuses the same sub-message shape
+  // here).
+  //
+  // UNCONFIRMED for filter_type 7 (Has Optional Affixes): proto.ts does not
+  // read or write this field for that type — it may turn out to need the
+  // same range structure as filter_type 6, but no real filter_type=7
+  // instance with field-3 data has been observed to confirm or refute that.
+  //
+  // UNCONFIRMED: a second, independently-written decoder reads this same
+  // field for filter_type 9 as a flat list of individual "talisman piece"
+  // IDs (only field 2 of AffixRange, field 1/min never referenced, and
+  // potentially repeated many times per condition) rather than min/max
+  // pairs. This has not been observed in real data available to this repo
+  // (EXAMPLE_FILTER's one filter_type=9 condition has no field-3 entries at
+  // all) and proto.ts does not currently read or write it for filter_type 9.
+  repeated AffixRange affix_ranges = 3;
+
+  // Scalar lower bound / flags. Meaning by filter_type:
+  //   0 (Item Power Range)   -> max power (see field 5 for min, when both present)
+  //   1 (Item Rarity Match)  -> bitmask, see RarityBits below
+  //   2 (Item Quality Tier)  -> single enum value, see QualityTier below
+  //                              (NOT a bitmask, despite Item Rarity Match's
+  //                              field 4 being one — modeled as an enum here
+  //                              because the field is a *minimum* threshold
+  //                              over an ordered tier list; a second,
+  //                              independently-written decoder instead
+  //                              treats it as a bitmask, UNCONFIRMED either way
+  //                              beyond the one real data point available,
+  //                              which is ambiguous under both models)
+  //   4 (Greater Affix Count) -> minimum GA count required
+  //   6 (Has Required Affixes)-> "min GA from list" — defaults to 1 when absent
+  //   7 (Has Optional Affixes)-> UNCONFIRMED — proto.ts does not read or
+  //                              write this field for filter_type 7; it may
+  //                              turn out to need an equivalent "min from
+  //                              list" scalar, but no real instance with
+  //                              field-4 data has been observed
+  //   others                  -> unused
+  optional int32 param = 4;
+
+  // Upper bound for filter_type 0 (Item Power Range) only, when the
+  // condition specifies both a min and max power. If equal to field 4, only
+  // field 4 is written (proto.ts collapses min==max down to a single field).
+  optional int32 param_max = 5;
+
+  // Opaque varint. Observed only on filter_type 3 (Codex Upgrade Check) and
+  // filter_type 4 (Greater Affix Count), always value 1 in real data.
+  // Preserved verbatim for lossless round-trips; never interpreted.
+  optional int32 field6 = 6;
+}
+
+// SNO ID range. In every confirmed real-world use (filter_type 6), min == max.
+message AffixRange {
+  fixed32 min = 1;
+  fixed32 max = 2;
+}
+
+// Rule visibility / kind (Condition.filter_type's sibling on Rule, field 2).
+enum RuleType {
+  RULE_SHOW = 0;
+  RULE_HIDE_TEXT_LABEL = 1;
+  RULE_RECOLOR = 2;
+  RULE_HIDE_ALL = 3;
+}
+
+// Condition.filter_type values.
+enum ConditionType {
+  ITEM_POWER_RANGE = 0;
+  ITEM_RARITY_MATCH = 1;    // bitmask, see RarityBits
+  ITEM_QUALITY_TIER = 2;    // enum, see QualityTier
+  CODEX_UPGRADE_CHECK = 3;
+  GREATER_AFFIX_COUNT = 4;
+  ITEM_SUBTYPE = 5;
+  HAS_REQUIRED_AFFIXES = 6;
+  HAS_OPTIONAL_AFFIXES = 7; // id list confirmed; affix_ranges/param UNCONFIRMED
+  IS_SPECIFIC_UNIQUE = 8;
+  TALISMAN_SET_BONUS = 9;
+}
+
+// Bitmask values for Condition.param when filter_type == ITEM_RARITY_MATCH.
+// Confirmed via real data (app/filter/constants.ts QUALITY_FLAGS).
+enum RarityBits {
+  RARITY_UNSPECIFIED = 0;
+  RARITY_COMMON = 1;
+  RARITY_MAGIC = 2;
+  RARITY_RARE = 4;
+  RARITY_LEGENDARY = 8;
+  RARITY_UNIQUE = 16;
+  RARITY_MYTHIC_UNIQUE = 32;
+  RARITY_TALISMAN_SETS = 64;
+}
+
+// Enum values for Condition.param when filter_type == ITEM_QUALITY_TIER.
+// 0-indexed threshold ("at least this tier"), NOT a bitmask — see the
+// UNCONFIRMED note on Condition.param above. Confirmed via real data
+// (app/filter/constants.ts QUALITY_TIERS) only at value 4 (Ancestral).
+enum QualityTier {
+  TIER_COMMON = 0;
+  TIER_MAGIC = 1;
+  TIER_RARE = 2;
+  TIER_SACRED = 3;
+  TIER_ANCESTRAL = 4;
+  TIER_UNIQUE = 5;
+  TIER_MYTHIC_UNIQUE = 6;
+}

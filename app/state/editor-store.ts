@@ -20,7 +20,7 @@ const BLANK_CONDITION: FilterCondition = {
 const BLANK_RULE: FilterRule = {
   name: 'New Rule',
   type: 0,
-  color: { hex: '#b8841e', isDefault: false },
+  color: { hex: '#b8841e' },
   enabled: true,
   conditions: [{ ...BLANK_CONDITION }],
 }

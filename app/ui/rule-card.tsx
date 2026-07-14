@@ -19,8 +19,9 @@ export const RuleCard = clientEntry(
 
     return () => {
       const r = rule()
-      const swatchColor = r.color.isDefault ? '#4060c0' : r.color.hex
-      const highlightHex = r.color.isDefault ? '#0000FF' : r.color.hex
+      const isRecolor = r.type === 2
+      const swatchColor = r.color?.hex ?? '#ffffff'
+      const highlightHex = swatchColor
       const tags = inferRuleTags(r)
       const glowTag = dominantGlowTag(tags)
       const ruleLabel =
@@ -70,11 +71,13 @@ export const RuleCard = clientEntry(
               }),
             ]}
           >
-            <span
-              aria-hidden="true"
-              mix={css({ width: '12px', height: '12px', borderRadius: '50%', flexShrink: 0 })}
-              style={{ background: swatchColor, boxShadow: `0 0 10px ${swatchColor}aa` }}
-            />
+            {isRecolor && (
+              <span
+                aria-hidden="true"
+                mix={css({ width: '12px', height: '12px', borderRadius: '50%', flexShrink: 0 })}
+                style={{ background: swatchColor, boxShadow: `0 0 10px ${swatchColor}aa` }}
+              />
+            )}
             <span
               aria-hidden="true"
               mix={css({ width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0 })}
@@ -173,18 +176,20 @@ export const RuleCard = clientEntry(
                     {r.enabled ? 'Enabled' : 'Disabled'}
                   </p>
                 </div>
-                <div>
-                  <span mix={metaLabel}>Color</span>
-                  <p style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: '4px 0 0' }}>
-                    <span
-                      mix={css({ width: '16px', height: '16px', borderRadius: '50%' })}
-                      style={{ background: highlightHex, boxShadow: `0 0 12px ${highlightHex}88` }}
-                    />
-                    <code style={{ fontSize: '12px', color: 'var(--d4-text2)' }}>
-                      {highlightHex.toUpperCase()}
-                    </code>
-                  </p>
-                </div>
+                {isRecolor && (
+                  <div>
+                    <span mix={metaLabel}>Color</span>
+                    <p style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: '4px 0 0' }}>
+                      <span
+                        mix={css({ width: '16px', height: '16px', borderRadius: '50%' })}
+                        style={{ background: highlightHex, boxShadow: `0 0 12px ${highlightHex}88` }}
+                      />
+                      <code style={{ fontSize: '12px', color: 'var(--d4-text2)' }}>
+                        {highlightHex.toUpperCase()}
+                      </code>
+                    </p>
+                  </div>
+                )}
               </div>
 
               {r.conditions.length === 0 ? (

@@ -188,7 +188,7 @@ describe('proto: rule color channel order', () => {
     const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
     const parsed = parseFilterB64(toBase64(new Uint8Array(top)))
 
-    assert.deepEqual(parsed.rules[0]?.color, { hex: '#ff38a0', isDefault: false })
+    assert.deepEqual(parsed.rules[0]?.color, { hex: '#ff38a0' })
   })
 
   it('decodes a real "Red Good Uniques" rule color to a red hex, not blue', () => {
@@ -196,7 +196,7 @@ describe('proto: rule color channel order', () => {
     const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
     const parsed = parseFilterB64(toBase64(new Uint8Array(top)))
 
-    assert.deepEqual(parsed.rules[0]?.color, { hex: '#ff3b3b', isDefault: false })
+    assert.deepEqual(parsed.rules[0]?.color, { hex: '#ff3b3b' })
   })
 
   it('round-trips a real custom color losslessly', () => {
@@ -205,5 +205,40 @@ describe('proto: rule color channel order', () => {
     const b64 = toBase64(new Uint8Array(top))
 
     assert.equal(serializeFilter(parseFilterB64(b64)), b64)
+  })
+})
+
+// ── Rule.color optionality (field 3) ─────────────────────────────────────────
+
+describe('proto: rule color field is optional', () => {
+  it('parses a rule with no color field (field 3 absent) as color: undefined', () => {
+    const rule = [...encodeString(1, 'No Color Field'), ...encodeVarint(2, 0), ...encodeVarint(5, 1)]
+    const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
+    const parsed = parseFilterB64(toBase64(new Uint8Array(top)))
+
+    assert.equal(parsed.rules[0]?.color, undefined)
+  })
+
+  it('round-trips an absent color field without introducing one', () => {
+    const rule = [...encodeString(1, 'No Color Field'), ...encodeVarint(2, 0), ...encodeVarint(5, 1)]
+    const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
+    const b64 = toBase64(new Uint8Array(top))
+
+    const reEncoded = serializeFilter(parseFilterB64(b64))
+    assert.equal(reEncoded, b64)
+    assert.equal(parseFilterB64(reEncoded).rules[0]?.color, undefined)
+  })
+
+  it('parses an explicit color value (0xFFFF0000) as an ordinary color, distinct from absent', () => {
+    const rule = [
+      ...encodeString(1, 'Explicit Color'),
+      ...encodeVarint(2, 0),
+      ...encodeFixed32(3, 0xffff_0000),
+      ...encodeVarint(5, 1),
+    ]
+    const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
+    const parsed = parseFilterB64(toBase64(new Uint8Array(top)))
+
+    assert.deepEqual(parsed.rules[0]?.color, { hex: '#ff0000' })
   })
 })

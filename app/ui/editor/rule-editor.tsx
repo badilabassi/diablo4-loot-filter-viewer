@@ -151,26 +151,28 @@ export const RuleEditor = clientEntry(
                 </option>
               ))}
             </select>
-            <label
-              mix={[css({ position: 'relative', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' })]}
-            >
-              <span
-                aria-hidden="true"
-                mix={[css({ display: 'block', width: '20px', height: '20px', borderRadius: '4px', border: '1px solid var(--d4-border)' })]}
-                style={{ background: r.color.isDefault ? '#0000ff' : r.color.hex }}
-              />
-              <input
-                type="color"
-                value={r.color.isDefault ? '#0000ff' : r.color.hex}
-                aria-label="Rule highlight color"
-                mix={[css({ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%' }), on('change', (e) => {
-                  editorStore.updateRule(i, {
-                    color: { hex: (e.target as HTMLInputElement).value, isDefault: false },
-                  })
-                  refresh()
-                })]}
-              />
-            </label>
+            {r.type === 2 && (
+              <label
+                mix={[css({ position: 'relative', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' })]}
+              >
+                <span
+                  aria-hidden="true"
+                  mix={[css({ display: 'block', width: '20px', height: '20px', borderRadius: '4px', border: '1px solid var(--d4-border)' })]}
+                  style={{ background: r.color?.hex ?? '#ffffff' }}
+                />
+                <input
+                  type="color"
+                  value={r.color?.hex ?? '#ffffff'}
+                  aria-label="Rule highlight color"
+                  mix={[css({ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%' }), on('change', (e) => {
+                    editorStore.updateRule(i, {
+                      color: { hex: (e.target as HTMLInputElement).value },
+                    })
+                    refresh()
+                  })]}
+                />
+              </label>
+            )}
             <label mix={[css({ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' })]}>
               <input
                 type="checkbox"
@@ -210,66 +212,68 @@ export const RuleEditor = clientEntry(
             </button>
           </div>
 
-          <div
-            mix={[css({
-              display: 'flex',
-              gap: '4px',
-              padding: '6px 12px',
-              borderBottom: '1px solid var(--d4-border)',
-              flexWrap: 'wrap',
-            })]}
-          >
-            {PRESET_COLORS.map((c) => (
+          {r.type === 2 && (
+            <div
+              mix={[css({
+                display: 'flex',
+                gap: '4px',
+                padding: '6px 12px',
+                borderBottom: '1px solid var(--d4-border)',
+                flexWrap: 'wrap',
+              })]}
+            >
+              {PRESET_COLORS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  aria-label={`Set highlight color ${c.toUpperCase()}`}
+                  mix={[
+                    css({
+                      width: '44px',
+                      height: '44px',
+                      borderRadius: '6px',
+                      border: '1px solid var(--d4-border)',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: 0,
+                      background: 'transparent',
+                    }),
+                    on('click', () => {
+                      editorStore.updateRule(i, { color: { hex: c } })
+                      refresh()
+                    }),
+                  ]}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      width: '16px',
+                      height: '16px',
+                      borderRadius: '4px',
+                      background: c,
+                      display: 'block',
+                    }}
+                  />
+                </button>
+              ))}
               <button
-                key={c}
                 type="button"
-                aria-label={`Set highlight color ${c.toUpperCase()}`}
+                aria-label="Clear highlight color"
                 mix={[
-                  css({
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '6px',
-                    border: '1px solid var(--d4-border)',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: 0,
-                    background: 'transparent',
-                  }),
+                  btnSecondary,
+                  css({ minHeight: '44px', fontSize: '11px' }),
                   on('click', () => {
-                    editorStore.updateRule(i, { color: { hex: c, isDefault: false } })
+                    editorStore.updateRule(i, { color: undefined })
                     refresh()
                   }),
                 ]}
               >
-                <span
-                  aria-hidden="true"
-                  style={{
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '4px',
-                    background: c,
-                    display: 'block',
-                  }}
-                />
+                clear
               </button>
-            ))}
-            <button
-              type="button"
-              aria-label="Reset highlight color to default"
-              mix={[
-                btnSecondary,
-                css({ minHeight: '44px', fontSize: '11px' }),
-                on('click', () => {
-                  editorStore.updateRule(i, { color: { hex: '#0000ff', isDefault: true } })
-                  refresh()
-                }),
-              ]}
-            >
-              default
-            </button>
-          </div>
+            </div>
+          )}
 
           <div mix={[panelInset, css({ display: 'flex', flexDirection: 'column', gap: '8px' })]}>
             {r.conditions.length === 0 && (

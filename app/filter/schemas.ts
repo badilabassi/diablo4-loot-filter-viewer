@@ -8,7 +8,7 @@ export const AffixEntrySchema = z.object({
 });
 export const AffixDbSchema = z.record(z.coerce.number(), AffixEntrySchema);
 
-export const ParsedColorSchema = z.object({ hex: z.string(), isDefault: z.boolean() });
+export const ParsedColorSchema = z.object({ hex: z.string() });
 
 export const FilterConditionSchema = z.object({
   filterType: z.number(),
@@ -35,7 +35,10 @@ export const FilterConditionSchema = z.object({
 export const FilterRuleSchema = z.object({
   name: z.string(),
   type: z.number(),
-  color: ParsedColorSchema,
+  /** Absent when the rule's wire message genuinely omits field 3, or when
+   * the rule isn't a Recolor rule (type !== 2) — color only has an in-game
+   * effect for Recolor rules, so it's not shown or edited otherwise. */
+  color: ParsedColorSchema.optional(),
   enabled: z.boolean(),
   conditions: z.array(FilterConditionSchema),
 });
