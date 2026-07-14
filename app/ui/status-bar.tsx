@@ -41,6 +41,8 @@ export function StatusBar() {
 
     return (
       <div
+        role="status"
+        aria-live="polite"
         mix={css({
           display: 'flex',
           alignItems: 'center',

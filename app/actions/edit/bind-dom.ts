@@ -12,7 +12,6 @@ export function registerEditBindings(update: Updater) {
   ensureEditBindings()
 }
 
-/** Pull the viewer filter into the editor when opening Edit (nav or first load). */
 export function syncEditorFromViewer() {
   const filter = filterStore.getState().filter
   if (filter) loadFilterIntoEditor(filter)
@@ -23,13 +22,6 @@ export function syncFilterNameFromStore() {
   if (!input || document.activeElement === input) return
   const next = editorStore.getState().filter.name
   if (input.value !== next) input.value = next
-}
-
-export function syncExportTextareaFromStore() {
-  const ta = document.getElementById('export-b64') as HTMLTextAreaElement | null
-  if (!ta) return
-  const next = editorStore.getState().exportedB64 ?? ''
-  if (ta.value !== next) ta.value = next
 }
 
 function ensureEditBindings() {
@@ -52,14 +44,7 @@ function ensureEditBindings() {
   root.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-edit-action]')
     if (!btn) return
-
     switch (btn.getAttribute('data-edit-action')) {
-      case 'import': {
-        syncEditorFromViewer()
-        syncFilterNameFromStore()
-        editUpdater?.()
-        break
-      }
       case 'undo':
         editorStore.undo()
         syncFilterNameFromStore()
@@ -70,31 +55,6 @@ function ensureEditBindings() {
         syncFilterNameFromStore()
         editUpdater?.()
         break
-      case 'copy':
-        void (async () => {
-          try {
-            const b64 = editorStore.exportFilter()
-            await navigator.clipboard.writeText(b64)
-            editUpdater?.()
-          } catch {
-            /* ignore */
-          }
-        })()
-        break
-      case 'clear-export':
-        editorStore.clearExport()
-        syncExportTextareaFromStore()
-        editUpdater?.()
-        break
-      case 'add-rule':
-        editorStore.addRule()
-        editUpdater?.()
-        break
-      case 'select-export': {
-        const ta = document.getElementById('export-b64') as HTMLTextAreaElement | null
-        ta?.select()
-        break
-      }
     }
   })
 }

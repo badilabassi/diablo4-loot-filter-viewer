@@ -166,7 +166,11 @@ export const ornateFrameStrong = css({
 })
 
 export const cardEntrance = css({
-  animation: 'd4-card-in 0.45s ease-out both',
+  animation: 'd4-card-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both',
+})
+
+export const panelEntrance = css({
+  animation: 'd4-panel-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both',
 })
 
 export const cardStyle = css({

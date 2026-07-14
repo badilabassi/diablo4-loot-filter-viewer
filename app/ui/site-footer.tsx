@@ -12,6 +12,7 @@ const siteFooter = css({
   fontSize: '11px',
   lineHeight: 1.65,
   color: 'var(--d4-text3)',
+  '@media (min-width: 701px)': { display: 'none' },
 })
 
 const footerParagraph = css({

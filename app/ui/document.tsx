@@ -34,7 +34,17 @@ const globalStyles = `
   @keyframes d4-card-in {
     from {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(12px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  @keyframes d4-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
     }
     to {
       opacity: 1;

@@ -4,7 +4,7 @@ import { parseRuleJson } from '../filter/parse-rule.ts'
 import { ConditionBlock } from './condition-block.tsx'
 import { qualityGlow } from './quality-glow.ts'
 import { dominantGlowTag, inferRuleTags, tagChipColors } from './rule-tags.ts'
-import { cardEntrance, cardStyle, metaLabel, ornateFrame, panelInset } from './styles.ts'
+import { cardEntrance, cardStyle, metaLabel, ornateFrame, panelEntrance, panelInset } from './styles.ts'
 
 interface RuleCardProps extends SerializableProps {
   ruleJson: string
@@ -124,6 +124,7 @@ export const RuleCard = clientEntry(
             )}
             {r.conditions.length > 0 && (
               <span
+                aria-label={`${r.conditions.length} condition${r.conditions.length === 1 ? '' : 's'}`}
                 mix={css({
                   fontFamily: 'var(--font-cinzel)',
                   fontSize: '12px',
@@ -149,7 +150,7 @@ export const RuleCard = clientEntry(
           </button>
 
           {open && (
-            <div mix={panelInset}>
+            <div mix={[panelInset, panelEntrance]}>
               <div
                 mix={css({
                   display: 'flex',
