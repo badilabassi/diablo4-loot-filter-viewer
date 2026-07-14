@@ -96,8 +96,8 @@ export const ITEM_TYPES: Record<number, string> = {
 
 export const COND_TYPES: Record<number, { label: string; icon: string }> = {
   0: { label: "Item Power", icon: "⚔" },
-  1: { label: "Has Affixes", icon: "✦" },
-  2: { label: "Item Rarity", icon: "💎" },
+  1: { label: "Item Rarity", icon: "✦" },
+  2: { label: "Quality Tier", icon: "💎" },
   3: { label: "Codex Upgrade", icon: "📖" },
   4: { label: "Greater Affix Count", icon: "⭐" },
   5: { label: "Item Subtype", icon: "🔷" },
