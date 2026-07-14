@@ -13,6 +13,7 @@ export const D4C_AFFIXES_URL = `${D4C_BASE}/Affixes.enUS.json`
 export const D4C_UNIQUES_URL = `${D4C_BASE}/Uniques.enUS.json`
 export const CORETOC_URL =
   'https://raw.githubusercontent.com/DiabloTools/d4data/master/json/base/CoreTOC.dat.json'
+export const MAXROLL_DATA_URL = 'https://assets-ng.maxroll.gg/d4-tools/game/data.min.json'
 
 export const D4C_REPO = {
   owner: 'josdemmers',
@@ -32,6 +33,10 @@ interface D4CAffix {
 interface D4CUnique {
   IdNameItemList: string[]
   Name: string
+}
+
+interface MaxrollData {
+  itemSets?: Record<string, { id: number; name: string }>
 }
 
 // ── GitHub refs API ───────────────────────────────────────────────────────────
@@ -60,6 +65,19 @@ async function fetchJson<T>(url: string): Promise<T> {
   const res = await fetch(url)
   if (!res.ok) throw new Error(`Fetch failed (${res.status}): ${url}`)
   return res.json() as Promise<T>
+}
+
+/**
+ * Maxroll's dataset is a best-effort name source, not a required one — if it's
+ * unreachable or slow, Talisman Sets should still build with guessed names
+ * rather than failing the whole TOC build.
+ */
+async function fetchMaxrollDataSafe(): Promise<MaxrollData | null> {
+  try {
+    return await fetchJson<MaxrollData>(MAXROLL_DATA_URL)
+  } catch {
+    return null
+  }
 }
 
 // ── Item name derivation for CoreTOC section 73 entries ──────────────────────
@@ -134,10 +152,11 @@ function humanizeTalismanSet(raw: string): string {
 // ── Build TocData ─────────────────────────────────────────────────────────────
 
 export async function buildTocData(): Promise<TocData> {
-  const [affixesRaw, uniquesRaw, coreToc] = await Promise.all([
+  const [affixesRaw, uniquesRaw, coreToc, maxrollData] = await Promise.all([
     fetchJson<D4CAffix[]>(D4C_AFFIXES_URL),
     fetchJson<D4CUnique[]>(D4C_UNIQUES_URL),
     fetchJson<Record<string, Record<string, string>>>(CORETOC_URL),
+    fetchMaxrollDataSafe(),
   ])
 
   // Affixes — expand multi-ID groups so every SNO resolves to a name.
@@ -197,10 +216,17 @@ export async function buildTocData(): Promise<TocData> {
   // by filterType=9 (Talisman Set Bonus) conditions as field-2 fixed32 values.
   // Group 109 also contains one unrelated junk entry ("Axe Bad Data") that doesn't
   // match the Talisman_ naming convention, so it's filtered out here.
+  //
+  // CoreTOC only carries the internal dev filename (e.g. "Talisman_Barb_03"), and
+  // neither CoreTOC nor D4Companion's locale files have a curated display name for
+  // these — Maxroll's itemSets does (real names like "Arms of Arreat"), keyed by
+  // the same filename. Fall back to a guessed name for any set Maxroll hasn't
+  // indexed yet (e.g. a brand-new one right after a season drops).
   const talismanSets: TocTalismanSet[] = []
   for (const [sno, fname] of Object.entries(coreToc['109'] ?? {})) {
     if (!fname.startsWith('Talisman_')) continue
-    talismanSets.push({ id: Number(sno), name: humanizeTalismanSet(fname) })
+    const maxrollName = maxrollData?.itemSets?.[fname]?.name
+    talismanSets.push({ id: Number(sno), name: maxrollName || humanizeTalismanSet(fname) })
   }
 
   return { affixes, itemTypes, items, talismanSets, ts: Date.now() }
