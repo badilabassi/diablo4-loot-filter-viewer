@@ -25,7 +25,6 @@ export const TocDataSchema = z.object({
   items: z.array(TocItemSchema),
   ts: z.number(),
   commitHash: z.string().optional(),
-  maxrollEtag: z.string().optional(),
 })
 
 export function parseTocData(json: unknown) {

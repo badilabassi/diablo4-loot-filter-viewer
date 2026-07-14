@@ -23,5 +23,4 @@ export interface TocData {
   items: TocItem[]
   ts: number
   commitHash?: string
-  maxrollEtag?: string
 }

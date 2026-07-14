@@ -1,82 +1,36 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
-import {
-  buildMaxrollItemNames,
-  fetchCommitHash,
-  fetchCoreTOC,
-  fetchMaxrollData,
-  fetchMaxrollEtag,
-  processCoreTOC,
-  REPOS,
-} from './toc.ts'
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import { buildTocData, fetchCommitHash, D4C_REPO } from './toc.ts'
 import type { TocData } from '../filter/toc-types.ts'
 
 /** How often to re-check GitHub for a new commit (default: 30 min). */
-const CHECK_INTERVAL = 30 * 60 * 1000;
+const CHECK_INTERVAL = 30 * 60 * 1000
 
 /** Server-process-level cache — survives across requests within one deployment. */
-let cache: { data: TocData; checkedAt: number } | null = null;
+let cache: { data: TocData; checkedAt: number } | null = null
 
 async function loadFromFilesystem(): Promise<TocData | null> {
   try {
-    const raw = await readFile(join(process.cwd(), "public", "data", "toc.json"), "utf-8");
+    const raw = await readFile(join(process.cwd(), 'public', 'data', 'toc.json'), 'utf-8')
     const { parseTocData } = await import('../filter/toc-schemas.ts')
     return parseTocData(JSON.parse(raw))
   } catch {
-    return null;
+    return null
   }
 }
 
 /**
- * Fetches the latest commit SHA for the first REPO that responds.
- * Uses the Git refs API — minimal payload, no auth required.
- */
-async function getLatestCommitHash(): Promise<string | null> {
-  for (const { owner, repo, branch } of REPOS) {
-    const hash = await fetchCommitHash(owner, repo, branch);
-    if (hash) return hash;
-  }
-  return null;
-}
-
-/**
- * Checks both upstream sources in parallel.
- * Returns early as soon as we know staleness — lightweight HEAD for Maxroll,
- * Git refs API for GitHub.
- */
-async function checkUpstream(): Promise<{ commitHash: string | null; maxrollEtag: string | null }> {
-  const [commitHash, maxrollEtag] = await Promise.all([getLatestCommitHash(), fetchMaxrollEtag()]);
-  return { commitHash, maxrollEtag };
-}
-
-async function buildFresh(commitHash: string | null, maxrollEtag: string | null): Promise<TocData> {
-  const [raw, maxrollData] = await Promise.allSettled([fetchCoreTOC(), fetchMaxrollData()]);
-  if (raw.status === "rejected") throw new Error(`CoreTOC fetch failed: ${raw.reason}`);
-
-  let itemNameOverrides: ReturnType<typeof buildMaxrollItemNames> | undefined;
-  if (maxrollData.status === "fulfilled") {
-    itemNameOverrides = buildMaxrollItemNames(maxrollData.value);
-  }
-
-  const data = processCoreTOC(raw.value, itemNameOverrides);
-  if (commitHash) data.commitHash = commitHash;
-  if (maxrollEtag) data.maxrollEtag = maxrollEtag;
-  return data;
-}
-
-/**
- * Performs the upstream staleness check and rebuilds the cache if either
- * source has changed. Runs fire-and-forget so callers are never blocked.
+ * Checks whether the D4Companion repo has a new commit and rebuilds the cache
+ * if so. Runs fire-and-forget so callers are never blocked.
  */
 async function revalidateInBackground(current: TocData): Promise<void> {
   try {
-    const { commitHash: latestCommit, maxrollEtag: latestEtag } = await checkUpstream();
-    const commitUnchanged = !latestCommit || current.commitHash === latestCommit;
-    const maxrollUnchanged = !latestEtag || current.maxrollEtag === latestEtag;
-    if (!commitUnchanged || !maxrollUnchanged) {
-      const fresh = await buildFresh(latestCommit, latestEtag);
-      cache = { data: fresh, checkedAt: Date.now() };
-    }
+    const { owner, repo, branch } = D4C_REPO
+    const latestHash = await fetchCommitHash(owner, repo, branch)
+    if (latestHash && current.commitHash === latestHash) return
+    const fresh = await buildTocData()
+    if (latestHash) fresh.commitHash = latestHash
+    cache = { data: fresh, checkedAt: Date.now() }
   } catch {
     // Background revalidation failures are non-fatal — stale data stays cached.
   }
@@ -89,25 +43,27 @@ async function revalidateInBackground(current: TocData): Promise<void> {
  *  1. In-memory cache fresh  → return immediately, zero I/O.
  *  2. Stale or cold cache    → return stale/seed data immediately,
  *                              revalidate upstream in the background.
- *  3. No data at all         → block once to fetch from GitHub (cold start).
+ *  3. No data at all         → block once to fetch from D4Companion (cold start).
  */
 export async function getCachedTocData(): Promise<TocData> {
-  const now = Date.now();
+  const now = Date.now()
 
   if (cache && now - cache.checkedAt < CHECK_INTERVAL) {
-    return cache.data;
+    return cache.data
   }
 
-  const current = cache?.data ?? (await loadFromFilesystem());
+  const current = cache?.data ?? (await loadFromFilesystem())
   if (current) {
-    cache = { data: current, checkedAt: now };
-    revalidateInBackground(current);
-    return current;
+    cache = { data: current, checkedAt: now }
+    void revalidateInBackground(current)
+    return current
   }
 
-  // No data at all — must block once to fetch from GitHub.
-  const { commitHash: latestCommit, maxrollEtag: latestEtag } = await checkUpstream();
-  const fresh = await buildFresh(latestCommit, latestEtag);
-  cache = { data: fresh, checkedAt: now };
-  return fresh;
+  // No data at all — must block once to fetch from D4Companion.
+  const { owner, repo, branch } = D4C_REPO
+  const commitHash = await fetchCommitHash(owner, repo, branch)
+  const fresh = await buildTocData()
+  if (commitHash) fresh.commitHash = commitHash
+  cache = { data: fresh, checkedAt: Date.now() }
+  return fresh
 }

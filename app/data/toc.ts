@@ -1,192 +1,41 @@
-// Server-side TOC fetch, build, and processing.
+// Server-side TOC fetch: affixes from D4Companion, items from CoreTOC + D4Companion overrides.
 
-import { humanize, inferCat } from '../filter/toc-labels.ts'
+import { inferCat } from '../filter/toc-labels.ts'
+import { ITEM_TYPES } from '../filter/constants.ts'
 import type { TocAffix, TocData, TocItem, TocItemType } from '../filter/toc-types.ts'
 
-export type { AffixCategory } from '../filter/schemas.ts'
 export type { TocAffix, TocData, TocItem, TocItemType }
 
-// ── Maxroll data types (subset we care about) ─────────────────────────────────
+const D4C_BASE =
+  'https://raw.githubusercontent.com/josdemmers/Diablo4Companion/master/D4Companion/Data'
 
-interface MaxrollItem {
-  id: number;
-  name?: string;
-  magicType?: number;
+export const D4C_AFFIXES_URL = `${D4C_BASE}/Affixes.enUS.json`
+export const D4C_UNIQUES_URL = `${D4C_BASE}/Uniques.enUS.json`
+export const CORETOC_URL =
+  'https://raw.githubusercontent.com/DiabloTools/d4data/master/json/base/CoreTOC.dat.json'
+
+export const D4C_REPO = {
+  owner: 'josdemmers',
+  repo: 'Diablo4Companion',
+  branch: 'master',
+} as const
+
+// ── Raw types ─────────────────────────────────────────────────────────────────
+
+interface D4CAffix {
+  IdSnoList: string[]
+  IdNameList: string[]
+  Description: string
+  DescriptionClean: string
 }
 
-export interface MaxrollData {
-  items: Record<string, MaxrollItem>;
+interface D4CUnique {
+  IdNameItemList: string[]
+  Name: string
 }
 
-export const MAXROLL_DATA_URL = "https://assets-ng.maxroll.gg/d4-tools/game/data.min.json";
+// ── GitHub refs API ───────────────────────────────────────────────────────────
 
-export async function fetchMaxrollData(): Promise<MaxrollData> {
-  const res = await fetch(MAXROLL_DATA_URL);
-  if (!res.ok) throw new Error(`Maxroll data fetch failed: ${res.status}`);
-  const json = (await res.json()) as MaxrollData;
-  return json;
-}
-
-/**
- * Returns the ETag (or Last-Modified as fallback) for the Maxroll data file
- * using a HEAD request — no body downloaded.
- */
-export async function fetchMaxrollEtag(): Promise<string | null> {
-  try {
-    const res = await fetch(MAXROLL_DATA_URL, { method: "HEAD" });
-    if (!res.ok) return null;
-    return res.headers.get("etag") ?? res.headers.get("last-modified");
-  } catch {
-    return null;
-  }
-}
-
-export function buildMaxrollItemNames(data: MaxrollData): Map<number, string> {
-  const map = new Map<number, string>();
-  for (const v of Object.values(data.items)) {
-    if (v.id && v.name) map.set(v.id, v.name);
-  }
-  return map;
-}
-
-// ── Config ────────────────────────────────────────────────────────────────────
-
-export const REPOS = [
-  { owner: "DiabloTools", repo: "d4data", branch: "master" },
-] as const;
-
-const AFFIX_SKIP = [
-  "Unique_",
-  "UBERUNIQUE",
-  "TEST",
-  "DONOTSHIP",
-  "Legacy",
-  "PACT",
-  "Paragon_",
-  "QA_",
-];
-
-function humanizeItemType(raw: string): string {
-  const MAP: Record<string, string> = {
-    GearItem: "Any Equipment",
-    Mace: "Mace",
-    Mace2H: "Two-Hand Mace",
-    Mace2HDruid: "Two-Hand Mace",
-    Sword: "Sword",
-    Sword2H: "Two-Hand Sword",
-    Axe: "Axe",
-    Axe2H: "Two-Hand Axe",
-    Staff: "Staff",
-    StaffDruid: "Druid Staff",
-    StaffSorcerer: "Sorcerer Staff",
-    Scythe: "Scythe",
-    Scythe2H: "Two-Hand Scythe",
-    Dagger: "Dagger",
-    DaggerOffHand: "Off-Hand Dagger",
-    Polearm: "Polearm",
-    Glaive: "Glaive",
-    Quarterstaff: "Quarterstaff",
-    Wand: "Wand",
-    Bow: "Bow",
-    Crossbow: "Crossbow",
-    Crossbow2H: "Two-Hand Crossbow",
-    Focus: "Focus",
-    OffHandTotem: "Off-Hand Totem",
-    FocusBookOffHand: "Off-Hand Focus",
-    Shield: "Shield",
-    ChestArmor: "Chest Armor",
-    Helm: "Helm",
-    Legs: "Pants",
-    Boots: "Boots",
-    Gloves: "Gloves",
-    Ring: "Ring",
-    Amulet: "Amulet",
-    Charm: "Charm",
-    HoradricSeal: "Horadric Seal",
-    Flail: "Flail",
-    Amazon_Spear: "Amazon Spear",
-    Amazon_Shield: "Amazon Shield",
-  };
-  return MAP[raw] ?? raw.replace(/_/g, " ");
-}
-
-function humanizeItem(filename: string): string {
-  const s = filename
-    .replace(/_x\d+$/, "") // _x1 expansion suffix
-    .replace(/_\d{3}$/, "") // _001 numeric suffix
-    .replace(/^S\d+_[A-Z]{2,4}_/, "") // S04_BSK_ season+class prefix
-    .replace(/^S\d+_/, "") // S04_ season prefix
-    .replace(/^UberUnique_/i, "");
-
-  // Extract named item portion before the rarity marker
-  // e.g. "Andariels_Visage_Unique_Helm_Generic" → "Andariels Visage"
-  const rarityIdx = s.search(/_(Unique|Legendary|Mythic)(_|$)/i);
-  if (rarityIdx > 0) {
-    const prefix = s.slice(0, rarityIdx);
-    if (prefix && !/^(Generic|Set|Base|Template)$/i.test(prefix)) {
-      return prefix.replace(/_/g, " ").trim();
-    }
-  }
-
-  // Generic item — extract slot/class/rarity
-  const SLOTS = [
-    "Helm",
-    "Chest",
-    "Gloves",
-    "Pants",
-    "Legs",
-    "Boots",
-    "Ring",
-    "Amulet",
-    "Weapon",
-    "Offhand",
-    "Shield",
-    "Focus",
-    "Staff",
-    "Axe",
-    "Sword",
-    "Mace",
-    "Scythe",
-    "Glaive",
-    "Wand",
-    "Bow",
-    "Crossbow",
-    "Dagger",
-    "Flail",
-    "Polearm",
-    "Quarterstaff",
-  ];
-  const CLASSES = [
-    "Warlock",
-    "Druid",
-    "Sorc",
-    "Necro",
-    "Rogue",
-    "Barb",
-    "Spiritborn",
-    "Paladin",
-    "Amazon",
-  ];
-  const parts = s.split("_");
-  let slot = "",
-    cls = "",
-    rarity = "";
-  for (const p of parts) {
-    if (SLOTS.some((x) => x.toLowerCase() === p.toLowerCase())) slot = p;
-    if (CLASSES.some((x) => x.toLowerCase() === p.toLowerCase())) cls = p;
-    if (p === "Unique") rarity = "Unique";
-    if (p === "Legendary") rarity = "Legendary";
-    if (p === "Mythic") rarity = "Mythic";
-  }
-  return [cls, rarity || "Item", slot].filter(Boolean).join(" ") || filename;
-}
-
-// ── Fetch CoreTOC ─────────────────────────────────────────────────────────────
-
-/**
- * Returns the latest commit SHA for a GitHub repo branch using the lightweight
- * Git refs API (no auth required, minimal payload).
- */
 export async function fetchCommitHash(
   owner: string,
   repo: string,
@@ -195,52 +44,124 @@ export async function fetchCommitHash(
   try {
     const res = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`,
-      { headers: { Accept: "application/vnd.github+json" } },
-    );
-    if (!res.ok) return null;
-    const json = (await res.json()) as { object?: { sha?: string } };
-    return json?.object?.sha ?? null;
+      { headers: { Accept: 'application/vnd.github+json' } },
+    )
+    if (!res.ok) return null
+    const json = (await res.json()) as { object?: { sha?: string } }
+    return json?.object?.sha ?? null
   } catch {
-    return null;
+    return null
   }
 }
 
-export async function fetchCoreTOC(): Promise<Record<string, Record<string, string>>> {
-  for (const { owner, repo, branch } of REPOS) {
-    try {
-      const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/json/base/CoreTOC.dat.json`;
-      const res = await fetch(url);
-      if (!res.ok) continue;
-      const json: unknown = await res.json();
-      if (json && typeof json === "object") return json as Record<string, Record<string, string>>;
-    } catch {}
-  }
-  throw new Error("CoreTOC unavailable from all repos");
+// ── Fetch helpers ─────────────────────────────────────────────────────────────
+
+async function fetchJson<T>(url: string): Promise<T> {
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`Fetch failed (${res.status}): ${url}`)
+  return res.json() as Promise<T>
 }
 
-// ── Process raw TOC → TocData ─────────────────────────────────────────────────
+// ── Item name derivation for CoreTOC section 73 entries ──────────────────────
 
-export function processCoreTOC(
-  toc: Record<string, Record<string, string>>,
-  itemNameOverrides?: Map<number, string>,
-): TocData {
-  const affixes: TocAffix[] = [];
-  for (const [sno, fname] of Object.entries(toc["104"] ?? {})) {
-    if (AFFIX_SKIP.some((p) => fname.includes(p))) continue;
-    affixes.push({ id: Number(sno), name: humanize(fname), cat: inferCat(fname), raw: fname });
+function humanizeItem(filename: string): string {
+  const s = filename
+    .replace(/_x\d+$/, '')
+    .replace(/^S\d+_[A-Z]{2,4}_/, '')
+    .replace(/^S\d+_/, '')
+    .replace(/^UberUnique_/i, '')
+
+  const rarityIdx = s.search(/_(Unique|Legendary|Mythic)(_|$)/i)
+  if (rarityIdx > 0) {
+    const prefix = s.slice(0, rarityIdx)
+    if (prefix && !/^(Generic|Set|Base|Template)$/i.test(prefix)) {
+      return prefix.replace(/_/g, ' ').trim()
+    }
   }
 
-  const itemTypes: TocItemType[] = [];
-  for (const [sno, name] of Object.entries(toc["98"] ?? {})) {
-    itemTypes.push({ id: Number(sno), name: humanizeItemType(name) });
+  const SLOTS = [
+    'Helm', 'Chest', 'Gloves', 'Pants', 'Legs', 'Boots', 'Ring', 'Amulet',
+    'Weapon', 'Offhand', 'Shield', 'Focus', 'Staff', 'Axe', 'Sword', 'Mace',
+    'Scythe', 'Glaive', 'Wand', 'Bow', 'Crossbow', 'Dagger', 'Flail',
+    'Polearm', 'Quarterstaff',
+  ]
+  const CLASSES = [
+    'Warlock', 'Druid', 'Sorc', 'Necro', 'Rogue', 'Barb', 'Spiritborn',
+    'Paladin', 'Amazon',
+  ]
+  const parts = s.split('_')
+  let slot = '', cls = '', rarity = ''
+  for (const p of parts) {
+    if (SLOTS.some((x) => x.toLowerCase() === p.toLowerCase())) slot = p
+    if (CLASSES.some((x) => x.toLowerCase() === p.toLowerCase())) cls = p
+    if (p === 'Unique') rarity = 'Unique'
+    if (p === 'Legendary') rarity = 'Legendary'
+    if (p === 'Mythic') rarity = 'Mythic'
+  }
+  return [cls, rarity || 'Item', slot].filter(Boolean).join(' ') || filename
+}
+
+// ── Build TocData ─────────────────────────────────────────────────────────────
+
+export async function buildTocData(): Promise<TocData> {
+  const [affixesRaw, uniquesRaw, coreToc] = await Promise.all([
+    fetchJson<D4CAffix[]>(D4C_AFFIXES_URL),
+    fetchJson<D4CUnique[]>(D4C_UNIQUES_URL),
+    fetchJson<Record<string, Record<string, string>>>(CORETOC_URL),
+  ])
+
+  // Affixes — expand multi-ID groups so every SNO resolves to a name.
+  const affixes: TocAffix[] = []
+  for (const entry of affixesRaw) {
+    const name = (entry.DescriptionClean || entry.Description)
+      .split(/\r?\n/)[0]!
+      .trim()
+    if (!name) continue
+    const cat = inferCat(name)
+    for (let i = 0; i < entry.IdSnoList.length; i++) {
+      const id = Number(entry.IdSnoList[i])
+      if (!id) continue
+      affixes.push({ id, name, cat, raw: entry.IdNameList[i] ?? entry.IdNameList[0] ?? '' })
+    }
   }
 
-  const items: TocItem[] = [];
-  for (const [sno, fname] of Object.entries(toc["73"] ?? {})) {
-    const id = Number(sno);
-    const name = itemNameOverrides?.get(id) ?? humanizeItem(fname);
-    items.push({ id, name });
+  // Items — CoreTOC section 73 as base, D4Companion names as overrides.
+  // D4Companion's IdSnoList is the power SNO (section 104), not the item SNO
+  // (section 73). Cross-reference via IdNameItemList which holds the item filename.
+  const coreTocReverse = new Map<string, number>()
+  for (const [sno, fname] of Object.entries(coreToc['73'] ?? {})) {
+    coreTocReverse.set(fname, Number(sno))
   }
 
-  return { affixes, itemTypes, items, ts: Date.now() };
+  const d4cNameById = new Map<number, string>()
+  for (const entry of uniquesRaw) {
+    if (!entry.Name.trim()) continue
+    for (const itemName of entry.IdNameItemList) {
+      const sno = coreTocReverse.get(itemName)
+      if (sno) d4cNameById.set(sno, entry.Name)
+    }
+  }
+
+  // Only keep unique/mythic items — base, magic, and rare entries from section 73
+  // serve no purpose in the picker and would bury named uniques under thousands
+  // of "Item", "Item Helm" etc. entries.
+  const items: TocItem[] = []
+  for (const [sno, fname] of Object.entries(coreToc['73'] ?? {})) {
+    const id = Number(sno)
+    const d4cName = d4cNameById.get(id)
+    if (d4cName) {
+      items.push({ id, name: d4cName })
+    } else if (/unique|mythic/i.test(fname)) {
+      items.push({ id, name: humanizeItem(fname) })
+    }
+  }
+
+  // Item types from the hardcoded SNO constant — D4Companion's ItemTypes.enUS.json
+  // does not carry SNO IDs.
+  const itemTypes: TocItemType[] = Object.entries(ITEM_TYPES).map(([id, name]) => ({
+    id: Number(id),
+    name,
+  }))
+
+  return { affixes, itemTypes, items, ts: Date.now() }
 }
