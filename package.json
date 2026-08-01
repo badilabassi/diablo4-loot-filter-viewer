@@ -33,7 +33,7 @@
     "@oxc-transform/binding-linux-arm64-gnu": "0.140.0",
     "@oxc-transform/binding-linux-x64-gnu": "0.140.0",
     "lightningcss-linux-arm64-gnu": "1.32.0",
-    "lightningcss-linux-x64-gnu": "1.32.0"
+    "lightningcss-linux-x64-gnu": "1.33.0"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",

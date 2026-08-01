@@ -62,8 +62,8 @@ importers:
         specifier: 1.32.0
         version: 1.32.0
       lightningcss-linux-x64-gnu:
-        specifier: 1.32.0
-        version: 1.32.0
+        specifier: 1.33.0
+        version: 1.33.0
 
 packages:
 
@@ -1240,6 +1240,13 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  lightningcss-linux-x64-gnu@1.33.0:
+    resolution: {integrity: sha512-ar+Ju7LmcN0Jo4FpL4hpFybwNG9/3A/Br5KW2n2jyODg3MEZXaDYADdemoNS+BDNfMgKvylJLj4S5tyRActuAg==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
   lightningcss-linux-x64-musl@1.32.0:
     resolution: {integrity: sha512-bYcLp+Vb0awsiXg/80uCRezCYHNg1/l3mt0gzHnWV9XP1W5sKa5/TCdGWaR/zBM2PeF/HbsQv/j2URNOiVuxWg==}
     engines: {node: '>= 12.0.0'}
@@ -2144,6 +2151,9 @@ snapshots:
     optional: true
 
   lightningcss-linux-x64-gnu@1.32.0:
+    optional: true
+
+  lightningcss-linux-x64-gnu@1.33.0:
     optional: true
 
   lightningcss-linux-x64-musl@1.32.0:
