@@ -56,8 +56,8 @@ importers:
         specifier: 0.140.0
         version: 0.140.0
       '@oxc-transform/binding-linux-x64-gnu':
-        specifier: 0.140.0
-        version: 0.140.0
+        specifier: 0.142.0
+        version: 0.142.0
       lightningcss-linux-arm64-gnu:
         specifier: 1.32.0
         version: 1.32.0
@@ -742,8 +742,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@oxc-transform/binding-linux-x64-gnu@0.140.0':
-    resolution: {integrity: sha512-E0qSFOMRArliAiASRwz55sU1XQxx2neimvhtfhvwUiVZf3OZqoIJfOz+W5nE/nGC3JGZgr8j6/rpWTgkwy1dFw==}
+  '@oxc-transform/binding-linux-x64-gnu@0.142.0':
+    resolution: {integrity: sha512-K59aaLEoWFsZ1r5kQ+FJMP/gSb/UMLArQaS+sS2HCp+B5POUhZyo6jxq6/aiQpD5GDdiRXrJa+wJ9uvy6SQuGA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
@@ -1732,7 +1732,7 @@ snapshots:
   '@oxc-transform/binding-linux-x64-gnu@0.121.0':
     optional: true
 
-  '@oxc-transform/binding-linux-x64-gnu@0.140.0':
+  '@oxc-transform/binding-linux-x64-gnu@0.142.0':
     optional: true
 
   '@oxc-transform/binding-linux-x64-musl@0.121.0':
