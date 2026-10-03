@@ -376,6 +376,19 @@ Each phase ends with typecheck plus tests green and its own commit. **Bold** ite
 
    FCP isn't comparable (remote vs localhost); it is measured on the preview. Still pending on the preview: the full C1–C10 run, Analytics events, cache headers for the favicon, fonts and `/api/toc`, and Lighthouse.
 
+   **Phase 8 results, Vercel preview (2026-10-03)** → **merge gate PASSED.**
+   - ✅ **C1–C9 in headless Chrome** on the preview: the Phase 4–6 viewer, client-shell, editor and bug-#1 scripts re-ran unchanged, with results identical to local, 0 full page loads, and no console errors.
+   - ✅ **C4:** the `<head>` of both pages is identical to Remix *production* (16 of 16 tags).
+   - ✅ **C3Δ / D4:** `/api/toc` is served `x-vercel-cache: HIT` with an increasing `age`; browsers see `max-age=1800`, Brotli-compressed.
+   - ✅ **D10:** CSS, JS and fonts are `public, max-age=31536000, immutable` (Remix production serves its fonts with `max-age=0`). The favicon gets `max-age=86400, stale-while-revalidate=604800`.
+   - ✅ **C9 Analytics:** the Insights and Speed Insights scripts load (200) and initialize (`window.va`).
+     - Neither Remix production nor the preview sends a page-view beacon to headless Chrome, so the setup matches production. Confirm real page views in the Vercel dashboard after a normal browser visit.
+   - ✅ **Performance on Vercel** (median of 3, cache disabled, Remix production vs Start preview):
+     - Transferred: 881–885 KB → **456–462 KB**, about half.
+     - The 518 KB index download is gone from every page.
+     - FCP/LCP is roughly even (viewer 252 vs 284 ms, editor 228 vs 204 ms). Start's viewer paint already contains the rule cards, which Remix renders later in the browser after downloading the index. Lighthouse was not run.
+   - C10 (`pnpm seed`) was verified in Phase 7.
+
 ## Risks
 
 | Risk | Likelihood | Mitigation |
