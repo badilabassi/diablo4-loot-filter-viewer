@@ -235,7 +235,16 @@ Each phase ends with typecheck plus tests green and its own commit. **Bold** ite
      - No console errors.
    - ✅ **(b) #7943 does not reproduce** for our pattern: a server function imported only from a `'use client'` component in the hydrated tree, which is where `MultiPicker` lives. It works in the production build. Not tested: a client component nested *inside* an RSC that calls a server function.
    - ✅ **(c) `/api/toc`:** serves the full 518,211-byte bundled seed with the D4 headers locally. CDN behavior is verified on the preview.
-   - ⏳ **Vercel preview:** pending.
+   **Phase 0 results: Vercel preview (2026-10-03)** → **gate PASSED: proceed with D2 as RSC.**
+   - ✅ **Build:** succeeds with `vercel.json` `{"framework":"tanstack-start","buildCommand":"pnpm start:build"}` on this branch. The explicit build command is needed because the preset runs `build`, which is still the Remix trace script until Phase 7. `main` and the dashboard preset are untouched. Previews are behind Deployment Protection, so checks use a bypass header.
+   - ✅ **(a), (a′) and (b) pass on Vercel**, identical to local, with no console or network errors.
+   - ✅ **D4 verified:**
+     - `/api/toc` goes `x-vercel-cache: MISS → HIT → HIT` with an increasing `age`.
+     - Browsers receive only `cache-control: public, max-age=1800`. Vercel consumes `Vercel-CDN-Cache-Control`.
+     - The CDN compresses the response with Brotli (`content-encoding: br`).
+     - This resolves research open questions Q5 and [V]'s "what the browser receives".
+   - ✅ **Hashed `/assets/*` chunks** already get `public, max-age=31536000, immutable`.
+   - ⚠️ **D10 confirmed:** `public/` files (fonts, favicon) get `public, max-age=0, must-revalidate`, so browsers revalidate the fonts on every visit. Phase 3 adds caching rules for them.
 
 1. **Core move.**
    - `git mv` `app/filter` → `src/filter`.
