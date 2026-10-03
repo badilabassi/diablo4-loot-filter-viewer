@@ -1,6 +1,6 @@
 # D4 Filter Viewer
 
-Diablo IV loot filter viewer and editor, built with [Remix 3.0.0-beta.2](https://api.remix.run/api/remix/overview/) and `remix/ui`.
+Diablo IV loot filter viewer and editor, built with [Remix 3](https://api.remix.run/api/remix/overview/) and `remix/component`.
 
 See **[AGENTS.md](./AGENTS.md)** for project conventions, layout, and how to extend the app.
 

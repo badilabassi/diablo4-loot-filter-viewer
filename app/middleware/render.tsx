@@ -2,8 +2,8 @@ import * as path from 'node:path'
 
 import { renderWith } from 'remix/middleware/render'
 import { createHtmlResponse } from 'remix/response/html'
-import type { RemixNode } from 'remix/ui'
-import { renderToStream } from 'remix/ui/server'
+import type { RemixNode } from 'remix/component'
+import { renderToStream } from 'remix/component/server'
 
 import { assetServer } from '../assets.ts'
 
@@ -20,8 +20,11 @@ export function render() {
               )
             }
 
+            const { href, importMap, preloads } = await assetServer.getScriptEntry(entryId)
             return {
-              href: await assetServer.getHref(entryId),
+              href,
+              importMap,
+              preloads,
               exportName: entryId.split('#')[1] || component.name || titleCaseFileName(entryId),
             }
           },

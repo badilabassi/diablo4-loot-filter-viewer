@@ -1,10 +1,11 @@
-import type { Handle } from 'remix/ui'
+import type { ScriptEntry } from 'remix/assets'
+import type { Handle } from 'remix/component'
 
 import { Document } from '../../ui/document.tsx'
 import { HomeApp } from './app.tsx'
 
 export interface HomePageProps {
-  clientEntryHref: string
+  clientEntry: ScriptEntry
   editHref: string
   canonical: string
 }
@@ -15,13 +16,13 @@ const HOME_DESCRIPTION =
 
 export function HomePage(handle: Handle<HomePageProps>) {
   return () => {
-    const { clientEntryHref, editHref, canonical } = handle.props
+    const { clientEntry, editHref, canonical } = handle.props
     return (
       <Document
         title={HOME_TITLE}
         description={HOME_DESCRIPTION}
         canonical={canonical}
-        clientEntryHref={clientEntryHref}
+        clientEntry={clientEntry}
       >
         <HomeApp editHref={editHref} />
       </Document>

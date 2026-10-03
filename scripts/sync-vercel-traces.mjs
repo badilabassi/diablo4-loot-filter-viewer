@@ -45,7 +45,7 @@ const roots = [
   'remix/middleware/static',
   'remix/middleware/render',
   'remix/response/html',
-  'remix/ui/server',
+  'remix/component/server',
 ]
 
 const packages = new Set()

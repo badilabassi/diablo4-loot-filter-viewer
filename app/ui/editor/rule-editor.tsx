@@ -1,4 +1,4 @@
-import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix/ui'
+import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix/component'
 
 import { editorStore } from '../../state/editor-store.ts'
 import { qualityGlow } from '../quality-glow.ts'

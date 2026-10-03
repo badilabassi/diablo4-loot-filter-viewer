@@ -1,10 +1,11 @@
-import type { Handle } from 'remix/ui'
+import type { ScriptEntry } from 'remix/assets'
+import type { Handle } from 'remix/component'
 
 import { Document } from '../../ui/document.tsx'
 import { EditApp } from './app.tsx'
 
 export interface EditPageProps {
-  clientEntryHref: string
+  clientEntry: ScriptEntry
   homeHref: string
   canonical: string
 }
@@ -15,13 +16,13 @@ const EDIT_DESCRIPTION =
 
 export function EditPage(handle: Handle<EditPageProps>) {
   return () => {
-    const { clientEntryHref, homeHref, canonical } = handle.props
+    const { clientEntry, homeHref, canonical } = handle.props
     return (
       <Document
         title={EDIT_TITLE}
         description={EDIT_DESCRIPTION}
         canonical={canonical}
-        clientEntryHref={clientEntryHref}
+        clientEntry={clientEntry}
       >
         <EditApp homeHref={homeHref} />
       </Document>

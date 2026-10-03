@@ -13,7 +13,7 @@ npm run typecheck
 
 ## Building Features
 
-Refer to ./.agents/skills/remix/SKILL.md
+Refer to ./.agents/skills/remix/SKILL.md for the Remix mental model and how to find guides and API READMEs through `node_modules/remix/INDEX.md`.
 
 ## Starter Layout
 

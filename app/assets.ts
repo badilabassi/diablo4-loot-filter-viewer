@@ -6,19 +6,15 @@ export const assetServer = createAssetServer({
   basePath: '/assets',
   rootDir,
   watch: process.env.NODE_ENV !== 'production',
-  fileMap: {
-    'app/*path': 'app/*path',
-    'node_modules/*path': 'node_modules/*path',
-  },
-  allow: [
+  allowFiles: [
     'app/assets/**',
     'app/actions/**',
     'app/ui/**',
     'app/state/**',
     'app/filter/**',
-    'node_modules/**',
   ],
-  deny: ['app/**/*.server.*'],
+  allowPackages: ['remix', 'motion', 'zod', '@vercel/analytics', '@vercel/speed-insights'],
+  denyFiles: ['app/**/*.server.*'],
   sourceMaps: process.env.NODE_ENV === 'development' ? 'external' : undefined,
   scripts: {
     define: {
