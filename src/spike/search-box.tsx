@@ -2,9 +2,12 @@
 
 import { useState } from 'react'
 
-import { searchAffixes } from './search.functions.ts'
+import { searchToc } from '../data/toc.functions.ts'
 
-/** Spike probe (b): a client component calling a server function only it imports. */
+/**
+ * Spike probe (b): a client component calling the real searchToc server
+ * function, imported only here (the pattern from TanStack issue 7943).
+ */
 export function SearchBox() {
   const [results, setResults] = useState<string[] | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -16,7 +19,8 @@ export function SearchBox() {
         placeholder="Search affixes…"
         onChange={async (e) => {
           try {
-            setResults(await searchAffixes({ data: { query: e.target.value } }))
+            const entries = await searchToc({ data: { kind: 'affix', query: e.target.value } })
+            setResults(entries.map((entry) => entry.label))
             setError(null)
           } catch (err) {
             setError(err instanceof Error ? err.message : String(err))
@@ -26,7 +30,7 @@ export function SearchBox() {
       {error && <p data-testid="search-error" role="alert">{error}</p>}
       {results && (
         <ul data-testid="search-results">
-          {results.map((r) => <li key={r}>{r}</li>)}
+          {results.map((r, i) => <li key={`${r}-${i}`}>{r}</li>)}
         </ul>
       )}
     </div>

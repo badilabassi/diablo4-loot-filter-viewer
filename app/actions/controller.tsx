@@ -2,7 +2,7 @@ import { createController } from 'remix/router'
 
 import { getClientEntry } from '../assets/client-entry.ts'
 import { assetServer } from '../assets.ts'
-import { getCachedTocData } from '../data/toc-cache.ts'
+import { getCachedTocData } from '../../src/data/toc-cache.server.ts'
 import { routes } from '../routes.ts'
 import { EditPage } from './edit/page.tsx'
 import { HomePage } from './home/page.tsx'

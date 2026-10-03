@@ -1,8 +1,8 @@
 // Server-side TOC fetch: affixes from D4Companion, items from CoreTOC + D4Companion overrides.
 
-import { inferCat } from '../../src/filter/toc-labels.ts'
-import { ITEM_TYPES } from '../../src/filter/constants.ts'
-import type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet } from '../../src/filter/toc-types.ts'
+import { inferCat } from '../filter/toc-labels.ts'
+import { ITEM_TYPES } from '../filter/constants.ts'
+import type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet } from '../filter/toc-types.ts'
 
 export type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet }
 

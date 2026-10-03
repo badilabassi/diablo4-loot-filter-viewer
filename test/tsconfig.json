@@ -5,6 +5,8 @@
   "compilerOptions": {
     "types": ["node", "vite/client"]
   },
-  "include": ["./**/*.ts", "./**/*.tsx"],
+  // routeTree.gen.ts carries the module augmentation that types file routes
+  // (createFileRoute paths, the `server` option) for tests importing route modules.
+  "include": ["./**/*.ts", "./**/*.tsx", "../src/routeTree.gen.ts"],
   "exclude": ["./remix/**"]
 }

@@ -254,6 +254,18 @@ Each phase ends with typecheck plus tests green and its own commit. **Bold** ite
    - Write `toc-*.server.ts` with the bundled seed (D5), `toc-index.server.ts`, and `toc.functions.ts`.
    - Write `routes/api/toc.ts` (D4).
    - Tests: index lookups, `searchToc`, the `/api/toc` headers (C3Δ), and `pnpm seed` (C10).
+   **Phase 2 results (2026-10-03)**
+   - ✅ **Moves:** `app/data/{toc,toc-cache}.ts` → `src/data/*.server.ts` and `public/data/toc.json` → `src/data/toc-seed.json`, all as `git mv`. The seed is a bundled JSON import (D5). Remix's `/api/toc` keeps working on the moved cache.
+   - ✅ **New files:** `toc-index.server.ts` (memoized index, plus search and label resolution matching the old picker: case-insensitive substring, selected ids excluded, index order, cap 80), `toc.functions.ts` (`searchToc` and `resolveToc`, zod-validated and bounded), and the real `routes/api/toc.ts` with the D4 headers.
+   - ✅ **Production build:** the client bundle contains no server-only code. The real `searchToc` works from a client component (#7943 probe).
+   - ⚠️ **Finding: RSC mode instantiates server modules twice.** Server functions run in the react-server build environment and server routes in SSR, so `toc-cache.server.ts` was bundled into both, each with its own module-level cache (two seed parses, two background revalidations, possibly different data served).
+     - Fixed by keeping the cache on `globalThis` under `Symbol.for('d4-filter-viewer.toc-cache')`.
+     - `test/toc-cache.test.ts` simulates two module instances. It fails with a module-level cache and passes with the fix.
+     - **Rule for later phases:** any server-side singleton state must live on `globalThis` this way.
+   - ✅ **`pnpm seed [output-path]`** writes `src/data/toc-seed.json` (C10), verified against live upstream data.
+     - It also shows the committed seed is 81 days stale: 4,251 affixes / 1,088 items vs 4,366 / 1,133 upstream. Refreshing it is a data change, so it's left to you.
+   - ℹ️ **Many affixes share a label** ("Critical Strike Chance" appears 22 times, with different ids). The old picker shows the same duplicates; kept for parity and raised for Phase 6.
+
 3. **Shell.**
    - `__root.tsx`: `head()` defaults, per-route title and canonical overrides, `theme.css` and fonts, Analytics and Speed Insights.
    - D10 route rules.

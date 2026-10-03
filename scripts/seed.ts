@@ -1,20 +1,24 @@
 #!/usr/bin/env tsx
 /**
- * Seed script: fetches D4Companion Affixes + Uniques data, writes public/data/toc.json.
+ * Seed script: fetches D4Companion Affixes + Uniques data, writes src/data/toc-seed.json,
+ * which the server bundles as the TOC cache's starting data.
  *
- * Usage:  pnpm seed
- * Re-run after game patches to refresh affix / item / item-type name data.
+ * Usage:  pnpm seed [output-path]
+ * Re-run after game patches to refresh affix / item / item-type name data, then
+ * deploy (or purge the CDN cache with `vercel cache invalidate --tag toc`).
+ * The optional output path writes elsewhere, e.g. to inspect fresh data without
+ * touching the committed seed.
  */
 
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { buildTocData, fetchCommitHash, D4C_REPO, D4C_AFFIXES_URL, D4C_UNIQUES_URL } from '../app/data/toc.ts'
+import { buildTocData, fetchCommitHash, D4C_REPO, D4C_AFFIXES_URL, D4C_UNIQUES_URL } from '../src/data/toc.server.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
-const OUT_DIR = join(ROOT, 'public', 'data')
-const OUT = join(OUT_DIR, 'toc.json')
+const OUT = process.argv[2] ? resolve(process.argv[2]) : join(ROOT, 'src', 'data', 'toc-seed.json')
+const OUT_DIR = dirname(OUT)
 
 const { owner, repo, branch } = D4C_REPO
 console.log(`Repo: ${owner}/${repo}@${branch}`)

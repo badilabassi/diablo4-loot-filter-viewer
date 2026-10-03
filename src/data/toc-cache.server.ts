@@ -1,19 +1,34 @@
-import { readFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import { buildTocData, fetchCommitHash, D4C_REPO } from './toc.ts'
-import type { TocData } from '../../src/filter/toc-types.ts'
+import { buildTocData, fetchCommitHash, D4C_REPO } from './toc.server.ts'
+import type { TocData } from '../filter/toc-types.ts'
+// Bundled into the server build rather than read from public/ at runtime: under
+// Nitro on Vercel, public/ is served by the CDN and isn't on the function's
+// filesystem. Regenerate with `pnpm seed`.
+import seed from './toc-seed.json' with { type: 'json' }
 
 /** How often to re-check GitHub for a new commit (default: 30 min). */
 const CHECK_INTERVAL = 30 * 60 * 1000
 
-/** Server-process-level cache — survives across requests within one deployment. */
-let cache: { data: TocData; checkedAt: number } | null = null
+interface CacheHolder {
+  cache: { data: TocData; checkedAt: number } | null
+}
 
-async function loadFromFilesystem(): Promise<TocData | null> {
+/**
+ * Server-process-level cache — survives across requests within one deployment.
+ *
+ * Kept on globalThis rather than in a module variable: with RSC enabled, server
+ * functions run in a separate (react-server) build environment from server
+ * routes, so this module is bundled and instantiated twice. A module-level
+ * variable would give each copy its own cache (two seed parses, two background
+ * revalidations, possibly different data served). Both copies share this one.
+ */
+const holder: CacheHolder = ((globalThis as Record<symbol, CacheHolder | undefined>)[
+  Symbol.for('d4-filter-viewer.toc-cache')
+] ??= { cache: null })
+
+async function loadSeed(): Promise<TocData | null> {
   try {
-    const raw = await readFile(join(process.cwd(), 'public', 'data', 'toc.json'), 'utf-8')
-    const { parseTocData } = await import('../../src/filter/toc-schemas.ts')
-    return parseTocData(JSON.parse(raw))
+    const { parseTocData } = await import('../filter/toc-schemas.ts')
+    return parseTocData(seed)
   } catch {
     return null
   }
@@ -30,7 +45,7 @@ async function revalidateInBackground(current: TocData): Promise<void> {
     if (latestHash && current.commitHash === latestHash) return
     const fresh = await buildTocData()
     if (latestHash) fresh.commitHash = latestHash
-    cache = { data: fresh, checkedAt: Date.now() }
+    holder.cache = { data: fresh, checkedAt: Date.now() }
   } catch {
     // Background revalidation failures are non-fatal — stale data stays cached.
   }
@@ -48,13 +63,13 @@ async function revalidateInBackground(current: TocData): Promise<void> {
 export async function getCachedTocData(): Promise<TocData> {
   const now = Date.now()
 
-  if (cache && now - cache.checkedAt < CHECK_INTERVAL) {
-    return cache.data
+  if (holder.cache && now - holder.cache.checkedAt < CHECK_INTERVAL) {
+    return holder.cache.data
   }
 
-  const current = cache?.data ?? (await loadFromFilesystem())
+  const current = holder.cache?.data ?? (await loadSeed())
   if (current) {
-    cache = { data: current, checkedAt: now }
+    holder.cache = { data: current, checkedAt: now }
     void revalidateInBackground(current)
     return current
   }
@@ -64,6 +79,6 @@ export async function getCachedTocData(): Promise<TocData> {
   const commitHash = await fetchCommitHash(owner, repo, branch)
   const fresh = await buildTocData()
   if (commitHash) fresh.commitHash = commitHash
-  cache = { data: fresh, checkedAt: Date.now() }
+  holder.cache = { data: fresh, checkedAt: Date.now() }
   return fresh
 }
