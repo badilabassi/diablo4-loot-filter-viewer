@@ -1,7 +1,8 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
-import { TOC_KINDS, getTocIndex, resolveTocEntries, searchTocEntries } from './toc-index.server.ts'
+import { TOC_KINDS } from './toc-kinds.ts'
+import { getTocIndex, resolveTocEntries, searchTocEntries } from './toc-index.server.ts'
 
 const kind = z.enum(TOC_KINDS)
 // Bounds keep a crafted request from making the server do unbounded work. A

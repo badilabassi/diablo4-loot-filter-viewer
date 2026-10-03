@@ -1,0 +1,457 @@
+/* Editor page layout, ported 1:1 from the Remix EditApp. */
+@layer ui.component {
+  .root {
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: 701px) {
+      height: 100vh;
+      overflow: hidden;
+    }
+  }
+
+  .topBar {
+    display: none;
+
+    @media (max-width: 700px) {
+      display: flex;
+      align-items: center;
+      height: 52px;
+      padding: 0 16px;
+      gap: 12px;
+      background: var(--d4-bg2);
+      border-bottom: 1px solid rgba(196, 120, 32, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      flex-shrink: 0;
+    }
+  }
+
+  .menuButton {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .topBarTitle {
+    font-family: var(--font-cinzel);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--d4-gold3);
+  }
+
+  .topBarView {
+    margin-left: auto;
+    text-decoration: none;
+  }
+
+  .content {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+
+    @media (min-width: 701px) {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      overflow: hidden;
+      height: 100%;
+    }
+  }
+
+  .backdrop {
+    display: none;
+
+    @media (max-width: 700px) {
+      display: block;
+      position: fixed;
+      inset: 0;
+      top: 52px;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 49;
+    }
+  }
+
+  .sidebar {
+    border-right: 1px solid rgba(196, 120, 32, 0.2);
+    background: var(--d4-bg2);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+
+    @media (min-width: 701px) {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    @media (max-width: 700px) {
+      position: fixed;
+      top: 52px;
+      left: 0;
+      bottom: 0;
+      width: min(85vw, 320px);
+      z-index: 50;
+      overflow: auto;
+    }
+  }
+
+  .branding {
+    padding: 28px 20px 24px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .collapseButton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 1;
+  }
+
+  .sigil {
+    font-size: 28px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 14px rgba(196, 120, 32, 0.65));
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+    margin-bottom: 16px;
+  }
+
+  .toolbar {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(196, 120, 32, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .nameInput {
+    width: 100%;
+    background: var(--d4-bg);
+    border: 1px solid rgba(196, 120, 32, 0.22);
+    border-radius: 6px;
+    color: var(--d4-gold3);
+    font-family: var(--font-cinzel);
+    font-size: 13px;
+    outline: none;
+    padding: 7px 12px;
+
+    &:focus {
+      border-color: rgba(196, 120, 32, 0.5);
+    }
+  }
+
+  .historyRow {
+    display: flex;
+    gap: 6px;
+  }
+
+  .historyButton {
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .visuallyHidden {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .ruleList {
+    flex: 1;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  .ruleListHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .addButton {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .noRules {
+    font-size: 12px;
+    color: var(--d4-text3);
+    font-style: italic;
+    text-align: center;
+    padding: 24px 0;
+    margin: 0;
+  }
+
+  /* One rule in the sidebar list. State comes from data attributes:
+     data-selected, data-drag-over, data-dragging, data-disabled, data-drag-active. */
+  .ruleRow {
+    border-radius: 6px;
+    border: 1px solid var(--d4-border);
+    box-shadow: none;
+    background: transparent;
+    opacity: 1;
+    cursor: grab;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 150ms ease;
+    min-height: 44px;
+
+    &:hover {
+      border-color: rgba(196, 120, 32, 0.4);
+      background: rgba(196, 120, 32, 0.06);
+    }
+    &[data-selected] {
+      border: 1px solid rgba(196, 120, 32, 0.55);
+      background: linear-gradient(90deg, rgba(196, 120, 32, 0.12) 0%, rgba(196, 120, 32, 0.04) 100%);
+    }
+    &[data-selected]:hover {
+      border-color: rgba(196, 120, 32, 0.4);
+      background: linear-gradient(90deg, rgba(196, 120, 32, 0.15) 0%, rgba(196, 120, 32, 0.06) 100%);
+    }
+    &[data-disabled] {
+      opacity: 0.5;
+      filter: grayscale(0.5);
+    }
+    &[data-drag-over] {
+      border: 1px solid rgba(196, 120, 32, 0.85);
+      box-shadow: 0 0 0 1px rgba(196, 120, 32, 0.35), inset 0 0 10px rgba(196, 120, 32, 0.08);
+    }
+    &[data-dragging] {
+      opacity: 0.35;
+    }
+    &[data-drag-active] {
+      transition: none;
+    }
+  }
+
+  .moveButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex-shrink: 0;
+  }
+
+  .moveButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: var(--d4-text3);
+    font-size: 9px;
+    border-radius: 2px;
+    padding: 0;
+
+    &:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+    &:hover:not(:disabled) {
+      color: var(--d4-gold3);
+    }
+  }
+
+  .enabledDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-sizing: border-box;
+  }
+
+  .ruleName {
+    flex: 1;
+    font-family: var(--font-cinzel);
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--d4-text);
+  }
+
+  .ruleRow[data-selected] .ruleName {
+    color: var(--d4-gold3);
+  }
+
+  .typeBadge {
+    font-size: 10px;
+    color: var(--d4-text3);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1px 5px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .offBadge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--d4-text3);
+    border: 1px solid var(--d4-border);
+    padding: 1px 5px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .removeButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: var(--d4-text3);
+    font-size: 14px;
+    flex-shrink: 0;
+    border-radius: 3px;
+    padding: 0;
+
+    &:hover {
+      color: #f55;
+    }
+  }
+
+  .footer {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(196, 120, 32, 0.12);
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .footerButton {
+    flex: 1;
+    font-size: 11px;
+  }
+
+  .main {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mainInner {
+    padding: 24px;
+    flex: 1;
+
+    @media (max-width: 700px) {
+      padding: 16px;
+    }
+  }
+
+  .openButton {
+    margin-bottom: 16px;
+
+    @media (max-width: 700px) {
+      display: none;
+    }
+  }
+
+  .loadError {
+    margin: 0 0 16px;
+  }
+
+  .emptyState {
+    text-align: center;
+    padding: 96px 24px;
+    color: var(--d4-text3);
+    border-radius: 8px;
+  }
+
+  .emptyText {
+    font-family: var(--font-cinzel);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* Modals */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+
+  .dialog {
+    background: var(--d4-bg2);
+    border: 1px solid rgba(196, 120, 32, 0.45);
+    border-radius: 8px;
+    padding: 24px;
+    width: 480px;
+    max-width: calc(100vw - 32px);
+    box-shadow: 0 8px 48px rgba(0, 0, 0, 0.75);
+    position: relative;
+  }
+
+  .dialogTitle {
+    font-family: var(--font-cinzel);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--d4-gold3);
+    margin-bottom: 16px;
+  }
+
+  .dialogLabel {
+    margin-bottom: 8px;
+  }
+
+  .dialogField {
+    margin-bottom: 16px;
+  }
+
+  .dialogFieldWithError {
+    margin-bottom: 8px;
+  }
+
+  .dialogError {
+    margin-bottom: 16px;
+  }
+
+  .exportField {
+    margin-bottom: 16px;
+    cursor: text;
+  }
+
+  .dialogActions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .dialogClose {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 18px;
+  }
+}

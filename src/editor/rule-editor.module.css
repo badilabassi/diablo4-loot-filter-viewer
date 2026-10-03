@@ -1,0 +1,141 @@
+@layer ui.component {
+  /* Overrides the shared .card's bottom margin (was css({ marginBottom: 0 })). */
+  .card {
+    margin-bottom: 0;
+  }
+
+  /* Quality glow (was the qualityGlow() mixin, non-intense). Colors come from
+     --glow-* custom properties set inline from src/ui/quality-glow.ts. */
+  .card[data-glow] {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      border-radius: 8px 0 0 8px;
+      pointer-events: none;
+      background: linear-gradient(180deg, var(--glow-accent) 0%, transparent 100%);
+      box-shadow: 0 0 16px var(--glow-soft);
+      opacity: 0.75;
+      transition: opacity 200ms ease, box-shadow 200ms ease;
+    }
+    &:hover::after {
+      opacity: 1;
+      box-shadow: 0 0 24px var(--glow-strong), 0 0 10px var(--glow-accent);
+    }
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(196, 120, 32, 0.2);
+    flex-wrap: wrap;
+    background: linear-gradient(180deg, rgba(196, 120, 32, 0.08) 0%, rgba(0, 0, 0, 0.15) 100%);
+  }
+
+  .reorder {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .moveBtn {
+    min-width: 36px;
+    min-height: 36px;
+    font-size: 10px;
+  }
+
+  .nameInput {
+    flex: 1;
+    min-width: 120px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid transparent;
+    color: var(--d4-text);
+    font-family: var(--font-cinzel);
+    font-size: 14px;
+    outline: none;
+  }
+
+  .colorLabel {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .colorSwatch {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid var(--d4-border);
+  }
+
+  .colorInput {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* On/off colors depend on the rule and are set inline. */
+  .enabledToggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-family: var(--font-cinzel);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .presets {
+    display: flex;
+    gap: 4px;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--d4-border);
+    flex-wrap: wrap;
+  }
+
+  .presetBtn {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    border: 1px solid var(--d4-border);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: transparent;
+  }
+
+  .clearBtn {
+    min-height: 44px;
+    font-size: 11px;
+  }
+
+  .conditions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .addCondition {
+    width: 100%;
+  }
+}

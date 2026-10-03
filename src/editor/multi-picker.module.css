@@ -1,0 +1,80 @@
+@layer ui.component {
+  .root {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* Pill colors depend on the pillColor prop and are set inline. */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--d4-border2);
+    font-size: 12px;
+  }
+
+  .pillRemove {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 4px;
+  }
+
+  .trigger {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--d4-border);
+    background: var(--d4-bg);
+    font-size: 12px;
+    color: var(--d4-text3);
+    cursor: pointer;
+  }
+
+  .listbox {
+    border: 1px solid var(--d4-border);
+    border-radius: 6px;
+    background: var(--d4-bg2);
+    padding: 8px;
+    max-height: 240px;
+    overflow: auto;
+  }
+
+  .search {
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 6px 8px;
+    font-size: 12px;
+    border: 1px solid var(--d4-border);
+    background: var(--d4-bg);
+    color: var(--d4-text2);
+  }
+
+  .option {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border: 0;
+    background: transparent;
+    color: var(--d4-text2);
+    font-size: 12px;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(175, 135, 50, 0.1);
+    }
+  }
+}

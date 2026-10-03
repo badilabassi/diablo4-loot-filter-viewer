@@ -3,16 +3,9 @@ import type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet } from '..
 import { type FilterNames, referencedIds } from '../viewer/names.ts'
 import { getCachedTocData } from './toc-cache.server.ts'
 
-/** The four TOC lists the editor's pickers search. */
-export type TocKind = 'affix' | 'itemType' | 'item' | 'talismanSet'
-export const TOC_KINDS = ['affix', 'itemType', 'item', 'talismanSet'] as const satisfies readonly TocKind[]
+import { TOC_KINDS, type TocEntry, type TocKind } from './toc-kinds.ts'
 
-/** What a picker shows for one entry. `sub` is the affix category. */
-export interface TocEntry {
-  id: number
-  label: string
-  sub?: string
-}
+export { TOC_KINDS, type TocEntry, type TocKind }
 
 /** Same cap as the editor's picker had when it searched client-side. */
 export const SEARCH_LIMIT = 80

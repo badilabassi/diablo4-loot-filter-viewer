@@ -9,7 +9,7 @@ import { canonicalFor, seo } from '../ui/seo.ts'
 import shared from '../ui/styles.module.css'
 import { HistoryButtons } from '../viewer/history-buttons.tsx'
 import { StatusBar } from '../viewer/status-bar.tsx'
-import { useSidebar } from '../viewer/use-sidebar.ts'
+import { useSidebar } from '../ui/use-sidebar.ts'
 import layout from '../viewer/viewer-layout.module.css'
 import { getViewer, postViewer } from '../viewer/viewer.functions.ts'
 

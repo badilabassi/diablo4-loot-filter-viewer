@@ -324,6 +324,21 @@ Each phase ends with typecheck plus tests green and its own commit. **Bold** ite
    - Covers C7.
    - **Bug #1 fix + regression test:** load a filter, edit it, go to View, go back to Edit, and assert the edits are still there.
    - **Bug #2 fix + regression test:** with rule *i* selected, press its ▲/▼ in `RuleEditor`, and assert that the selection is now *i∓1* and shows the same rule.
+   **Phase 6 results (2026-10-03)**
+   - ✅ **Server-rendered editor (C2Δ).** `getEditor` parses `?code` and resolves picker labels on the server.
+     - `/edit?code=…` HTML contains all 16 rule rows and the filter name, with 0 hex-fallback labels.
+     - An invalid code renders the error banner.
+   - ✅ **Hydration-safe state (`editor-state.tsx`).** Components read `useEditor`/`useTocLabel`. The server and the hydration pass use the loader's data; afterwards the live client stores take over. Server-side stores are never written (D7).
+     - On client navigation the loader loads the editor store before render; on full page loads the first render does.
+     - No console warnings.
+   - ✅ **Bug #1 fixed.** Edit → View → Edit keeps edits *and* undo history: the View link carries the edited code, and the bootstrap skips reloading an identical filter. Verified in a browser (one Undo after the round trip restores the old name) and in `test/editor-state.test.ts`.
+   - ✅ **Bug #2 fixed.** `RuleEditor`'s ▲/▼ call `onMove`, and the moved rule stays selected. Verified in a browser and in `selectionAfterMove` tests.
+   - ✅ **Pickers (D6).** They search with the `searchToc` server function (debounced, stale responses dropped) and resolve missing labels with `resolveToc`. The 518 KB TOC is no longer downloaded on any page.
+   - ✅ **Ports:** EditApp (sidebar with drag-and-drop and keyboard reordering, toolbar, footer, main pane) and its Import/Export dialogs (focus on open, Tab trap, Escape, focus return). The three leaf components were ported by a sub-agent and reviewed. In-app steps made 0 full document loads.
+   - ✅ **Screenshots** at 1400×1000 are identical to Remix with one exception, a **Remix bug the port fixes**: Remix's condition-type `<select>` displayed "Item Power" for a rarity condition (filterType 1, which the viewer labels "Item Rarity"); React's controlled `value` shows the right option.
+   - **Removed** the Import dialog's "import from the Viewer" link. The viewer's state is now its URL, and View → Edit carries it.
+   - Tests: 77 Vitest + 3 Remix.
+
 7. **Cleanup.**
    - Delete `app/`, `server.ts`, `vercel.json` (keep `{"framework":"tanstack-start"}` only if Phase 0 needed it), the workaround scripts, the Remix and native-binding deps, and `.agents/skills/remix`.
    - Rewrite `AGENTS.md` and the README.
