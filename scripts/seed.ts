@@ -1,4 +1,4 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env node
 /**
  * Seed script: fetches D4Companion Affixes + Uniques data, writes src/data/toc-seed.json,
  * which the server bundles as the TOC cache's starting data.

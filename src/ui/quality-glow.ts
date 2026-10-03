@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 
 import type { RuleTagKey } from './rule-tags.ts'
 
-/** D4 item tooltip colors per rule tag. Shared with the Remix app until it is removed. */
+/** D4 item tooltip colors per rule tag. */
 export interface GlowSpec {
   accent: string
   soft: string

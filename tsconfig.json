@@ -1,21 +1,19 @@
 {
+  // TanStack Start (React). verbatimModuleSyntax is intentionally off: Start
+  // warns it can leak server bundles into client bundles.
   "compilerOptions": {
     "strict": true,
-    "noImplicitAny": false,
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
-    "types": ["node"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "ESNext",
+    "types": ["node", "vite/client"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2022",
+    "jsx": "react-jsx",
     "allowImportingTsExtensions": true,
-    "rewriteRelativeImportExtensions": true,
-    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
     "isolatedModules": true,
     "skipLibCheck": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "remix/component",
     "noEmit": true
   },
-  "include": ["server.ts", "app/**/*.ts", "app/**/*.tsx", "scripts/**/*.ts"],
-  "exclude": ["dist"]
+  "include": ["src", "test", "scripts", "vite.config.ts", "vitest.config.ts"]
 }

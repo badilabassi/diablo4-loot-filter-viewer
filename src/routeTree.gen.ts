@@ -11,8 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EditRouteImport } from './routes/edit'
-import { Route as SpikeRscRouteImport } from './routes/spike-rsc'
-import { Route as SpikeSfnRouteImport } from './routes/spike-sfn'
 import { Route as ApiTocRouteImport } from './routes/api/toc'
 
 const IndexRoute = IndexRouteImport.update({
@@ -25,16 +23,6 @@ const EditRoute = EditRouteImport.update({
   path: '/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SpikeRscRoute = SpikeRscRouteImport.update({
-  id: '/spike-rsc',
-  path: '/spike-rsc',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SpikeSfnRoute = SpikeSfnRouteImport.update({
-  id: '/spike-sfn',
-  path: '/spike-sfn',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiTocRoute = ApiTocRouteImport.update({
   id: '/api/toc',
   path: '/api/toc',
@@ -44,38 +32,30 @@ const ApiTocRoute = ApiTocRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/edit': typeof EditRoute
-  '/spike-rsc': typeof SpikeRscRoute
-  '/spike-sfn': typeof SpikeSfnRoute
   '/api/toc': typeof ApiTocRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/edit': typeof EditRoute
-  '/spike-rsc': typeof SpikeRscRoute
-  '/spike-sfn': typeof SpikeSfnRoute
   '/api/toc': typeof ApiTocRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/edit': typeof EditRoute
-  '/spike-rsc': typeof SpikeRscRoute
-  '/spike-sfn': typeof SpikeSfnRoute
   '/api/toc': typeof ApiTocRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/edit' | '/spike-rsc' | '/spike-sfn' | '/api/toc'
+  fullPaths: '/' | '/edit' | '/api/toc'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/edit' | '/spike-rsc' | '/spike-sfn' | '/api/toc'
-  id: '__root__' | '/' | '/edit' | '/spike-rsc' | '/spike-sfn' | '/api/toc'
+  to: '/' | '/edit' | '/api/toc'
+  id: '__root__' | '/' | '/edit' | '/api/toc'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EditRoute: typeof EditRoute
-  SpikeRscRoute: typeof SpikeRscRoute
-  SpikeSfnRoute: typeof SpikeSfnRoute
   ApiTocRoute: typeof ApiTocRoute
 }
 
@@ -95,20 +75,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/spike-rsc': {
-      id: '/spike-rsc'
-      path: '/spike-rsc'
-      fullPath: '/spike-rsc'
-      preLoaderRoute: typeof SpikeRscRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/spike-sfn': {
-      id: '/spike-sfn'
-      path: '/spike-sfn'
-      fullPath: '/spike-sfn'
-      preLoaderRoute: typeof SpikeSfnRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/toc': {
       id: '/api/toc'
       path: '/api/toc'
@@ -122,8 +88,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EditRoute: EditRoute,
-  SpikeRscRoute: SpikeRscRoute,
-  SpikeSfnRoute: SpikeSfnRoute,
   ApiTocRoute: ApiTocRoute,
 }
 export const routeTree = rootRouteImport

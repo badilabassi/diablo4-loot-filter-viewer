@@ -1,45 +1,35 @@
 # D4 Filter Viewer
 
-Diablo IV loot filter viewer and editor, built with [Remix 3](https://api.remix.run/api/remix/overview/) and `remix/component`.
+Diablo IV loot filter viewer and editor, built with [TanStack Start](https://tanstack.com/start) (React 19, Vite, Nitro) and deployed on Vercel.
 
 See **[AGENTS.md](./AGENTS.md)** for project conventions, layout, and how to extend the app.
 
 ## Requirements
 
 - **Node.js >= 24.3.0**
-
-## Starter Shape
-
-- `app/actions/controller.tsx` owns the top-level route actions.
-- `app/routes.ts` defines the route contract.
-- `app/router.ts` wires routes to handlers.
-- `app/middleware/render.tsx` installs the request-scoped renderer used by actions.
-- `app/ui/` holds the shared document shell and home page UI.
-- `app/assets.ts` owns the server-side asset pipeline used by the asset route and renderer.
-- `public/` contains static files served from the app root.
-
-## Growing The App
-
-- Put top-level route actions in `app/actions/controller.tsx`.
-- Add `app/actions/<route-key>/controller.tsx` when a nested route map needs its own actions or middleware.
-- Add directories like `app/data/` or `test/` when the app actually needs them.
-- Move shared UI into `app/ui/` once more than one route needs it.
+- **pnpm** (the version is pinned in `package.json` `packageManager`)
 
 ## Commands
 
 ```sh
-npm install
-npm run dev      # http://localhost:3000
-npm run start
-npm test
-npm run typecheck
-npm run seed     # refresh public/data/toc.json from upstream
+pnpm install
+pnpm dev         # http://localhost:3000
+pnpm build       # production build into .output/
+pnpm start       # serve the production build
+pnpm test
+pnpm typecheck
+pnpm seed        # refresh src/data/toc-seed.json from upstream
 ```
 
 ## Routes
 
 | Path | Description |
 |------|-------------|
-| `/` | View / parse filter codes |
-| `/edit` | Rule editor |
-| `/api/toc` | Affix & item index JSON |
+| `/` | Viewer. `/?code=<base64>` renders the filter on the server; works without JavaScript |
+| `/edit` | Rule editor. `/edit?code=<base64>` opens that filter |
+| `/api/toc` | Affix & item index JSON (CDN-cached for a month) |
+
+## After a game patch
+
+Run `pnpm seed` to refresh the bundled affix/item index, commit, and deploy. To refresh the
+CDN copy of `/api/toc` without a deploy, run `vercel cache invalidate --tag toc`.

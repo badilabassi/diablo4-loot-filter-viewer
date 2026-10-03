@@ -349,6 +349,16 @@ Each phase ends with typecheck plus tests green and its own commit. **Bold** ite
      - `public/icons.svg`, which nothing references;
      - `nitro({ serverEntry: false })` once `server.ts` is gone;
      - `test/remix/`, the `remix test` half of `pnpm test`, and the root Remix tsconfig.
+   **Phase 7 results (2026-10-03)**
+   - ✅ **Deleted:** `app/`, `server.ts`, the Remix tests, the spike probes, the two workaround scripts, the `public/` font originals, the unused `icons.svg`, the beta Remix agent skill, and `nitro({ serverEntry: false })`.
+   - ✅ **Dependencies:** removed `remix`, `@oxc-project/runtime` and all 10 native-binding `optionalDependencies`, plus their `minimumReleaseAgeExclude` entries.
+     - `.npmrc` (`shamefully-hoist`, a Remix-template leftover) is gone. A clean install, build, typecheck and all tests pass without hoisting, so no undeclared dependencies were hiding behind it.
+   - ✅ **One root `tsconfig.json`** (Start settings, TS 7), replacing the Remix, `src/` and `test/` configs.
+   - ✅ **Scripts are plain Start:** `dev`, `build` (`vite build`), `start`, `test` (`vitest run`), `typecheck`, and `seed`, which now runs on Node 24's native TypeScript support (verified against live upstream).
+   - ✅ **`vercel.json`** keeps only `framework: tanstack-start` and a pnpm install command; the build is the default `pnpm build`.
+   - ✅ **CI (D9)** uses pnpm (`pnpm/action-setup`, version from `packageManager`) and runs typecheck, test and build.
+   - ✅ **`AGENTS.md` and the README** are rewritten for Start, with the conventions learned during the migration: `*.server.ts`, `globalThis` singletons, loader-driven hydration, cascade layers, cache headers.
+
 8. **Verification (merge gate).**
    - Run the full C1–C10 contract in a real browser at desktop and 390px widths, and with JS disabled for the viewer.
    - Vercel preview: Analytics events, no console errors or hydration warnings, the `/api/toc` cache headers and HIT, and the static-asset headers.
