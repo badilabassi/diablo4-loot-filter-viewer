@@ -1,0 +1,177 @@
+@layer ui.component {
+  /* Expand/collapse is native <details>: what the Remix card did with an `open`
+     variable, these rules do with [open] (approved behavior change #3). */
+  .card[open] {
+    border-color: rgba(196, 120, 32, 0.4) !important;
+  }
+
+  /* Quality glow (was the qualityGlow() mixin). Colors come from --glow-* custom
+     properties set inline from src/ui/quality-glow.ts; [open] is "intense". */
+  .card[data-glow] {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      border-radius: 8px 0 0 8px;
+      pointer-events: none;
+      background: linear-gradient(180deg, var(--glow-accent) 0%, transparent 100%);
+      box-shadow: 0 0 16px var(--glow-soft);
+      opacity: 0.75;
+      transition: opacity 200ms ease, box-shadow 200ms ease;
+    }
+    &:hover::after {
+      opacity: 1;
+      box-shadow: 0 0 24px var(--glow-strong), 0 0 10px var(--glow-accent);
+    }
+    &[open] {
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 0 32px var(--glow-soft),
+        0 4px 20px rgba(0, 0, 0, 0.45);
+    }
+    &[open]::after {
+      opacity: 1;
+      box-shadow: 0 0 28px var(--glow-strong), 0 0 8px var(--glow-accent);
+    }
+  }
+
+  .summary {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    text-align: left;
+    cursor: pointer;
+    list-style: none;
+    color: inherit;
+    font: inherit;
+    transition: background 150ms ease;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+    &::marker {
+      content: '';
+    }
+    &:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+  }
+
+  .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .enabledDot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-sizing: border-box;
+  }
+
+  .off {
+    font-family: var(--font-cinzel);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--d4-text3);
+    border: 1px solid var(--d4-border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    flex-shrink: 0;
+  }
+
+  .name {
+    font-family: var(--font-cinzel);
+    font-size: 16px;
+    font-weight: 600;
+    flex: 1;
+    color: var(--d4-text);
+  }
+
+  .card[data-glow] .name {
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  /* Colors per tag are set inline (src/ui/rule-tags.ts tagChipColors). */
+  .tag {
+    font-family: var(--font-cinzel);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+
+  .count {
+    font-family: var(--font-cinzel);
+    font-size: 12px;
+    color: var(--d4-text3);
+    padding: 2px 6px;
+    border-radius: 999px;
+    border: 1px solid var(--d4-border);
+  }
+
+  .chevron {
+    color: var(--d4-gold2);
+    transition: transform 200ms ease, color 150ms ease;
+  }
+
+  .card[open] .chevron {
+    transform: rotate(90deg);
+  }
+
+  .meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(196, 120, 32, 0.15);
+  }
+
+  .metaValue {
+    font-size: 12px;
+    margin: 4px 0 0;
+  }
+
+  .colorValue {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0 0;
+  }
+
+  .colorDot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+  }
+
+  .hex {
+    font-size: 12px;
+    color: var(--d4-text2);
+  }
+
+  .empty {
+    font-size: 12px;
+    color: var(--d4-text3);
+  }
+}

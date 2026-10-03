@@ -2,7 +2,7 @@ import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix
 
 import { editorStore } from '../../../src/editor/editor-store.ts'
 import { qualityGlow } from '../quality-glow.ts'
-import { dominantGlowTag, inferRuleTags } from '../rule-tags.ts'
+import { dominantGlowTag, inferRuleTags } from '../../../src/ui/rule-tags.ts'
 import {
   btnSecondary,
   cardEntrance,

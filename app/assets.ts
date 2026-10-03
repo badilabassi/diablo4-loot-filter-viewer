@@ -16,6 +16,9 @@ export const assetServer = createAssetServer({
     'app/state/**',
     'src/filter/**',
     'src/editor/**',
+    // Pure helpers shared with the TanStack Start app (Remix's RuleCard is hydrated).
+    'src/ui/rule-tags.ts',
+    'src/ui/quality-glow.ts',
   ],
   allowPackages: ['remix', 'motion', 'zod', '@vercel/analytics', '@vercel/speed-insights'],
   denyFiles: ['app/**/*.server.*'],

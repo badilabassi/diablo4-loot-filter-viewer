@@ -3,7 +3,7 @@ import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix
 import { parseRuleJson } from '../../src/filter/parse-rule.ts'
 import { ConditionBlock } from './condition-block.tsx'
 import { qualityGlow } from './quality-glow.ts'
-import { dominantGlowTag, inferRuleTags, tagChipColors } from './rule-tags.ts'
+import { dominantGlowTag, inferRuleTags, tagChipColors } from '../../src/ui/rule-tags.ts'
 import { cardEntrance, cardStyle, metaLabel, ornateFrame, panelEntrance, panelInset } from './styles.ts'
 
 interface RuleCardProps extends SerializableProps {

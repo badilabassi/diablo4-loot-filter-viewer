@@ -287,6 +287,25 @@ Each phase ends with typecheck plus tests green and its own commit. **Bold** ite
 4. **Viewer, server side.**
    - `src/viewer/*` as server-safe components with CSS Modules, the `/` loader (parse plus name resolution), the form, `?example=1`, `<details>` cards, the error banner, the status bar, and the D3 oversize path.
    - Route tests on the HTML (C1Δ, C5Δ with JS disabled).
+   **Phase 4 results (2026-10-03)**
+   - ✅ **Server-rendered viewer, `/?code=…` (C1Δ):** the `getViewer` server function parses on the server, resolves names (`namesForFilter`), and renders `RuleList` as an RSC (D2).
+     - The example's 16 cards are in the server HTML as `<details>`, with 0 unresolved names.
+     - An invalid code renders the `role="alert"` banner. No code renders the empty glyph.
+     - Works with JS disabled; checked with plain HTTP.
+   - ✅ **Parity with the live Remix app:**
+     - The **text of all 16 cards (expanded) and the header is identical**.
+     - Screenshots at 1400×1000 are visually identical, except the collapse button and Undo/Redo, which come in Phase 5.
+   - ✅ **RSC payoff:** none of the card, condition or chip components, tag rules, parser or name data is in the client JS. Total client JS is 158 KB gzip across all chunks; Phase 8 compares it with Remix.
+   - ✅ **With JS:** hydration is clean (no console warnings). `<details>` toggles, Parse (native GET form) and Load Example (a link) work, and browser Back restores the previous filter (change #1).
+   - **Design notes:**
+     - **`FilterNames`:** components take a small per-filter name map instead of the index, so the SSR fallback stays viable.
+     - **Cascade layers** (`ui.base` < `ui.component` < unlayered globals) reproduce Remix's mixin cascade.
+     - **Status bar:** the age and count formatting are computed on the server with a fixed `en-US` locale, avoiding hydration mismatches. Remix formatted counts in the viewer's own locale.
+     - **"Unknown affix" replaces "resolving…"**, since the server always has the index.
+   - ⏭️ **Moved to Phase 5** (both need client JS):
+     - **The mobile sidebar toggle.** Without JS the sidebar stays hidden at ≤700px, as in Remix, where the hamburger also needs JS.
+     - **D3's oversize path** for codes over the 14 KB URL limit.
+
 5. **Viewer, client side.**
    - `SidebarShell` with `motion`, and the Undo/Redo buttons using history.
    - Browser checks: C5Δ and C8 with JS enabled.

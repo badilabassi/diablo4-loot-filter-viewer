@@ -1,0 +1,110 @@
+@layer ui.component {
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--d4-gold);
+  }
+
+  .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--d4-border);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .qualityChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  /* Border, text and background colors come from the quality flag, set inline. */
+  .quality {
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-family: var(--font-cinzel);
+    font-weight: 700;
+  }
+
+  .stat {
+    font-size: 14px;
+    color: var(--d4-text2);
+    margin-top: 4px;
+  }
+
+  .statValue {
+    color: var(--d4-gold2);
+  }
+
+  .statNote {
+    color: var(--d4-text3);
+    margin-left: 4px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .itemType {
+    border: 1px solid var(--d4-border2);
+    background: var(--d4-bg);
+    color: var(--d4-text);
+  }
+
+  .talismanSet {
+    border: 1px solid rgba(80, 216, 57, 0.3);
+    background: rgba(80, 216, 57, 0.1);
+    color: #50d839;
+  }
+
+  .item {
+    border: 1px solid rgba(220, 167, 121, 0.3);
+    background: rgba(220, 167, 121, 0.1);
+    color: var(--d4-unique);
+  }
+
+  .unknown {
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  .hex {
+    font-family: monospace;
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  .itemType .hex {
+    opacity: 1;
+    color: var(--d4-text3);
+  }
+
+  .ancestral {
+    color: var(--d4-unique);
+  }
+
+  .anySet {
+    color: #50d839;
+  }
+
+  .empty {
+    font-size: 12px;
+    color: var(--d4-text3);
+  }
+}

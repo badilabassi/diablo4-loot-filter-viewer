@@ -5,7 +5,16 @@
  *
  * Fonts are referenced by relative path so Vite fingerprints them into /assets/,
  * which Vercel serves as immutable (plan D10).
+ *
+ * Cascade layers reproduce the Remix app's cascade, where every css() mixin sat
+ * in its own layer (later mixins win) and these global rules were unlayered (so
+ * they beat every mixin):
+ *   ui.base       shared styles (ui/styles.module.css): the reusable mixins
+ *   ui.component  per-component modules: overrides layered on top of shared styles
+ *   (unlayered)   this file's globals, e.g. :focus-visible, which must win
+ * Component .module.css files wrap their rules in @layer ui.component.
  */
+@layer ui.base, ui.component;
 
 @font-face {
   font-family: 'Exocet';

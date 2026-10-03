@@ -1,4 +1,6 @@
+import type { ParsedFilter } from '../filter/schemas.ts'
 import type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet } from '../filter/toc-types.ts'
+import { type FilterNames, referencedIds } from '../viewer/names.ts'
 import { getCachedTocData } from './toc-cache.server.ts'
 
 /** The four TOC lists the editor's pickers search. */
@@ -85,4 +87,27 @@ export function resolveTocEntries(index: TocIndex, kind: TocKind, ids: readonly 
     const entry = index.entryById[kind].get(id)
     return entry ? [entry] : []
   })
+}
+
+/** The names a filter references, for rendering it on the server (see FilterNames). */
+export function namesForFilter(index: TocIndex, filter: ParsedFilter): FilterNames {
+  const ids = referencedIds(filter)
+  const names: FilterNames = { affixes: {}, itemTypes: {}, items: {}, talismanSets: {} }
+  for (const id of ids.affixes) {
+    const a = index.affixById.get(id)
+    if (a) names.affixes[id] = { name: a.name, cat: a.cat, raw: a.raw }
+  }
+  for (const id of ids.itemTypes) {
+    const t = index.itemTypeById.get(id)
+    if (t) names.itemTypes[id] = t.name
+  }
+  for (const id of ids.items) {
+    const i = index.itemById.get(id)
+    if (i) names.items[id] = i.name
+  }
+  for (const id of ids.talismanSets) {
+    const s = index.talismanSetById.get(id)
+    if (s) names.talismanSets[id] = s.name
+  }
+  return names
 }
