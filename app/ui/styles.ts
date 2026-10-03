@@ -1,4 +1,4 @@
-import { css } from 'remix/ui'
+import { css } from 'remix/component'
 
 /** Blizzard D4–style palette (dark elements, gold trim, blood-red primary). */
 export const themeVars = css({

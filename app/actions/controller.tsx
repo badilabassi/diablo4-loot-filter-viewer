@@ -1,6 +1,6 @@
 import { createController } from 'remix/router'
 
-import { getClientEntryHref } from '../assets/client-entry-href.ts'
+import { getClientEntry } from '../assets/client-entry.ts'
 import { assetServer } from '../assets.ts'
 import { getCachedTocData } from '../data/toc-cache.ts'
 import { routes } from '../routes.ts'
@@ -31,22 +31,22 @@ export default createController(routes, {
       })
     },
     async home(context) {
-      const clientEntryHref = await getClientEntryHref()
+      const clientEntry = await getClientEntry()
       const canonical = canonicalUrl(context.request)
       return context.render(
         <HomePage
-          clientEntryHref={clientEntryHref}
+          clientEntry={clientEntry}
           editHref={routes.edit.href()}
           canonical={canonical}
         />,
       )
     },
     async edit(context) {
-      const clientEntryHref = await getClientEntryHref()
+      const clientEntry = await getClientEntry()
       const canonical = canonicalUrl(context.request)
       return context.render(
         <EditPage
-          clientEntryHref={clientEntryHref}
+          clientEntry={clientEntry}
           homeHref={routes.home.href()}
           canonical={canonical}
         />,

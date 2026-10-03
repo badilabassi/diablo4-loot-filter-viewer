@@ -12,8 +12,11 @@ describe('routes', () => {
     )
 
     assert.equal(response.status, 200)
-    assert.match(await response.text(), /Diablo IV/)
-    assert.match(await response.text(), /Filter share code/)
+    const html = await response.text()
+    assert.match(html, /Diablo IV/)
+    assert.match(html, /Filter Code/)
+    // Client modules keep bare imports; without an import map entry they fail to hydrate.
+    assert.match(html, /<script[^>]*type="importmap"[^>]*>[^<]*"zod":"\/assets\//)
   })
 
   it('GET /edit returns the editor', async () => {
@@ -23,8 +26,9 @@ describe('routes', () => {
     )
 
     assert.equal(response.status, 200)
-    assert.match(await response.text(), /Filter Editor/)
-    assert.match(await response.text(), /filter-name/)
+    const html = await response.text()
+    assert.match(html, /Filter Editor/)
+    assert.match(html, /filter-name/)
   })
 
   it('GET /api/toc returns JSON', async () => {

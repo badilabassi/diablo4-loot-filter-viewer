@@ -1,4 +1,4 @@
-import { css } from 'remix/ui'
+import { css } from 'remix/component'
 
 /** Public source repository — update if the project moves. */
 export const GITHUB_REPO_URL = 'https://github.com/badilabassi/diablo4-loot-filter-viewer'

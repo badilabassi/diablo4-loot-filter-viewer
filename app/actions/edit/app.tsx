@@ -1,5 +1,5 @@
 import { animateMini as animate, type DOMKeyframesDefinition } from 'motion'
-import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix/ui'
+import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix/component'
 
 import { parseFilterB64, serializeFilter } from '../../filter/proto.ts'
 import { editorStore, loadFilterIntoEditor } from '../../state/editor-store.ts'

@@ -1,4 +1,4 @@
-import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix/ui'
+import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix/component'
 
 import { parseRuleJson } from '../filter/parse-rule.ts'
 import { ConditionBlock } from './condition-block.tsx'

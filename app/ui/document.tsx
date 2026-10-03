@@ -1,4 +1,6 @@
-import { css, type Handle, type RemixNode } from 'remix/ui'
+import type { ScriptEntry } from 'remix/assets'
+import { css, type Handle, type RemixNode } from 'remix/component'
+import { ImportMap } from 'remix/component/server'
 
 import { pageStyle, themeVars } from './styles.ts'
 import { SiteFooter } from './site-footer.tsx'
@@ -16,7 +18,7 @@ export interface DocumentProps {
   /** Absolute or root-relative image for Open Graph / Twitter (optional). */
   ogImage?: string
   /** Resolved by the asset server in route actions — do not hard-code deployment paths. */
-  clientEntryHref: string
+  clientEntry: ScriptEntry
 }
 
 const SITE_NAME = 'D4 Filter Viewer'
@@ -133,7 +135,7 @@ export function Document(handle: Handle<DocumentProps>) {
       canonical,
       robots,
       ogImage,
-      clientEntryHref,
+      clientEntry,
     } = handle.props
     return (
       <html lang="en">
@@ -145,6 +147,12 @@ export function Document(handle: Handle<DocumentProps>) {
             robots={robots}
             ogImage={ogImage}
           />
+          {/* Must precede every module script: bare imports (e.g. `zod`) resolve through it.
+              The server merges hydrated client-entry mappings into this map. */}
+          <ImportMap value={clientEntry.importMap} />
+          {clientEntry.preloads.map((preload) => (
+            <link rel="modulepreload" href={preload} />
+          ))}
           <style>{`
             @font-face {
               font-family: "Exocet";
@@ -174,7 +182,7 @@ export function Document(handle: Handle<DocumentProps>) {
           </noscript>
           {children}
           <SiteFooter />
-          <script type="module" src={clientEntryHref}></script>
+          <script type="module" src={clientEntry.href}></script>
         </body>
       </html>
     )
