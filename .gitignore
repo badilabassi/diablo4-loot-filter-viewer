@@ -37,3 +37,6 @@ vercel/trace-deps.js
 # TanStack Start / Nitro build output
 .output
 .nitro
+
+# Python virtualenv for scripts/subset-fonts.py
+.venv

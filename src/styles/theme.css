@@ -3,7 +3,8 @@
  * Ported 1:1 from the Remix app's document.tsx global styles and the themeVars /
  * pageStyle mixins in app/ui/styles.ts.
  *
- * Fonts are referenced by relative path so Vite fingerprints them into /assets/,
+ * Fonts are subset WOFF2 files built by scripts/subset-fonts.py from fonts/,
+ * referenced by relative path so Vite fingerprints them into /assets/,
  * which Vercel serves as immutable (plan D10).
  *
  * Cascade layers reproduce the Remix app's cascade, where every css() mixin sat
@@ -19,14 +20,14 @@
 @font-face {
   font-family: 'Exocet';
   font-weight: 500;
-  src: url('./fonts/Exocet-Medium.ttf');
+  src: url('./fonts/Exocet-Medium.woff2') format('woff2');
   font-display: swap;
 }
 
 @font-face {
   font-family: 'Old Fenris';
   font-weight: 400;
-  src: url('./fonts/OldFenris-Regular.otf');
+  src: url('./fonts/OldFenris-Regular.woff2') format('woff2');
   font-display: swap;
 }
 
