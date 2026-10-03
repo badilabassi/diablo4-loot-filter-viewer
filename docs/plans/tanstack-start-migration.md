@@ -309,6 +309,15 @@ Each phase ends with typecheck plus tests green and its own commit. **Bold** ite
 5. **Viewer, client side.**
    - `SidebarShell` with `motion`, and the Undo/Redo buttons using history.
    - Browser checks: C5Δ and C8 with JS enabled.
+   **Phase 5 results (2026-10-03)**
+   - ✅ **Client shell in the route component:** the route component is a normal hydrated component, so no `'use client'` boundary is needed; only `RuleList` is an RSC. `useSidebar` ports HomeApp's three-state sidebar and its `motion` animations: mobile top bar, hamburger, backdrop, desktop collapse and reopen.
+   - ✅ **In-app navigation:** Parse (`navigate`), Load Example and Edit (`<Link>`), Undo and Redo ran with **0 full document loads**. The form keeps `method="get"`, so without JS it still works as in Phase 4.
+   - ✅ **Undo/Redo** are `history.back()`/`history.forward()`. They render disabled on the server, as Remix's did on a fresh page, then follow the Navigation API's `canGoBack`/`canGoForward`, or are simply enabled where it's unsupported.
+   - ✅ **D3:** codes whose encoded URL is over 12,000 characters go through `postViewer`. A generated 192-rule, 16 KB code rendered all 192 cards.
+     - Known limitation: the address bar keeps the previous URL while an oversized result is shown, and that result isn't linkable or editable through `/edit?code=`.
+   - ✅ **Checked in headless Chrome:** desktop (1400×1000) and mobile (390×844) interactions, with no console errors. Mobile screenshots with the drawer open are identical to Remix.
+   - `/edit` now validates `?code`, ready for Phase 6.
+
 6. **Editor.**
    - The `/edit` loader (C2Δ) and the client components. Split `EditApp` and add `MultiPicker` → `searchToc`.
    - Add the View link carrying the edited code (C6Δ).

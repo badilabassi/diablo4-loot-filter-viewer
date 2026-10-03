@@ -1,8 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { z } from 'zod'
 
 import { canonicalFor, seo } from '../ui/seo.ts'
 
 export const Route = createFileRoute('/edit')({
+  // The filter to edit travels in the URL (plan C2Δ/C6Δ).
+  validateSearch: z.object({ code: z.string().optional() }),
   head: ({ matches, match }) =>
     seo({
       title: 'D4 Loot Filter Editor — Diablo IV',

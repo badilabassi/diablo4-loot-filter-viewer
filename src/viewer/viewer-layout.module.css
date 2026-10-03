@@ -106,3 +106,80 @@
     }
   }
 }
+
+/* Client-side shell (phase 5), ported from the Remix HomeApp. */
+@layer ui.component {
+  /* Mobile top bar — hidden on desktop. */
+  .topBar {
+    display: none;
+
+    @media (max-width: 700px) {
+      display: flex;
+      align-items: center;
+      height: 52px;
+      padding: 0 16px;
+      gap: 12px;
+      background: var(--d4-bg2);
+      border-bottom: 1px solid rgba(196, 120, 32, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      flex-shrink: 0;
+    }
+  }
+
+  .menuButton {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .topBarTitle {
+    font-family: var(--font-cinzel);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--d4-gold3);
+  }
+
+  .topBarEdit {
+    margin-left: auto;
+    text-decoration: none;
+  }
+
+  /* Mobile backdrop — only rendered while the sidebar is explicitly open. */
+  .backdrop {
+    display: none;
+
+    @media (max-width: 700px) {
+      display: block;
+      position: fixed;
+      inset: 0;
+      top: 52px;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 49;
+    }
+  }
+
+  .collapseButton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 1;
+  }
+
+  .openButton {
+    margin-bottom: 16px;
+
+    @media (max-width: 700px) {
+      display: none;
+    }
+  }
+
+  .history {
+    display: flex;
+    gap: 4px;
+  }
+
+  .historyButton {
+    flex: 1;
+  }
+}
