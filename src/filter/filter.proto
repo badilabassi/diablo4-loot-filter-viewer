@@ -114,25 +114,22 @@ message Condition {
   // all) and proto.ts does not currently read or write it for filter_type 9.
   repeated AffixRange affix_ranges = 3;
 
-  // Scalar lower bound / flags. Meaning by filter_type:
-  //   0 (Item Power Range)   -> max power (see field 5 for min, when both present)
+  // Scalar parameter. Meaning by filter_type (2, 4, 6 and 7 confirmed against
+  // the diablofilter.com decoder and a real 25-rule filter, 2026-10-03):
+  //   0 (Item Power Range)   -> power bound. proto.ts reads it as the max when
+  //                              field 5 is also present (field 5 = min); the
+  //                              diablofilter.com decoder reads field 4 = Min,
+  //                              field 5 = Max. UNCONFIRMED: no real filter
+  //                              with both fields has been observed.
   //   1 (Item Rarity Match)  -> bitmask, see RarityBits below
-  //   2 (Item Quality Tier)  -> single enum value, see QualityTier below
-  //                              (NOT a bitmask, despite Item Rarity Match's
-  //                              field 4 being one — modeled as an enum here
-  //                              because the field is a *minimum* threshold
-  //                              over an ordered tier list; a second,
-  //                              independently-written decoder instead
-  //                              treats it as a bitmask, UNCONFIRMED either way
-  //                              beyond the one real data point available,
-  //                              which is ambiguous under both models)
-  //   4 (Greater Affix Count) -> minimum GA count required
-  //   6 (Has Required Affixes)-> "min GA from list" — defaults to 1 when absent
-  //   7 (Has Optional Affixes)-> UNCONFIRMED — proto.ts does not read or
-  //                              write this field for filter_type 7; it may
-  //                              turn out to need an equivalent "min from
-  //                              list" scalar, but no real instance with
-  //                              field-4 data has been observed
+  //   2 (Item Properties)    -> bitmask, see ItemPropertyBits below. (This was
+  //                              once modeled as an ordered quality-tier enum;
+  //                              real data such as 36 = Ancestral + Mythic
+  //                              only makes sense as a bitmask.)
+  //   4 (Greater Affix Check) -> GA count; field 6 gives the direction
+  //   6 (Has Required Affixes)-> how many of the listed affixes are required
+  //                              ("Must have at least N"); defaults to 1
+  //   7 (Has Optional Affixes)-> the same, but optional: often absent
   //   others                  -> unused
   optional int32 param = 4;
 
@@ -141,9 +138,11 @@ message Condition {
   // field 4 is written (proto.ts collapses min==max down to a single field).
   optional int32 param_max = 5;
 
-  // Opaque varint. Observed only on filter_type 3 (Codex Upgrade Check) and
-  // filter_type 4 (Greater Affix Count), always value 1 in real data.
-  // Preserved verbatim for lossless round-trips; never interpreted.
+  // For filter_type 4 (Greater Affix Check): the direction. 1 = "at least"
+  // param Greater Affixes; anything else (including absent) = "fewer than".
+  // Real hide rules such as "NOT TOP ITEMS" omit it ("fewer than 2").
+  // Also observed as 1 on filter_type 3 (Codex Upgrade Check). Preserved
+  // verbatim for lossless round-trips.
   optional int32 field6 = 6;
 }
 
@@ -165,12 +164,12 @@ enum RuleType {
 enum ConditionType {
   ITEM_POWER_RANGE = 0;
   ITEM_RARITY_MATCH = 1;    // bitmask, see RarityBits
-  ITEM_QUALITY_TIER = 2;    // enum, see QualityTier
+  ITEM_PROPERTIES = 2;      // bitmask, see ItemPropertyBits
   CODEX_UPGRADE_CHECK = 3;
-  GREATER_AFFIX_COUNT = 4;
+  GREATER_AFFIX_CHECK = 4;  // param = count, field6 = direction
   ITEM_SUBTYPE = 5;
   HAS_REQUIRED_AFFIXES = 6;
-  HAS_OPTIONAL_AFFIXES = 7; // id list confirmed; affix_ranges/param UNCONFIRMED
+  HAS_OPTIONAL_AFFIXES = 7; // ids + optional param (min count)
   IS_SPECIFIC_UNIQUE = 8;
   TALISMAN_SET_BONUS = 9;
 }
@@ -188,16 +187,13 @@ enum RarityBits {
   RARITY_TALISMAN_SETS = 64;
 }
 
-// Enum values for Condition.param when filter_type == ITEM_QUALITY_TIER.
-// 0-indexed threshold ("at least this tier"), NOT a bitmask — see the
-// UNCONFIRMED note on Condition.param above. Confirmed via real data
-// (src/filter/constants.ts QUALITY_TIERS) only at value 4 (Ancestral).
-enum QualityTier {
-  TIER_COMMON = 0;
-  TIER_MAGIC = 1;
-  TIER_RARE = 2;
-  TIER_SACRED = 3;
-  TIER_ANCESTRAL = 4;
-  TIER_UNIQUE = 5;
-  TIER_MYTHIC_UNIQUE = 6;
+// Bitmask values for Condition.param when filter_type == ITEM_PROPERTIES.
+// From the diablofilter.com decoder (src/filter/constants.ts ITEM_PROPERTIES);
+// consistent with real filters ("NOT ANCESTRAL ..." rules use NONE).
+enum ItemPropertyBits {
+  PROPERTY_UNSPECIFIED = 0;
+  PROPERTY_NONE = 1;
+  PROPERTY_SACRED = 2;
+  PROPERTY_ANCESTRAL = 4;
+  PROPERTY_MYTHIC = 32;
 }

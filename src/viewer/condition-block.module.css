@@ -47,10 +47,6 @@
     color: var(--d4-gold2);
   }
 
-  .statNote {
-    color: var(--d4-text3);
-    margin-left: 4px;
-  }
 
   .pill {
     display: inline-flex;

@@ -1,6 +1,6 @@
 import { type InputHTMLAttributes, useEffect, useRef } from 'react'
 
-import { COND_TYPES, QUALITY_FLAGS, QUALITY_TIERS } from '../filter/constants.ts'
+import { COND_TYPES, ITEM_PROPERTIES, QUALITY_FLAGS } from '../filter/constants.ts'
 import type { FilterCondition } from '../filter/schemas.ts'
 import { cx } from '../ui/cx.ts'
 import shared from '../ui/styles.module.css'
@@ -66,14 +66,17 @@ export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; c
               qualityFlags: ft === 1 ? 16 : undefined,
               minPower: undefined,
               maxPower: undefined,
-              minQualityTier: ft === 2 ? 4 : undefined,
+              itemProperties: ft === 2 ? 4 : undefined,
               minGaCount: ft === 4 ? 1 : undefined,
               subtypeIds: [],
               affixIds: [],
               itemIds: [],
               talismanSetIds: [],
               optionalAffixIds: [],
-              minGaFromList: ft === 6 ? 1 : undefined,
+              minFromList: ft === 6 ? 1 : undefined,
+              // Real Codex Upgrade and Greater Affix checks carry field 6 = 1
+              // (for the GA check: "at least").
+              field6: ft === 3 || ft === 4 ? 1 : undefined,
             })
           }}
         >
@@ -138,21 +141,23 @@ export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; c
       )}
 
       {c.filterType === 2 && (
-        <div className={styles.row}>
-          <span style={{ fontSize: '12px', color: 'var(--d4-text3)' }}>Min Tier</span>
-          <select
-            value={String(c.minQualityTier ?? 0)}
-            aria-label="Minimum item quality tier"
-            className={shared.select}
-            onChange={(e) => patch({ minQualityTier: Number(e.currentTarget.value) })}
-          >
-            {Object.entries(QUALITY_TIERS).map(([k, v]) => (
-              <option key={k} value={k}>
-                {v}
-              </option>
-            ))}
-          </select>
-          <span style={{ fontSize: '12px', color: 'var(--d4-text3)' }}>and above</span>
+        <div className={styles.flags}>
+          {ITEM_PROPERTIES.map(([bit, name, color]) => {
+            const checked = ((c.itemProperties ?? 0) & bit) !== 0
+            return (
+              <label key={bit} className={styles.flag}>
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => {
+                    const cur = c.itemProperties ?? 0
+                    patch({ itemProperties: checked ? cur & ~bit : cur | bit })
+                  }}
+                />
+                <span style={{ color, fontSize: '12px', fontFamily: 'var(--font-cinzel)' }}>{name}</span>
+              </label>
+            )
+          })}
         </div>
       )}
 
@@ -164,7 +169,16 @@ export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; c
 
       {c.filterType === 4 && (
         <label className={styles.field}>
-          Min Greater Affixes
+          Must have
+          <select
+            value={c.field6 === 1 ? 'atLeast' : 'fewerThan'}
+            aria-label="At least or fewer than"
+            className={shared.select}
+            onChange={(e) => patch({ field6: e.currentTarget.value === 'atLeast' ? 1 : 0 })}
+          >
+            <option value="atLeast">at least</option>
+            <option value="fewerThan">fewer than</option>
+          </select>
           <CommitInput
             type="number"
             value={c.minGaCount ?? 1}
@@ -173,6 +187,7 @@ export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; c
             className={styles.gaInput}
             onCommit={(v) => patch({ minGaCount: Number(v) })}
           />
+          Greater Affixes
         </label>
       )}
 
@@ -190,27 +205,42 @@ export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; c
         <>
           <MultiPicker ruleIndex={ruleIndex} condIndex={condIndex} field="affixIds" kind="affix" placeholder="Add affix…" />
           <label className={styles.field}>
-            Min Greater Affixes from list
+            Must have at least
             <CommitInput
               type="number"
-              value={c.minGaFromList ?? 1}
+              value={c.minFromList ?? 1}
               min={1}
-              max={3}
               className={styles.gaInput}
-              onCommit={(v) => patch({ minGaFromList: Number(v) })}
+              onCommit={(v) => patch({ minFromList: Number(v) })}
             />
+            of these
           </label>
         </>
       )}
 
       {c.filterType === 7 && (
-        <MultiPicker
-          ruleIndex={ruleIndex}
-          condIndex={condIndex}
-          field="optionalAffixIds"
-          kind="affix"
-          placeholder="Add optional affix…"
-        />
+        <>
+          <MultiPicker
+            ruleIndex={ruleIndex}
+            condIndex={condIndex}
+            field="optionalAffixIds"
+            kind="affix"
+            placeholder="Add optional affix…"
+          />
+          <label className={styles.field}>
+            Must have at least
+            <CommitInput
+              type="number"
+              // Optional: left empty, the condition sets no minimum (field 4 absent).
+              value={c.minFromList ?? ''}
+              min={1}
+              placeholder="—"
+              className={styles.gaInput}
+              onCommit={(v) => patch({ minFromList: v === '' ? undefined : Number(v) })}
+            />
+            of these
+          </label>
+        </>
       )}
 
       {c.filterType === 8 && (

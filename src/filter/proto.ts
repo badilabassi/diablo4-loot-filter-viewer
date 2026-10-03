@@ -91,12 +91,13 @@ function parseCondition(raw: Uint8Array): FilterCondition {
   const sub = decodeMsg(raw);
   const filterType = (getV(sub, 1, "v") as number | undefined) ?? -1;
 
-  // field=4: lower bound (min power, rarity flags, quality tier, GA count, GA from list)
+  // field=4: rarity flags (1), item-properties bitmask (2), GA count (4), min power (0),
+  //          or how many listed affixes are required (6, 7)
   // field=5: upper bound for power range (when both present, field4=max, field5=min)
   const field4 = getV(sub, 4, "v") as number | undefined;
   const field5 = getV(sub, 5, "v") as number | undefined;
 
-  // field=6: opaque varint (observed in filterType=3 and filterType=4, always 1)
+  // field=6: for filterType=4, 1 = "at least" minGaCount, else "fewer than"; also seen on 3
   const field6 = getV(sub, 6, "v") as number | undefined;
 
   // field=2 fixed32s carry SNO IDs for item types, affixes, or specific items.
@@ -138,11 +139,11 @@ function parseCondition(raw: Uint8Array): FilterCondition {
     qualityFlags: filterType === 1 ? field4 : undefined,
     minPower: minPow,
     maxPower: maxPow,
-    minQualityTier: filterType === 2 ? field4 : undefined,
+    itemProperties: filterType === 2 ? field4 : undefined,
     minGaCount: filterType === 4 ? field4 : undefined,
     subtypeIds: filterType === 5 ? fixed32s : [],
     affixIds: filterType === 6 ? fixed32s : [],
-    minGaFromList: filterType === 6 ? (field4 ?? 1) : undefined,
+    minFromList: filterType === 6 ? (field4 ?? 1) : filterType === 7 ? field4 : undefined,
     itemIds: filterType === 8 ? fixed32s : [],
     talismanSetIds: filterType === 9 ? fixed32s : [],
     optionalAffixIds: filterType === 7 ? fixed32s : [],
@@ -251,19 +252,21 @@ function serializeCondition(cond: FilterCondition): Uint8Array {
     }
   }
 
-  // field=4: lower scalar (qualityFlags, minPower, quality tier, GA count, GA from list)
+  // field=4: lower scalar (qualityFlags, minPower, item properties, GA count, min from list)
   const f4 =
     cond.filterType === 0
       ? (cond.maxPower ?? cond.minPower)
       : cond.filterType === 1
         ? cond.qualityFlags
         : cond.filterType === 2
-          ? cond.minQualityTier
+          ? cond.itemProperties
           : cond.filterType === 4
             ? cond.minGaCount
             : cond.filterType === 6
-              ? (cond.minGaFromList ?? 1)
-              : undefined;
+              ? (cond.minFromList ?? 1)
+              : cond.filterType === 7
+                ? cond.minFromList
+                : undefined;
   if (f4 != null) bytes.push(...encodeVarintField(4, f4));
 
   // field=5: upper bound for power range

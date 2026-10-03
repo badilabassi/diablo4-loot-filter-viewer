@@ -1,18 +1,17 @@
 import type { AffixCategory } from './schemas.ts'
 
 /**
- * Quality tier index (used by filterType=2 / Ancestral filter).
- * This is a 0-indexed enum, NOT bit-flags like QUALITY_FLAGS.
+ * Item Properties (filterType=2): a bitmask, like QUALITY_FLAGS for rarity.
+ * Values from the diablofilter.com decoder, and consistent with real filters
+ * ("NOT ANCESTRAL ..." rules use None, "... USEFUL" uniques use Ancestral).
+ * Other bits are unassigned; a filter using one shows it by number.
  */
-export const QUALITY_TIERS: Record<number, string> = {
-  0: "Common",
-  1: "Magic",
-  2: "Rare",
-  3: "Sacred",
-  4: "Ancestral",
-  5: "Unique",
-  6: "Mythic Unique",
-};
+export const ITEM_PROPERTIES = [
+  [1, "None", "#c0c0c0"],
+  [2, "Sacred", "#d7ab6d"],
+  [4, "Ancestral", "#e822a8"],
+  [32, "Mythic", "#cda1d8"],
+] as const;
 
 export const QUALITY_FLAGS = [
   [1, "Common", "#c0c0c0"],
@@ -94,11 +93,11 @@ export const ITEM_TYPES: Record<number, string> = {
   2360642: "Horadric Elixir", // 0x240542
 };
 
-// Labels follow the wording other Diablo IV filter tools use (e.g. diablofilter.com).
+// Labels match the condition names in the diablofilter.com decoder.
 export const COND_TYPES: Record<number, { label: string; icon: string }> = {
-  0: { label: "Item Power", icon: "⚔" },
-  1: { label: "Item Rarity", icon: "✦" },
-  2: { label: "Quality Tier", icon: "💎" },
+  0: { label: "Item Power Range", icon: "⚔" },
+  1: { label: "Item Rarity Match", icon: "✦" },
+  2: { label: "Item Properties", icon: "💎" },
   3: { label: "Codex Upgrade Check", icon: "📖" },
   4: { label: "Greater Affix Check", icon: "⭐" },
   5: { label: "Item Match Type", icon: "🔷" },

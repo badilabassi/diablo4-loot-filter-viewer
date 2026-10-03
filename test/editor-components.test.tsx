@@ -98,3 +98,28 @@ describe('MultiPicker', () => {
     assert.deepEqual(editorStore.getState().filter.rules[0]!.conditions[0]!.affixIds, [7, 255, 42])
   })
 })
+
+describe('ConditionEditor defaults (diablofilter.com decoder semantics)', () => {
+  it('a new Greater Affix Check means "at least" (field 6 = 1)', () => {
+    wrap(<ConditionEditor ruleIndex={0} condIndex={0} />)
+    fireEvent.change(screen.getByLabelText('Condition type'), { target: { value: '4' } })
+    const c = editorStore.getState().filter.rules[0]!.conditions[0]!
+    assert.equal(c.field6, 1)
+    assert.equal((screen.getByLabelText('At least or fewer than') as HTMLSelectElement).value, 'atLeast')
+  })
+
+  it('switching the direction to "fewer than" clears the flag', () => {
+    wrap(<ConditionEditor ruleIndex={0} condIndex={0} />)
+    fireEvent.change(screen.getByLabelText('Condition type'), { target: { value: '4' } })
+    fireEvent.change(screen.getByLabelText('At least or fewer than'), { target: { value: 'fewerThan' } })
+    assert.equal(editorStore.getState().filter.rules[0]!.conditions[0]!.field6, 0)
+  })
+
+  it('a new Item Properties condition defaults to Ancestral and toggles bits', () => {
+    wrap(<ConditionEditor ruleIndex={0} condIndex={0} />)
+    fireEvent.change(screen.getByLabelText('Condition type'), { target: { value: '2' } })
+    assert.equal(editorStore.getState().filter.rules[0]!.conditions[0]!.itemProperties, 4)
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Mythic' }))
+    assert.equal(editorStore.getState().filter.rules[0]!.conditions[0]!.itemProperties, 36)
+  })
+})

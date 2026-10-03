@@ -60,8 +60,32 @@ describe('labels', () => {
 
 describe('ConditionBlock wording', () => {
   it('words Greater Affix Check as a sentence, singular and plural', () => {
-    assert.match(text(renderToStaticMarkup(<ConditionBlock cond={cond({ filterType: 4, minGaCount: 3 })} names={NO_NAMES} />)), /Must have at least 3 Greater Affixes/)
-    assert.match(text(renderToStaticMarkup(<ConditionBlock cond={cond({ filterType: 4, minGaCount: 1 })} names={NO_NAMES} />)), /Must have at least 1 Greater Affix(?!es)/)
+    assert.match(text(renderToStaticMarkup(<ConditionBlock cond={cond({ filterType: 4, minGaCount: 3, field6: 1 })} names={NO_NAMES} />)), /Must have at least 3 Greater Affixes/)
+    assert.match(text(renderToStaticMarkup(<ConditionBlock cond={cond({ filterType: 4, minGaCount: 1, field6: 1 })} names={NO_NAMES} />)), /Must have at least 1 Greater Affix(?!es)/)
+  })
+
+  it('reads Greater Affix Check field 6 as the direction: 1 = at least, else fewer than', () => {
+    // e.g. a "NOT TOP ITEMS" hide rule: hide items with fewer than 2 Greater Affixes.
+    assert.match(text(renderToStaticMarkup(<ConditionBlock cond={cond({ filterType: 4, minGaCount: 2 })} names={NO_NAMES} />)), /Must have fewer than 2 Greater Affixes/)
+    assert.match(text(renderToStaticMarkup(<ConditionBlock cond={cond({ filterType: 4, minGaCount: 2, field6: 0 })} names={NO_NAMES} />)), /fewer than 2/)
+  })
+
+  it('shows Item Properties as a bitmask: 36 = Ancestral + Mythic', () => {
+    const t = text(renderToStaticMarkup(<ConditionBlock cond={cond({ filterType: 2, itemProperties: 36 })} names={NO_NAMES} />))
+    assert.match(t, /Item Properties/)
+    assert.match(t, /Ancestral/)
+    assert.match(t, /Mythic/)
+    assert.doesNotMatch(t, /None|Sacred|Tier/)
+  })
+
+  it('shows unassigned Item Properties bits by value instead of hiding them', () => {
+    assert.match(text(renderToStaticMarkup(<ConditionBlock cond={cond({ filterType: 2, itemProperties: 4 | 8 })} names={NO_NAMES} />)), /Ancestral.*Other \(8\)/)
+  })
+
+  it('shows how many listed affixes are required, for required and optional affixes', () => {
+    assert.match(text(renderToStaticMarkup(<ConditionBlock cond={cond({ affixIds: [1], minFromList: 3 })} names={NO_NAMES} />)), /Must have at least 3 of:/)
+    assert.match(text(renderToStaticMarkup(<ConditionBlock cond={cond({ filterType: 7, optionalAffixIds: [1], minFromList: 2 })} names={NO_NAMES} />)), /Must have at least 2 of:/)
+    assert.doesNotMatch(text(renderToStaticMarkup(<ConditionBlock cond={cond({ filterType: 7, optionalAffixIds: [1] })} names={NO_NAMES} />)), /Must have/)
   })
 
   it('lists the required affixes that must be greater under "Greater Affixes:"', () => {

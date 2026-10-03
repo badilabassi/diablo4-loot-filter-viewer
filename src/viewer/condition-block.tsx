@@ -1,4 +1,4 @@
-import { COND_TYPES, ITEM_TYPES, QUALITY_FLAGS, QUALITY_TIERS } from '../filter/constants.ts'
+import { COND_TYPES, ITEM_PROPERTIES, ITEM_TYPES, QUALITY_FLAGS } from '../filter/constants.ts'
 import type { FilterCondition } from '../filter/schemas.ts'
 import { cx } from '../ui/cx.ts'
 import shared from '../ui/styles.module.css'
@@ -13,6 +13,10 @@ export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: 
   const ct = COND_TYPES[cond.filterType] ?? { label: `Filter ${cond.filterType}`, icon: '?' }
   const qMatched =
     cond.qualityFlags != null ? QUALITY_FLAGS.filter(([flag]) => ((cond.qualityFlags ?? 0) & flag) !== 0) : []
+  // Item Properties bits; any bit without a known name is shown by its value.
+  const props = cond.itemProperties ?? 0
+  const pMatched = ITEM_PROPERTIES.filter(([bit]) => (props & bit) !== 0)
+  const unknownProps = props & ~ITEM_PROPERTIES.reduce((m, [bit]) => m | bit, 0)
   const uniqueAffixes = [...new Set(cond.affixIds)]
   const uniqueOptionalAffixes = [...new Set(cond.optionalAffixIds)]
   const uniqueSubtypes = [...new Set(cond.subtypeIds)]
@@ -30,7 +34,7 @@ export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: 
     uniqueTalismanSets.length > 0 ||
     cond.filterType === 9 ||
     cond.minPower != null ||
-    cond.minQualityTier != null ||
+    cond.itemProperties != null ||
     cond.minGaCount != null
 
   return (
@@ -55,14 +59,19 @@ export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: 
         </div>
       )}
 
-      {cond.minQualityTier != null && (
-        <p className={styles.stat}>
-          Min quality:{' '}
-          <strong className={styles.statValue}>
-            {QUALITY_TIERS[cond.minQualityTier] ?? `Tier ${cond.minQualityTier}`}
-          </strong>
-          <span className={styles.statNote}>(and above)</span>
-        </p>
+      {cond.itemProperties != null && (
+        <div className={styles.qualityChips}>
+          {pMatched.map(([, name, color]) => (
+            <span
+              key={name}
+              className={styles.quality}
+              style={{ border: `1px solid ${color}`, color, background: `${color}18` }}
+            >
+              {name}
+            </span>
+          ))}
+          {unknownProps !== 0 && <span className={styles.quality}>Other ({unknownProps})</span>}
+        </div>
       )}
 
       {cond.minPower != null && (
@@ -73,7 +82,9 @@ export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: 
 
       {cond.minGaCount != null && (
         <p className={styles.stat}>
-          Must have at least <strong className={styles.statValue}>{cond.minGaCount}</strong> Greater{' '}
+          {/* Field 6 is the direction: 1 = at least, anything else = fewer than. */}
+          Must have {cond.field6 === 1 ? 'at least' : 'fewer than'}{' '}
+          <strong className={styles.statValue}>{cond.minGaCount}</strong> Greater{' '}
           {cond.minGaCount === 1 ? 'Affix' : 'Affixes'}
         </p>
       )}
@@ -96,6 +107,11 @@ export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: 
         </div>
       )}
 
+      {cond.filterType === 6 && cond.minFromList != null && (
+        <p className={styles.stat}>
+          Must have at least <strong className={styles.statValue}>{cond.minFromList}</strong> of:
+        </p>
+      )}
       {uniqueAffixes.length > 0 && (
         <div className={styles.chips}>
           {uniqueAffixes.map((id) => (
@@ -115,6 +131,11 @@ export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: 
         </>
       )}
 
+      {cond.filterType === 7 && cond.minFromList != null && (
+        <p className={styles.stat}>
+          Must have at least <strong className={styles.statValue}>{cond.minFromList}</strong> of:
+        </p>
+      )}
       {uniqueOptionalAffixes.length > 0 && (
         <div className={styles.chips}>
           {uniqueOptionalAffixes.map((id) => (

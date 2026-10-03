@@ -15,20 +15,24 @@ export const FilterConditionSchema = z.object({
   qualityFlags: z.number().optional(),
   minPower: z.number().optional(),
   maxPower: z.number().optional(),
-  minQualityTier: z.number().optional(),
+  /** filterType=2 (Item Properties): bitmask, see ITEM_PROPERTIES. */
+  itemProperties: z.number().optional(),
   minGaCount: z.number().optional(),
   subtypeIds: z.array(z.number()),
   affixIds: z.array(z.number()),
-  minGaFromList: z.number().optional(),
+  /** filterType=6/7 (Has Required/Optional Affixes): how many of the listed
+   * affixes the item must have ("Must have at least N"). Condition field 4. */
+  minFromList: z.number().optional(),
   itemIds: z.array(z.number()),
   talismanSetIds: z.array(z.number()),
-  /** filterType=7 (Has Optional Affixes) affix SNOs. Only the field-2 ID list
-   * is confirmed against real data; unlike filterType=6 there's no confirmed
-   * min-from-list scalar or field-3 range structure for this type. */
+  /** filterType=7 (Has Optional Affixes) affix SNOs. */
   optionalAffixIds: z.array(z.number()),
-  /** SNO ID min/max ranges from condition field 3 (filterType=6). Preserved for lossless round-trips. */
+  /** filterType=6: the required affixes that must roll as Greater Affixes,
+   * as SNO min/max ranges (min === max in every observed filter). Field 3. */
   affixRanges: z.array(z.object({ min: z.number(), max: z.number() })).optional(),
-  /** Opaque varint from condition field 6 (seen in filterType=3 and filterType=4). Preserved for lossless round-trips. */
+  /** Condition field 6. For filterType=4 (Greater Affix Check) it is the
+   * direction: 1 = "at least" minGaCount, anything else = "fewer than".
+   * Also seen on filterType=3. Preserved for lossless round-trips. */
   field6: z.number().optional(),
 });
 
