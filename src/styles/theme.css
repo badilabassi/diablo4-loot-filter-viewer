@@ -1,0 +1,139 @@
+/*
+ * Global theme: design tokens, fonts, keyframes and base element styles.
+ * Ported 1:1 from the Remix app's document.tsx global styles and the themeVars /
+ * pageStyle mixins in app/ui/styles.ts.
+ *
+ * Fonts are referenced by relative path so Vite fingerprints them into /assets/,
+ * which Vercel serves as immutable (plan D10).
+ */
+
+@font-face {
+  font-family: 'Exocet';
+  font-weight: 500;
+  src: url('./fonts/Exocet-Medium.ttf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Old Fenris';
+  font-weight: 400;
+  src: url('./fonts/OldFenris-Regular.otf');
+  font-display: swap;
+}
+
+:root {
+  --d4-bg: #100c0b;
+  --d4-bg2: #1a1514;
+  --d4-bg3: #1e1a17;
+  --d4-surface: #231f1b;
+  --d4-border: rgba(255, 255, 255, 0.08);
+  --d4-border2: rgba(255, 255, 255, 0.14);
+  --d4-border-gold: rgba(196, 120, 32, 0.35);
+  --d4-gold: #c47820;
+  --d4-gold2: #9b7644;
+  --d4-gold3: #d7ab6d;
+  --d4-primary: #7a1010;
+  --d4-primary-mid: #8f1818;
+  --d4-primary-deep: #5c0c0c;
+  --d4-primary-fg: #e5e0c8;
+  --d4-text: #d2c8ae;
+  --d4-text2: #878582;
+  /* Muted labels — ≥4.5:1 on --d4-bg (was #636160 @ 3.16:1). */
+  --d4-text3: #84817e;
+  --d4-unique: #dca779;
+  --d4-ancestral: #fff;
+  --font-cinzel: 'Old Fenris', serif;
+  --font-crimson: 'Exocet', serif;
+}
+
+@keyframes d4-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes d4-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: var(--entrance-opacity, 1);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes d4-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: var(--entrance-opacity, 1);
+    transform: translateY(0);
+  }
+}
+
+@keyframes d4-glow-breathe {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--d4-text);
+  font-family: var(--font-crimson);
+  background-color: var(--d4-bg);
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.012'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6z'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-font-smoothing: antialiased;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 118, 68, 0.45) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(155, 118, 68, 0.35);
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(196, 120, 32, 0.55);
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 8px 16px;
+  background: var(--d4-surface);
+  color: var(--d4-gold3);
+  border: 1px solid var(--d4-border-gold);
+  border-radius: 6px;
+  font-family: var(--font-cinzel);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  left: 12px;
+  top: 12px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--d4-gold3);
+  outline-offset: 2px;
+}

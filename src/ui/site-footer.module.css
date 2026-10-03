@@ -1,0 +1,45 @@
+.footer {
+  max-width: 860px;
+  margin: 48px auto 0;
+  padding: 28px 24px 36px;
+  border-top: 1px solid rgba(196, 120, 32, 0.2);
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--d4-text3);
+
+  @media (min-width: 701px) {
+    display: none;
+  }
+}
+
+.paragraph {
+  margin: 0 0 10px;
+  max-width: 52ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.githubLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--d4-gold2);
+  text-decoration: none;
+  transition: color 150ms ease;
+
+  &:hover {
+    color: var(--d4-gold3);
+  }
+}
+
+.legal {
+  margin: 14px 0 0;
+  font-size: 10px;
+  line-height: 1.55;
+  opacity: 0.85;
+  max-width: 62ch;
+  margin-left: auto;
+  margin-right: auto;
+}

@@ -270,6 +270,20 @@ Each phase ends with typecheck plus tests green and its own commit. **Bold** ite
    - `__root.tsx`: `head()` defaults, per-route title and canonical overrides, `theme.css` and fonts, Analytics and Speed Insights.
    - D10 route rules.
    - Head snapshot test (C4).
+   **Phase 3 results (2026-10-03)**
+   - ✅ **C4:** the `<head>` of `/` and `/edit` is **identical** to the live Remix app, 16 of 16 tags compared after normalizing the origin.
+     - Canonical and `og:url` drop the query (`/?code=abc` → `/`), using the request origin, which the root loader resolves with `createIsomorphicFn` (server: `getRequestUrl()`, client: `location.origin`).
+     - `src/ui/seo.ts` reproduces `DocumentHead`, and `test/seo.test.ts` locks it in.
+   - ✅ **Shell:** `__root.tsx` renders the skip link, the `<noscript>` text (change #5), the footer (ported to a CSS Module), `<Analytics/>` and `<SpeedInsights/>`.
+     - Browser check on both pages: theme tokens, body styles, both fonts loaded, no console errors.
+     - The `/_vercel/*` analytics scripts 404 locally, as expected; they only exist on Vercel.
+   - ✅ **`theme.css`:** ported 1:1 from `document.tsx`'s global styles plus `themeVars` and `pageStyle`. Tokens are on `:root` instead of a `body` class, which cascades the same way.
+   - ✅ **D10, revised:**
+     - **Fonts** are referenced from `theme.css` by relative path, so Vite fingerprints them into `/assets/`, which Vercel serves `immutable`. That's better than a short cache rule on unhashed files.
+     - The **favicon** can't be hashed, so it gets a Nitro route rule: `max-age=86400, stale-while-revalidate=604800`.
+     - The font files are *copies* in `src/styles/fonts/`; Remix still serves the `public/` originals.
+   - ⏳ **Preview checks** (favicon header, `immutable` on the fonts, analytics scripts loading) wait for the next push, or Phase 8.
+
 4. **Viewer, server side.**
    - `src/viewer/*` as server-safe components with CSS Modules, the `/` loader (parse plus name resolution), the form, `?example=1`, `<details>` cards, the error banner, the status bar, and the D3 oversize path.
    - Route tests on the HTML (C1Δ, C5Δ with JS disabled).
@@ -286,6 +300,12 @@ Each phase ends with typecheck plus tests green and its own commit. **Bold** ite
    - Delete `app/`, `server.ts`, `vercel.json` (keep `{"framework":"tanstack-start"}` only if Phase 0 needed it), the workaround scripts, the Remix and native-binding deps, and `.agents/skills/remix`.
    - Rewrite `AGENTS.md` and the README.
    - Fix CI (D9).
+   - Also delete:
+     - the spike probes (`src/spike/`, `routes/spike-*`);
+     - the `public/` font originals (copied to `src/styles/fonts/` in Phase 3);
+     - `public/icons.svg`, which nothing references;
+     - `nitro({ serverEntry: false })` once `server.ts` is gone;
+     - `test/remix/`, the `remix test` half of `pnpm test`, and the root Remix tsconfig.
 8. **Verification (merge gate).**
    - Run the full C1–C10 contract in a real browser at desktop and 390px widths, and with JS disabled for the viewer.
    - Vercel preview: Analytics events, no console errors or hydration warnings, the `/api/toc` cache headers and HIT, and the static-asset headers.
