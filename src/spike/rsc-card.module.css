@@ -1,0 +1,19 @@
+.card {
+  max-width: 480px;
+  margin: 24px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(196, 120, 32, 0.35);
+  background: #1a1514;
+  color: #d2c8ae;
+  font-family: serif;
+
+  &:hover {
+    border-color: rgba(196, 120, 32, 0.7);
+  }
+}
+
+.title {
+  margin: 0 0 8px;
+  color: #d7ab6d;
+}

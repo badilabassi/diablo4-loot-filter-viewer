@@ -224,6 +224,19 @@ Each phase ends with typecheck plus tests green and its own commit. **Bold** ite
      - **RSC gate passes:** D2 as written.
      - **RSC gate fails:** D2's SSR fallback (drop the RSC packages). No other part of the plan changes.
      - **Nitro or the deploy fails:** stop and reassess before writing any UI.
+   **Phase 0 results: local (2026-10-03)**
+   - ✅ **Install:** pnpm 12 installs the pinned stack (React 19.3.0, Vite 8.3.2, Start 1.168.60, Router 1.170.41, plugin-rsc 0.5.35, Nitro 3.0.260903-beta) with no peer-dependency warnings. The Remix suite still passes 15/15 alongside it.
+   - ✅ **Build and typecheck:** `vite build` succeeds, and so does TS **7.0.2** `tsc -p src --noEmit` on `routeTree.gen.ts`. No TS 6 alias is needed.
+   - ⚠️ **Finding: Nitro auto-detects a root `server.ts` as a catch-all server entry that runs before the renderer.** The first build bundled the Remix server, so it would have served Remix. Fixed with `nitro({ serverEntry: false })` while Remix still lives in the repo. Phase 7 deletes `server.ts`.
+   - ✅ **(a) RSC:** passes in the production build, and dev SSR renders it too.
+     - The server HTML contains the server component's markup with scoped CSS Module classes, and its stylesheet is linked.
+     - The embedded `'use client'` child hydrates, and its `motion` animation runs.
+     - Client-side navigation into the route works (the loader runs in the browser, then the server function, then Flight).
+     - No console errors.
+   - ✅ **(b) #7943 does not reproduce** for our pattern: a server function imported only from a `'use client'` component in the hydrated tree, which is where `MultiPicker` lives. It works in the production build. Not tested: a client component nested *inside* an RSC that calls a server function.
+   - ✅ **(c) `/api/toc`:** serves the full 518,211-byte bundled seed with the D4 headers locally. CDN behavior is verified on the preview.
+   - ⏳ **Vercel preview:** pending.
+
 1. **Core move.**
    - `git mv` `app/filter` → `src/filter`.
    - Move the editor store and history, and add `useStore`.
