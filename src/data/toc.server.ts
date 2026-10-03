@@ -80,6 +80,25 @@ async function fetchMaxrollDataSafe(): Promise<MaxrollData | null> {
   }
 }
 
+// ── Affix display names ───────────────────────────────────────────────────────
+
+const firstLine = (s: string) => s.split(/\r?\n/)[0]!.trim()
+
+/**
+ * The affix's description with only the "#" value placeholders removed, so the
+ * sign and unit stay: "+#% Movement Speed" → "+% Movement Speed", "+# to Blazing
+ * Scream" → "+ to Blazing Scream". D4Companion's DescriptionClean also strips the
+ * sign, which left names like "to Blazing Scream". This matches the wording other
+ * filter tools show (e.g. diablofilter.com).
+ */
+export function affixDisplayName(entry: { Description: string; DescriptionClean: string }): string {
+  const described = firstLine(entry.Description ?? '')
+    .replace(/#/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return described || firstLine(entry.DescriptionClean ?? '')
+}
+
 // ── Item name derivation for CoreTOC section 73 entries ──────────────────────
 
 function humanizeItem(filename: string): string {
@@ -162,11 +181,9 @@ export async function buildTocData(): Promise<TocData> {
   // Affixes — expand multi-ID groups so every SNO resolves to a name.
   const affixes: TocAffix[] = []
   for (const entry of affixesRaw) {
-    const name = (entry.DescriptionClean || entry.Description)
-      .split(/\r?\n/)[0]!
-      .trim()
+    const name = affixDisplayName(entry)
     if (!name) continue
-    const cat = inferCat(name)
+    const cat = inferCat(firstLine(entry.DescriptionClean || entry.Description))
     for (let i = 0; i < entry.IdSnoList.length; i++) {
       const id = Number(entry.IdSnoList[i])
       if (!id) continue

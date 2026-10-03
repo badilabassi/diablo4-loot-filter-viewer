@@ -164,7 +164,7 @@ export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; c
 
       {c.filterType === 4 && (
         <label className={styles.field}>
-          Min GAs
+          Min Greater Affixes
           <CommitInput
             type="number"
             value={c.minGaCount ?? 1}
@@ -190,7 +190,7 @@ export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; c
         <>
           <MultiPicker ruleIndex={ruleIndex} condIndex={condIndex} field="affixIds" kind="affix" placeholder="Add affix…" />
           <label className={styles.field}>
-            Min GA from list
+            Min Greater Affixes from list
             <CommitInput
               type="number"
               value={c.minGaFromList ?? 1}

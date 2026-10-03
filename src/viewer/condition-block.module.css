@@ -108,3 +108,14 @@
     color: var(--d4-text3);
   }
 }
+
+@layer ui.component {
+  /* "Greater Affixes:" heading inside Has Required Affixes. */
+  .subLabel {
+    font-size: 12px;
+    font-family: var(--font-cinzel);
+    letter-spacing: 0.08em;
+    color: var(--d4-text3);
+    margin: 10px 0 0;
+  }
+}

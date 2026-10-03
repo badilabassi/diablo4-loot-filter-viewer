@@ -32,27 +32,27 @@ export const QUALITY_FLAGS = [
 export const ITEM_TYPES: Record<number, string> = {
   446650: "Any Gear", // 0x6D0BA
   446778: "Mace", // 0x6D13A
-  446788: "2H Mace", // 0x6D144
-  446794: "2H Mace (Druid)", // 0x6D14A
+  446788: "Two-Handed Mace", // 0x6D144
+  446794: "Two-Handed Mace (Druid)", // 0x6D14A
   446796: "Sword", // 0x6D14C
-  446799: "2H Sword", // 0x6D14F
+  446799: "Two-Handed Sword", // 0x6D14F
   446801: "Axe", // 0x6D151
-  446802: "2H Axe", // 0x6D152
+  446802: "Two-Handed Axe", // 0x6D152
   446803: "Staff", // 0x6D153
   446804: "Scythe", // 0x6D154
-  446805: "2H Scythe", // 0x6D155
+  446805: "Two-Handed Scythe", // 0x6D155
   446809: "Dagger", // 0x6D159
   446810: "Dagger (Off-Hand)", // 0x6D15A
   446813: "Polearm", // 0x6D15D
   446819: "Wand", // 0x6D163
   446823: "Bow", // 0x6D167
-  446824: "Crossbow", // 0x6D168
-  446825: "2H Crossbow", // 0x6D169
+  446824: "Crossbow (One-Handed)", // 0x6D168 — not seen in real filters; the in-game crossbow is 0x6D169
+  446825: "Crossbow", // 0x6D169
   446826: "Focus", // 0x6D16A
-  446827: "Off-Hand Totem", // 0x6D16B
-  446829: "Chest", // 0x6D16D
+  446827: "Totem", // 0x6D16B
+  446829: "Chest Armor", // 0x6D16D
   446830: "Helm", // 0x6D16E
-  446831: "Legs", // 0x6D16F
+  446831: "Pants", // 0x6D16F
   446832: "Boots", // 0x6D170
   446833: "Gloves", // 0x6D171
   446834: "Shield", // 0x6D172
@@ -94,16 +94,17 @@ export const ITEM_TYPES: Record<number, string> = {
   2360642: "Horadric Elixir", // 0x240542
 };
 
+// Labels follow the wording other Diablo IV filter tools use (e.g. diablofilter.com).
 export const COND_TYPES: Record<number, { label: string; icon: string }> = {
   0: { label: "Item Power", icon: "⚔" },
   1: { label: "Item Rarity", icon: "✦" },
   2: { label: "Quality Tier", icon: "💎" },
-  3: { label: "Codex Upgrade", icon: "📖" },
-  4: { label: "Greater Affix Count", icon: "⭐" },
-  5: { label: "Item Subtype", icon: "🔷" },
-  6: { label: "Greater Affixes", icon: "⭐" },
-  7: { label: "Optional Affixes", icon: "☆" },
-  8: { label: "Specific Items", icon: "🔱" },
+  3: { label: "Codex Upgrade Check", icon: "📖" },
+  4: { label: "Greater Affix Check", icon: "⭐" },
+  5: { label: "Item Match Type", icon: "🔷" },
+  6: { label: "Has Required Affixes", icon: "⭐" },
+  7: { label: "Has Optional Affixes", icon: "☆" },
+  8: { label: "Is Specific Unique", icon: "🔱" },
   9: { label: "Talisman Set Bonus", icon: "🎴" },
 };
 

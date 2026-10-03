@@ -24,6 +24,8 @@ export function referencedIds(filter: ParsedFilter) {
     for (const c of rule.conditions) {
       for (const id of c.affixIds) affixes.add(id)
       for (const id of c.optionalAffixIds) affixes.add(id)
+      // Has Required Affixes: the subset that must roll as Greater Affixes.
+      for (const r of c.affixRanges ?? []) affixes.add(r.min)
       for (const id of c.subtypeIds) itemTypes.add(id)
       for (const id of c.itemIds) items.add(id)
       for (const id of c.talismanSetIds) talismanSets.add(id)

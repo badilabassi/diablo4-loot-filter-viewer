@@ -18,6 +18,8 @@ export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: 
   const uniqueSubtypes = [...new Set(cond.subtypeIds)]
   const uniqueItemIds = [...new Set(cond.itemIds)]
   const uniqueTalismanSets = [...new Set(cond.talismanSetIds)]
+  // Has Required Affixes: the affixes that must also roll as Greater Affixes.
+  const greaterAffixes = [...new Set((cond.affixRanges ?? []).map((r) => r.min))]
 
   const hasContent =
     qMatched.length > 0 ||
@@ -71,7 +73,8 @@ export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: 
 
       {cond.minGaCount != null && (
         <p className={styles.stat}>
-          Min Greater Affixes: <strong className={styles.statValue}>{cond.minGaCount}</strong>
+          Must have at least <strong className={styles.statValue}>{cond.minGaCount}</strong> Greater{' '}
+          {cond.minGaCount === 1 ? 'Affix' : 'Affixes'}
         </p>
       )}
 
@@ -99,6 +102,17 @@ export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: 
             <AffixChip key={id} snoId={id} affix={names.affixes[id]} />
           ))}
         </div>
+      )}
+
+      {greaterAffixes.length > 0 && (
+        <>
+          <p className={styles.subLabel}>Greater Affixes:</p>
+          <div className={styles.chips}>
+            {greaterAffixes.map((id) => (
+              <AffixChip key={id} snoId={id} affix={names.affixes[id]} />
+            ))}
+          </div>
+        </>
       )}
 
       {uniqueOptionalAffixes.length > 0 && (
