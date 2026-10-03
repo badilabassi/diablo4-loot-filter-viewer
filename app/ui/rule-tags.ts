@@ -1,4 +1,4 @@
-import type { FilterRule } from '../filter/schemas.ts'
+import type { FilterRule } from '../../src/filter/schemas.ts'
 
 export type RuleTagKey =
   | 'mythic'

@@ -1,6 +1,6 @@
 import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix/component'
 
-import { editorStore } from '../../state/editor-store.ts'
+import { editorStore } from '../../../src/editor/editor-store.ts'
 import { qualityGlow } from '../quality-glow.ts'
 import { dominantGlowTag, inferRuleTags } from '../rule-tags.ts'
 import {

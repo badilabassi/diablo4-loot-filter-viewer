@@ -1,4 +1,4 @@
-import { editorStore, loadFilterIntoEditor } from '../../state/editor-store.ts'
+import { editorStore, loadFilterIntoEditor } from '../../../src/editor/editor-store.ts'
 import { filterStore } from '../../state/filter-store.ts'
 
 type Updater = () => void

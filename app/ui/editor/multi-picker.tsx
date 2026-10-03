@@ -1,7 +1,7 @@
 import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix/component'
 
 import { tocStore } from '../../state/toc-store.ts'
-import { editorStore } from '../../state/editor-store.ts'
+import { editorStore } from '../../../src/editor/editor-store.ts'
 import { iconBtn } from '../styles.ts'
 
 interface MultiPickerProps extends SerializableProps {

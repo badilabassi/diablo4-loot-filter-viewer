@@ -1,7 +1,7 @@
 import { animateMini as animate, type DOMKeyframesDefinition } from 'motion'
 import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix/component'
 
-import { loadFilterIntoEditor } from '../../state/editor-store.ts'
+import { loadFilterIntoEditor } from '../../../src/editor/editor-store.ts'
 import { filterStore } from '../../state/filter-store.ts'
 import { tocStore } from '../../state/toc-store.ts'
 import {

@@ -1,8 +1,8 @@
 import { css, type Handle } from 'remix/component'
 
-import { COND_TYPES, ITEM_TYPES, QUALITY_FLAGS, QUALITY_TIERS } from '../filter/constants.ts'
+import { COND_TYPES, ITEM_TYPES, QUALITY_FLAGS, QUALITY_TIERS } from '../../src/filter/constants.ts'
 import { tocStore } from '../state/toc-store.ts'
-import type { FilterCondition } from '../filter/schemas.ts'
+import type { FilterCondition } from '../../src/filter/schemas.ts'
 import { AffixChip } from './affix-chip.tsx'
 import { condBlockStyle, metaLabel, ornateFrame } from './styles.ts'
 

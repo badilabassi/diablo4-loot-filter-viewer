@@ -17,6 +17,13 @@ export function createStore<T>(initial: T) {
   }
 }
 
+/**
+ * A store with undo/redo (50 steps). `partialize` picks the fields that history
+ * tracks and must return a new object (e.g. `s => ({ filter: s.filter })`), never
+ * `s` itself. Snapshots hold references, so `mutate` callbacks must replace
+ * values (`s.filter = { ...s.filter, name }`) rather than edit nested objects in
+ * place, or past snapshots would change with them.
+ */
 export function createTemporalStore<T extends object>(initial: T, partialize: (s: T) => Partial<T>) {
   const store = createStore(initial)
   const past: Partial<T>[] = []

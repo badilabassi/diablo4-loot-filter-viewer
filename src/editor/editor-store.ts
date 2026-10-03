@@ -1,6 +1,6 @@
 import { serializeFilter } from '../filter/proto.ts'
 import type { FilterCondition, FilterRule, ParsedFilter } from '../filter/schemas.ts'
-import { createTemporalStore } from './subscribe.ts'
+import { createTemporalStore } from './history.ts'
 
 interface EditorState {
   filter: ParsedFilter

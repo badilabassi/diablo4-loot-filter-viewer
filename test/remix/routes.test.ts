@@ -1,8 +1,8 @@
 import * as assert from 'remix/assert'
 import { describe, it } from 'remix/test'
 
-import { createAppRouter } from '../app/router.ts'
-import { routes } from '../app/routes.ts'
+import { createAppRouter } from '../../app/router.ts'
+import { routes } from '../../app/routes.ts'
 
 describe('routes', () => {
   it('GET / returns the filter viewer', async () => {

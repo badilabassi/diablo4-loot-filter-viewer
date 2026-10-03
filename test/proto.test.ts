@@ -1,7 +1,8 @@
-import * as assert from 'remix/assert'
-import { describe, it } from 'remix/test'
+import * as assert from 'node:assert/strict'
 
-import { parseFilterB64, serializeFilter } from '../app/filter/proto.ts'
+import { describe, it } from 'vitest'
+
+import { parseFilterB64, serializeFilter } from '../src/filter/proto.ts'
 
 /**
  * Builds a minimal top-level filter message containing:

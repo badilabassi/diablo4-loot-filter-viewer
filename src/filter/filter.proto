@@ -1,6 +1,6 @@
 // Diablo IV loot filter export format, reverse-engineered.
 //
-// This is NOT compiled or used at runtime — app/filter/proto.ts hand-rolls
+// This is NOT compiled or used at runtime — src/filter/proto.ts hand-rolls
 // the same wire format without a generated codec, since only a handful of
 // fields are needed and the rest must be preserved opaquely for lossless
 // round-trips. This file exists purely as documentation of the wire format,
@@ -10,7 +10,7 @@
 //
 // Field numbers, wire types, and enum values below are confirmed against a
 // real community filter ("Raxx's Torment 6+ Filter", embedded as
-// EXAMPLE_FILTER in app/filter/constants.ts) unless a comment says
+// EXAMPLE_FILTER in src/filter/constants.ts) unless a comment says
 // otherwise. Anything marked UNCONFIRMED has not been observed in real
 // data — proto.ts either doesn't implement it or preserves it opaquely.
 
@@ -82,7 +82,7 @@ message Condition {
   // actually been observed.
   //
   // Meaning by filter_type:
-  //   5 (Item Subtype)          -> item-type SNOs (app/filter/constants.ts ITEM_TYPES)
+  //   5 (Item Subtype)          -> item-type SNOs (src/filter/constants.ts ITEM_TYPES)
   //   6 (Has Required Affixes)  -> affix SNOs
   //   7 (Has Optional Affixes)  -> affix SNOs (only the ID list is confirmed;
   //                                 see affix_ranges and param below for what
@@ -176,7 +176,7 @@ enum ConditionType {
 }
 
 // Bitmask values for Condition.param when filter_type == ITEM_RARITY_MATCH.
-// Confirmed via real data (app/filter/constants.ts QUALITY_FLAGS).
+// Confirmed via real data (src/filter/constants.ts QUALITY_FLAGS).
 enum RarityBits {
   RARITY_UNSPECIFIED = 0;
   RARITY_COMMON = 1;
@@ -191,7 +191,7 @@ enum RarityBits {
 // Enum values for Condition.param when filter_type == ITEM_QUALITY_TIER.
 // 0-indexed threshold ("at least this tier"), NOT a bitmask — see the
 // UNCONFIRMED note on Condition.param above. Confirmed via real data
-// (app/filter/constants.ts QUALITY_TIERS) only at value 4 (Ancestral).
+// (src/filter/constants.ts QUALITY_TIERS) only at value 4 (Ancestral).
 enum QualityTier {
   TIER_COMMON = 0;
   TIER_MAGIC = 1;

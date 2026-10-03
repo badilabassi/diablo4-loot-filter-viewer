@@ -1,7 +1,7 @@
-import { EXAMPLE_FILTER } from '../filter/constants.ts'
-import { parseFilterB64 } from '../filter/proto.ts'
-import type { ParsedFilter } from '../filter/schemas.ts'
-import { createTemporalStore } from './subscribe.ts'
+import { EXAMPLE_FILTER } from '../../src/filter/constants.ts'
+import { parseFilterB64 } from '../../src/filter/proto.ts'
+import type { ParsedFilter } from '../../src/filter/schemas.ts'
+import { createTemporalStore } from '../../src/editor/history.ts'
 
 interface FilterState {
   input: string

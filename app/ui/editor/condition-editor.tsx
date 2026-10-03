@@ -1,8 +1,8 @@
 import { clientEntry, css, on, type Handle, type SerializableProps } from 'remix/component'
 
-import { COND_TYPES, QUALITY_FLAGS, QUALITY_TIERS } from '../../filter/constants.ts'
-import type { FilterCondition } from '../../filter/schemas.ts'
-import { editorStore } from '../../state/editor-store.ts'
+import { COND_TYPES, QUALITY_FLAGS, QUALITY_TIERS } from '../../../src/filter/constants.ts'
+import type { FilterCondition } from '../../../src/filter/schemas.ts'
+import { editorStore } from '../../../src/editor/editor-store.ts'
 import { iconBtn, selectStyle } from '../styles.ts'
 import { MultiPicker } from './multi-picker.tsx'
 

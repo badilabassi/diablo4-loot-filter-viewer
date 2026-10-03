@@ -1,6 +1,6 @@
-import { parseTocData } from '../filter/toc-schemas.ts'
-import type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet } from '../filter/toc-types.ts'
-import { createStore } from './subscribe.ts'
+import { parseTocData } from '../../src/filter/toc-schemas.ts'
+import type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet } from '../../src/filter/toc-types.ts'
+import { createStore } from '../../src/editor/history.ts'
 
 export type { TocData }
 

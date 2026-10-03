@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { buildTocData, fetchCommitHash, D4C_REPO } from './toc.ts'
-import type { TocData } from '../filter/toc-types.ts'
+import type { TocData } from '../../src/filter/toc-types.ts'
 
 /** How often to re-check GitHub for a new commit (default: 30 min). */
 const CHECK_INTERVAL = 30 * 60 * 1000
@@ -12,7 +12,7 @@ let cache: { data: TocData; checkedAt: number } | null = null
 async function loadFromFilesystem(): Promise<TocData | null> {
   try {
     const raw = await readFile(join(process.cwd(), 'public', 'data', 'toc.json'), 'utf-8')
-    const { parseTocData } = await import('../filter/toc-schemas.ts')
+    const { parseTocData } = await import('../../src/filter/toc-schemas.ts')
     return parseTocData(JSON.parse(raw))
   } catch {
     return null

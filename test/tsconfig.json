@@ -1,0 +1,10 @@
+{
+  // Tests for the TanStack Start app share src/'s React compiler settings.
+  // test/remix/ is excluded: it tests the Remix app and runs under `remix test`.
+  "extends": "../src/tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "vite/client"]
+  },
+  "include": ["./**/*.ts", "./**/*.tsx"],
+  "exclude": ["./remix/**"]
+}
