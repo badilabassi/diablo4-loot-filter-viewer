@@ -1,11 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "npm install --include=optional",
-  "buildCommand": "npm run build && npm run typecheck",
-  "functions": {
-    "server.ts": {
-      "maxDuration": 60,
-      "includeFiles": "{app/**,node_modules/**,tsconfig.json,package.json}"
-    }
-  }
+  "framework": "tanstack-start",
+  "installCommand": "pnpm install --frozen-lockfile"
 }

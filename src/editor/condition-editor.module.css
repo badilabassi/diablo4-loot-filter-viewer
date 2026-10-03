@@ -1,0 +1,58 @@
+@layer ui.component {
+  .root {
+    border: 1px solid var(--d4-border);
+    border-radius: 6px;
+    background: var(--d4-bg);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .typeSelect {
+    flex: 1;
+  }
+
+  .powerRow {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .powerInput {
+    width: 96px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .flag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+
+  .gaInput {
+    width: 64px;
+    padding: 4px 8px;
+  }
+}

@@ -1,0 +1,185 @@
+/* Viewer page layout, ported from the Remix HomeApp. */
+@layer ui.component {
+  .root {
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: 701px) {
+      height: 100vh;
+      overflow: hidden;
+    }
+  }
+
+  .content {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+
+    @media (min-width: 701px) {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      overflow: hidden;
+      height: 100%;
+    }
+  }
+
+  .sidebar {
+    background: var(--d4-bg2);
+    display: none;
+    flex-direction: column;
+    overflow-y: auto;
+    border-right: 1px solid rgba(196, 120, 32, 0.2);
+
+    @media (min-width: 701px) {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    @media (max-width: 700px) {
+      position: fixed;
+      top: 52px;
+      left: 0;
+      bottom: 0;
+      width: min(85vw, 340px);
+      z-index: 50;
+    }
+  }
+
+  .branding {
+    padding: 28px 20px 24px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .sigil {
+    font-size: 28px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 14px rgba(196, 120, 32, 0.65));
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+    margin-bottom: 16px;
+  }
+
+  .controls {
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* "Load Example" is a link styled as the secondary button, centered like one. */
+  .exampleLink {
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .status {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--d4-border);
+  }
+
+  .main {
+    overflow-y: auto;
+    padding: 24px;
+
+    @media (max-width: 700px) {
+      padding: 16px;
+    }
+  }
+}
+
+/* Client-side shell (phase 5), ported from the Remix HomeApp. */
+@layer ui.component {
+  /* Mobile top bar — hidden on desktop. */
+  .topBar {
+    display: none;
+
+    @media (max-width: 700px) {
+      display: flex;
+      align-items: center;
+      height: 52px;
+      padding: 0 16px;
+      gap: 12px;
+      background: var(--d4-bg2);
+      border-bottom: 1px solid rgba(196, 120, 32, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      flex-shrink: 0;
+    }
+  }
+
+  .menuButton {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .topBarTitle {
+    font-family: var(--font-cinzel);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--d4-gold3);
+  }
+
+  .topBarEdit {
+    margin-left: auto;
+    text-decoration: none;
+  }
+
+  /* Mobile backdrop — only rendered while the sidebar is explicitly open. */
+  .backdrop {
+    display: none;
+
+    @media (max-width: 700px) {
+      display: block;
+      position: fixed;
+      inset: 0;
+      top: 52px;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 49;
+    }
+  }
+
+  .collapseButton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 1;
+  }
+
+  .openButton {
+    margin-bottom: 16px;
+
+    @media (max-width: 700px) {
+      display: none;
+    }
+  }
+
+  .history {
+    display: flex;
+    gap: 4px;
+  }
+
+  .historyButton {
+    flex: 1;
+  }
+}

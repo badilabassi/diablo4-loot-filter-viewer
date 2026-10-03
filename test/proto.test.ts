@@ -1,7 +1,8 @@
-import * as assert from 'remix/assert'
-import { describe, it } from 'remix/test'
+import * as assert from 'node:assert/strict'
 
-import { parseFilterB64, serializeFilter } from '../app/filter/proto.ts'
+import { describe, it } from 'vitest'
+
+import { parseFilterB64, serializeFilter } from '../src/filter/proto.ts'
 
 /**
  * Builds a minimal top-level filter message containing:
@@ -240,5 +241,50 @@ describe('proto: rule color field is optional', () => {
     const parsed = parseFilterB64(toBase64(new Uint8Array(top)))
 
     assert.deepEqual(parsed.rules[0]?.color, { hex: '#ff0000' })
+  })
+})
+
+/** A one-rule filter whose single condition is `condBytes` (a Condition message). */
+function filterWithCondition(condBytes: number[]): string {
+  const name = [...new TextEncoder().encode('R')]
+  // Rule: field 1 name, field 2 type 0, field 4 condition, field 5 enabled 1.
+  const rule = [0x0a, name.length, ...name, 0x10, 0x00, 0x22, condBytes.length, ...condBytes, 0x28, 0x01]
+  // Plus a filter name (field 2): real filters always have one, and the encoder
+  // writes a default when it's missing.
+  return toBase64(new Uint8Array([0x0a, rule.length, ...rule, 0x12, 0x01, 0x46]))
+}
+const fixed32 = (n: number) => [n & 0xff, (n >>> 8) & 0xff, (n >>> 16) & 0xff, (n >>> 24) & 0xff]
+
+describe('proto: condition field 4 per the diablofilter.com decoder', () => {
+  // filterType 7 with two affix ids (field 2, fixed32) and field 4 = 3.
+  const optional = filterWithCondition([0x08, 0x07, 0x15, ...fixed32(1829570), 0x15, ...fixed32(1829574), 0x20, 0x03])
+
+  it('reads Has Optional Affixes field 4 as the minimum count', () => {
+    assert.equal(parseFilterB64(optional).rules[0]?.conditions[0]?.minFromList, 3)
+  })
+
+  it('keeps Has Optional Affixes field 4 on export (it used to be dropped)', () => {
+    assert.equal(serializeFilter(parseFilterB64(optional)), optional)
+  })
+
+  it('writes no field 4 for Has Optional Affixes when none was set', () => {
+    const bare = filterWithCondition([0x08, 0x07, 0x15, ...fixed32(1829570)])
+    assert.equal(parseFilterB64(bare).rules[0]?.conditions[0]?.minFromList, undefined)
+    assert.equal(serializeFilter(parseFilterB64(bare)), bare)
+  })
+
+  it('reads Item Properties (filterType 2) field 4 as a bitmask and round-trips it', () => {
+    const props = filterWithCondition([0x08, 0x02, 0x20, 36])
+    assert.equal(parseFilterB64(props).rules[0]?.conditions[0]?.itemProperties, 36)
+    assert.equal(serializeFilter(parseFilterB64(props)), props)
+  })
+
+  it('round-trips the Greater Affix Check direction flag (field 6)', () => {
+    const atLeast = filterWithCondition([0x08, 0x04, 0x20, 0x03, 0x30, 0x01])
+    const fewerThan = filterWithCondition([0x08, 0x04, 0x20, 0x02])
+    assert.equal(parseFilterB64(atLeast).rules[0]?.conditions[0]?.field6, 1)
+    assert.equal(parseFilterB64(fewerThan).rules[0]?.conditions[0]?.field6, undefined)
+    assert.equal(serializeFilter(parseFilterB64(atLeast)), atLeast)
+    assert.equal(serializeFilter(parseFilterB64(fewerThan)), fewerThan)
   })
 })

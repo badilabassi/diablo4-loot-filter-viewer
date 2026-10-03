@@ -33,3 +33,7 @@ dist
 .vercel
 vercel/trace-deps.js
 .env*.local
+
+# TanStack Start / Nitro build output
+.output
+.nitro
