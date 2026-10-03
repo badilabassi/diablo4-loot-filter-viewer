@@ -365,6 +365,17 @@ Each phase ends with typecheck plus tests green and its own commit. **Bold** ite
    - Compare JS and CSS transfer size and Lighthouse scores against the Remix deploy. Expect much less JS on `/`, and no 518 KB index download on either page.
    - The PR includes the results.
 
+   **Phase 8 results, local part (2026-10-03).** Remix production (`diablo4-loot-filter-viewer.vercel.app`) vs the Start production build, both in headless Chrome at 1400×1000 with the cache disabled. Sizes are uncompressed, because the local build isn't behind Vercel's compression:
+
+   | Per page | Remix | Start |
+   |---|---|---|
+   | JS | 1,213 KB in 427 files | 461–479 KB in 5 files (−62%) |
+   | `/api/toc` download | 506 KB on every page | 0 KB on every page |
+   | Requests | ~430 | ~11 |
+   | Rule cards in server HTML | none | all |
+
+   FCP isn't comparable (remote vs localhost); it is measured on the preview. Still pending on the preview: the full C1–C10 run, Analytics events, cache headers for the favicon, fonts and `/api/toc`, and Lighthouse.
+
 ## Risks
 
 | Risk | Likelihood | Mitigation |
