@@ -57,8 +57,13 @@ function Dialog({
     }
   }
 
+  // Clicking the overlay is a pointer convenience (Escape and the close buttons
+  // work from the keyboard); the dialog's handlers only stop that click from
+  // bubbling and trap Tab, so neither needs its own keyboard equivalent.
   return (
+    // oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div className={layout.overlay} onClick={onClose}>
+      {/* oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         ref={dialogRef}
         id={id}

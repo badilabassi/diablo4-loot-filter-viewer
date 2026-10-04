@@ -28,10 +28,10 @@ const text = (html: string) =>
     .replace(/\s+/g, ' ')
     .trim()
 
-describe('affixDisplayName', () => {
-  const name = (Description: string, DescriptionClean = '') =>
-    affixDisplayName({ Description, DescriptionClean })
+const name = (Description: string, DescriptionClean = '') =>
+  affixDisplayName({ Description, DescriptionClean })
 
+describe('affixDisplayName', () => {
   it('keeps the sign and unit, dropping only the value placeholder', () => {
     assert.equal(name('+#% Movement Speed'), '+% Movement Speed')
     assert.equal(name('+# to Blazing Scream'), '+ to Blazing Scream')

@@ -85,6 +85,9 @@ function Viewer() {
 
       <div className={layout.content}>
         {sidebar.open && (
+          // Tapping the backdrop is a pointer convenience; the menu and collapse
+          // buttons close the sidebar from the keyboard.
+          // oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
           <div className={layout.backdrop} onClick={() => void sidebar.collapse()} />
         )}
 

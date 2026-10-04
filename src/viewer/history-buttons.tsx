@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 
 import { cx } from '../ui/cx.ts'
 import shared from '../ui/styles.module.css'
@@ -9,6 +9,25 @@ interface NavigationLike extends EventTarget {
   canGoForward: boolean
 }
 
+function navigationApi(): NavigationLike | undefined {
+  const nav = (window as { navigation?: NavigationLike }).navigation
+  return nav && typeof nav.canGoBack === 'boolean' ? nav : undefined
+}
+
+function subscribe(onChange: () => void) {
+  const nav = navigationApi()
+  nav?.addEventListener('currententrychange', onChange)
+  return () => nav?.removeEventListener('currententrychange', onChange)
+}
+
+// Snapshots are strings so they compare by value between reads.
+// Without the Navigation API both buttons are simply enabled.
+const clientSnapshot = () => {
+  const nav = navigationApi()
+  return nav ? `${nav.canGoBack}|${nav.canGoForward}` : 'true|true'
+}
+const serverSnapshot = () => 'false|false'
+
 /**
  * Undo/Redo for the viewer. Each parse is a URL, so these are the browser's Back
  * and Forward (approved behavior change #1).
@@ -18,19 +37,8 @@ interface NavigationLike extends EventTarget {
  * the browser supports it, and are simply enabled elsewhere.
  */
 export function HistoryButtons() {
-  const [can, setCan] = useState({ back: false, forward: false })
-
-  useEffect(() => {
-    const nav = (window as { navigation?: NavigationLike }).navigation
-    if (!nav || typeof nav.canGoBack !== 'boolean') {
-      setCan({ back: true, forward: true })
-      return
-    }
-    const sync = () => setCan({ back: nav.canGoBack, forward: nav.canGoForward })
-    sync()
-    nav.addEventListener('currententrychange', sync)
-    return () => nav.removeEventListener('currententrychange', sync)
-  }, [])
+  const [back, forward] = useSyncExternalStore(subscribe, clientSnapshot, serverSnapshot).split('|')
+  const can = { back: back === 'true', forward: forward === 'true' }
 
   return (
     <div className={layout.history} role="group" aria-label="History">

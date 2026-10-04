@@ -16,9 +16,9 @@ const FILTER: ParsedFilter = {
 
 const ruleNames = () => editorStore.getState().filter.rules.map((r) => r.name)
 
-describe('createTemporalStore', () => {
-  const make = () => createTemporalStore({ n: 0, label: 'x' }, (s) => ({ n: s.n }))
+const make = () => createTemporalStore({ n: 0, label: 'x' }, (s) => ({ n: s.n }))
 
+describe('createTemporalStore', () => {
   it('undo restores the previous snapshot and redo re-applies it', () => {
     const s = make()
     s.mutate((d) => {

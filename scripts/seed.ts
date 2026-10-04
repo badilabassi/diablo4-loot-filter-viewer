@@ -12,7 +12,6 @@
 
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import {
   buildTocData,
   fetchCommitHash,
@@ -21,8 +20,7 @@ import {
   D4C_UNIQUES_URL,
 } from '../src/data/toc.server.ts'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const ROOT = join(__dirname, '..')
+const ROOT = join(import.meta.dirname, '..')
 const OUT = process.argv[2] ? resolve(process.argv[2]) : join(ROOT, 'src', 'data', 'toc-seed.json')
 const OUT_DIR = dirname(OUT)
 

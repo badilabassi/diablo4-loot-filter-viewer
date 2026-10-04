@@ -5,6 +5,7 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, it, vi } from 'vitest'
 
+import type { TocEntry } from '../src/data/toc-kinds.ts'
 import { ConditionEditor } from '../src/editor/condition-editor.tsx'
 import { EditorStateProvider } from '../src/editor/editor-state.tsx'
 import { editorStore, loadFilterIntoEditor } from '../src/editor/editor-store.ts'
@@ -14,8 +15,10 @@ import { emptyLabels, rememberLabels } from '../src/editor/toc-labels.ts'
 import type { ParsedFilter } from '../src/filter/schemas.ts'
 
 // Server functions can't run in vitest; stub them.
-const searchToc = vi.fn(async () => [{ id: 42, label: 'Attack Speed', sub: 'offense' }])
-const resolveToc = vi.fn(async () => [])
+const searchToc = vi.fn<() => Promise<TocEntry[]>>(async () => [
+  { id: 42, label: 'Attack Speed', sub: 'offense' },
+])
+const resolveToc = vi.fn<() => Promise<TocEntry[]>>(async () => [])
 vi.mock('../src/data/toc.functions.ts', () => ({
   searchToc: (...args: unknown[]) => searchToc(...(args as [])),
   resolveToc: (...args: unknown[]) => resolveToc(...(args as [])),
@@ -85,17 +88,11 @@ describe('ConditionEditor', () => {
   })
 })
 
-describe('MultiPicker', () => {
-  const picker = () => (
-    <MultiPicker
-      ruleIndex={0}
-      condIndex={0}
-      field="affixIds"
-      kind="affix"
-      placeholder="Add affix"
-    />
-  )
+const picker = () => (
+  <MultiPicker ruleIndex={0} condIndex={0} field="affixIds" kind="affix" placeholder="Add affix" />
+)
 
+describe('MultiPicker', () => {
   it('labels known ids and falls back to the hex id for unknown ones', () => {
     rememberLabels('affix', [{ id: 7, label: 'Maximum Life', sub: 'defense' }])
     wrap(picker())

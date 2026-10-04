@@ -135,6 +135,9 @@ export function MultiPicker({
         <div
           id={listboxId}
           role="listbox"
+          // Programmatically focusable, as the listbox role requires; focus normally
+          // sits on the search field inside it.
+          tabIndex={-1}
           aria-label={placeholder}
           className={styles.listbox}
           onKeyDown={(e) => {

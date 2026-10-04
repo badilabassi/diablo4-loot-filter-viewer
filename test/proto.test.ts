@@ -16,15 +16,15 @@ import { parseFilterB64, serializeFilter } from '../src/filter/proto.ts'
  * branch and `break` out of the loop entirely, silently dropping every
  * field after it (including rule "B" and the filter name here).
  */
-function buildFixtureBytes(): Uint8Array {
-  const rule = (name: string) => {
-    const nameBytes = new TextEncoder().encode(name)
-    // field 1, wire type 2 (length-delimited): tag = (1 << 3) | 2 = 0x0a
-    return [0x0a, nameBytes.length, ...nameBytes]
-  }
+function ruleField(name: string) {
+  const nameBytes = new TextEncoder().encode(name)
+  // field 1, wire type 2 (length-delimited): tag = (1 << 3) | 2 = 0x0a
+  return [0x0a, nameBytes.length, ...nameBytes]
+}
 
-  const ruleA = rule('A')
-  const ruleB = rule('B')
+function buildFixtureBytes(): Uint8Array {
+  const ruleA = ruleField('A')
+  const ruleB = ruleField('B')
   const filterName = new TextEncoder().encode('Test')
 
   return new Uint8Array([

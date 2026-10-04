@@ -12,6 +12,8 @@ pnpm dev
 pnpm build
 pnpm test
 pnpm typecheck
+pnpm lint           # oxlint, config in .oxlintrc.json
+pnpm format         # oxfmt (pnpm format:check in CI), config in .oxfmtrc.json
 ```
 
 Pin dependency versions exactly: TanStack Start and Nitro publish very frequently, and Nitro is

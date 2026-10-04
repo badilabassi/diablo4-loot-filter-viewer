@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "react", "jsx-a11y", "import", "vitest"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "env": {
+    "builtin": true,
+    "browser": true,
+    "node": true
+  },
+  "ignorePatterns": ["src/routeTree.gen.ts", ".output/**"],
+  "rules": {
+    // The automatic JSX runtime ("jsx": "react-jsx") doesn't need React in scope.
+    "react/react-in-jsx-scope": "off",
+    // ARIA roles are used deliberately where the native element doesn't fit, e.g. the
+    // editor's rule rows contain buttons, so they can't themselves be <button>s.
+    "jsx-a11y/prefer-tag-over-role": "off",
+    // CommitInput (src/editor/condition-editor.tsx) renders an <input>.
+    "jsx-a11y/label-has-associated-control": ["error", { "controlComponents": ["CommitInput"] }],
+    // Side-effect imports are expected for global CSS.
+    "import/no-unassigned-import": ["warn", { "allow": ["**/*.css"] }]
+  }
+}
