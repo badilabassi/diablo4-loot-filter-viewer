@@ -20,6 +20,10 @@ export default defineConfig({
       },
     }),
     // Must come after the Start plugin.
-    viteReact(),
+    // React Compiler, native (Rust) via oxc-transform-react; experimental in
+    // @vitejs/plugin-react 6. It only compiles client-environment code, so server
+    // components and SSR output are untouched. logDiagnostics surfaces components
+    // the compiler skips (e.g. Rules of React violations) as build warnings.
+    viteReact({ compiler: { logDiagnostics: true } }),
   ],
 })
