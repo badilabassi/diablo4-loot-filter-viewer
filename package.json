@@ -22,7 +22,7 @@
     "motion": "^12.42.2",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "zod": "^4.4.3"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@testing-library/dom": "10.4.2",
