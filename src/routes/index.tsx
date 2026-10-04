@@ -84,14 +84,22 @@ function Viewer() {
       </div>
 
       <div className={layout.content}>
-        {sidebar.open && <div className={layout.backdrop} onClick={() => void sidebar.collapse()} />}
+        {sidebar.open && (
+          <div className={layout.backdrop} onClick={() => void sidebar.collapse()} />
+        )}
 
         {/* Always in the DOM. CSS decides by default; inline styles override only
             after the user explicitly toggles. */}
         <aside
           id={SIDEBAR_ID}
           aria-hidden={sidebar.closed || undefined}
-          style={sidebar.closed ? { display: 'none' } : sidebar.open ? { display: 'flex', flexDirection: 'column' } : undefined}
+          style={
+            sidebar.closed
+              ? { display: 'none' }
+              : sidebar.open
+                ? { display: 'flex', flexDirection: 'column' }
+                : undefined
+          }
           className={cx(shared.ornateFrame, layout.sidebar)}
         >
           <div className={cx(shared.headerGlow, layout.branding)}>
@@ -108,7 +116,10 @@ function Viewer() {
             </div>
             <h1 className={cx(shared.titleHero, layout.title)}>Diablo IV</h1>
             <p className={cx(shared.titleSub, layout.subtitle)}>Filter Viewer & Editor</p>
-            <nav aria-label="Primary" className={cx(shared.navTabs, shared.ornateFrame, shared.ornateFrameStrong)}>
+            <nav
+              aria-label="Primary"
+              className={cx(shared.navTabs, shared.ornateFrame, shared.ornateFrameStrong)}
+            >
               <span className={shared.navTabActive} aria-current="page">
                 View
               </span>
@@ -147,7 +158,11 @@ function Viewer() {
               <button type="submit" className={shared.btnPrimary}>
                 Parse
               </button>
-              <Link to="/" search={{ code: EXAMPLE_FILTER }} className={cx(shared.btnSecondary, layout.exampleLink)}>
+              <Link
+                to="/"
+                search={{ code: EXAMPLE_FILTER }}
+                className={cx(shared.btnSecondary, layout.exampleLink)}
+              >
                 Load Example
               </Link>
             </div>
@@ -158,7 +173,11 @@ function Viewer() {
           </form>
         </aside>
 
-        <main id="main-content" style={sidebar.closed ? { gridColumn: '1 / -1' } : undefined} className={layout.main}>
+        <main
+          id="main-content"
+          style={sidebar.closed ? { gridColumn: '1 / -1' } : undefined}
+          className={layout.main}
+        >
           {/* Desktop: reopen the sidebar after the user collapsed it. */}
           {sidebar.closed && (
             <button

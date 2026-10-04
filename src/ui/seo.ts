@@ -22,7 +22,13 @@ export interface SeoOptions {
 
 type Meta = Record<string, string>
 
-export function seo({ title, description = DEFAULT_DESCRIPTION, canonical, robots = DEFAULT_ROBOTS, ogImage }: SeoOptions) {
+export function seo({
+  title,
+  description = DEFAULT_DESCRIPTION,
+  canonical,
+  robots = DEFAULT_ROBOTS,
+  ogImage,
+}: SeoOptions) {
   const meta: Meta[] = [
     { title },
     { name: 'description', content: description },

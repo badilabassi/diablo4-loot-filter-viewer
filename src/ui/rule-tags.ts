@@ -54,10 +54,7 @@ export function dominantGlowTag(tags: RuleTag[]): RuleTagKey | null {
   return null
 }
 
-export const tagChipColors: Record<
-  RuleTagKey,
-  { color: string; border: string; bg: string }
-> = {
+export const tagChipColors: Record<RuleTagKey, { color: string; border: string; bg: string }> = {
   mythic: { color: '#cda1d8', border: 'rgba(205,161,216,0.35)', bg: 'rgba(205,161,216,0.12)' },
   unique: { color: '#dca779', border: 'rgba(220,167,121,0.35)', bg: 'rgba(220,167,121,0.12)' },
   leg: { color: '#ff8000', border: 'rgba(255,128,0,0.35)', bg: 'rgba(255,128,0,0.12)' },
@@ -65,7 +62,11 @@ export const tagChipColors: Record<
   ancestral: { color: '#fff', border: 'rgba(255,255,255,0.35)', bg: 'rgba(255,255,255,0.08)' },
   ga: { color: '#29d2ff', border: 'rgba(41,210,255,0.35)', bg: 'rgba(41,210,255,0.12)' },
   codex: { color: 'var(--d4-gold2)', border: 'rgba(155,118,68,0.35)', bg: 'rgba(155,118,68,0.12)' },
-  select: { color: 'var(--d4-gold3)', border: 'rgba(215,171,109,0.35)', bg: 'rgba(215,171,109,0.12)' },
+  select: {
+    color: 'var(--d4-gold3)',
+    border: 'rgba(215,171,109,0.35)',
+    bg: 'rgba(215,171,109,0.12)',
+  },
   hidetext: { color: 'var(--d4-text2)', border: 'var(--d4-border)', bg: 'rgba(255,255,255,0.04)' },
   recolor: { color: 'var(--d4-text2)', border: 'var(--d4-border)', bg: 'rgba(255,255,255,0.04)' },
   hide: { color: '#ff4444', border: 'rgba(255,68,68,0.35)', bg: 'rgba(255,68,68,0.12)' },

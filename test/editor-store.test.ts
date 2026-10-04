@@ -21,8 +21,12 @@ describe('createTemporalStore', () => {
 
   it('undo restores the previous snapshot and redo re-applies it', () => {
     const s = make()
-    s.mutate((d) => { d.n = 1 })
-    s.mutate((d) => { d.n = 2 })
+    s.mutate((d) => {
+      d.n = 1
+    })
+    s.mutate((d) => {
+      d.n = 2
+    })
     s.undo()
     assert.equal(s.getState().n, 1)
     s.redo()
@@ -31,7 +35,9 @@ describe('createTemporalStore', () => {
 
   it('only restores the partialized fields', () => {
     const s = make()
-    s.mutate((d) => { d.n = 1 })
+    s.mutate((d) => {
+      d.n = 1
+    })
     s.setState({ ...s.getState(), label: 'changed without history' })
     s.undo()
     assert.deepEqual(s.getState(), { n: 0, label: 'changed without history' })
@@ -39,18 +45,28 @@ describe('createTemporalStore', () => {
 
   it('a new mutation clears the redo stack', () => {
     const s = make()
-    s.mutate((d) => { d.n = 1 })
+    s.mutate((d) => {
+      d.n = 1
+    })
     s.undo()
     assert.equal(s.canRedo(), true)
-    s.mutate((d) => { d.n = 5 })
+    s.mutate((d) => {
+      d.n = 5
+    })
     assert.equal(s.canRedo(), false)
   })
 
   it('keeps at most 50 undo steps', () => {
     const s = make()
-    for (let i = 1; i <= 60; i++) s.mutate((d) => { d.n = i })
+    for (let i = 1; i <= 60; i++)
+      s.mutate((d) => {
+        d.n = i
+      })
     let steps = 0
-    while (s.canUndo()) { s.undo(); steps++ }
+    while (s.canUndo()) {
+      s.undo()
+      steps++
+    }
     assert.equal(steps, 50)
     assert.equal(s.getState().n, 10)
   })
@@ -65,10 +81,16 @@ describe('createTemporalStore', () => {
   it('notifies subscribers on change and stops after unsubscribe', () => {
     const s = make()
     let calls = 0
-    const unsubscribe = s.subscribe(() => { calls++ })
-    s.mutate((d) => { d.n = 1 })
+    const unsubscribe = s.subscribe(() => {
+      calls++
+    })
+    s.mutate((d) => {
+      d.n = 1
+    })
     unsubscribe()
-    s.mutate((d) => { d.n = 2 })
+    s.mutate((d) => {
+      d.n = 2
+    })
     assert.equal(calls, 1)
   })
 })

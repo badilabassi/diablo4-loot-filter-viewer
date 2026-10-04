@@ -30,7 +30,13 @@ interface InitialState {
 
 const InitialStateContext = createContext<InitialState | null>(null)
 
-export function EditorStateProvider({ initial, children }: { initial: InitialState; children: ReactNode }) {
+export function EditorStateProvider({
+  initial,
+  children,
+}: {
+  initial: InitialState
+  children: ReactNode
+}) {
   return <InitialStateContext.Provider value={initial}>{children}</InitialStateContext.Provider>
 }
 
@@ -54,7 +60,12 @@ export function useEditor<U>(selector: (s: EditorSnapshot) => U): U {
         off()
       }
     },
-    () => selector({ filter: editorStore.getState().filter, canUndo: editorStore.canUndo(), canRedo: editorStore.canRedo() }),
+    () =>
+      selector({
+        filter: editorStore.getState().filter,
+        canUndo: editorStore.canUndo(),
+        canRedo: editorStore.canRedo(),
+      }),
     () => selector({ filter: initial.filter, canUndo: false, canRedo: false }),
   )
 }
@@ -88,7 +99,11 @@ let loadedCode: string | undefined
  * Called from the /edit loader, which runs before the route renders on client
  * navigations, so stores aren't notified mid-render.
  */
-export function bootstrapEditor(code: string | undefined, filter: ParsedFilter | null, labels: TocLabels) {
+export function bootstrapEditor(
+  code: string | undefined,
+  filter: ParsedFilter | null,
+  labels: TocLabels,
+) {
   if (typeof window === 'undefined') return
   rememberAllLabels(labels)
   if (!code || !filter || code === loadedCode) return
@@ -102,6 +117,10 @@ export function bootstrapEditor(code: string | undefined, filter: ParsedFilter |
  * so load during the first render instead. Nothing has subscribed yet at that
  * point, and on later renders this is a no-op.
  */
-export function useEditorBootstrap(code: string | undefined, filter: ParsedFilter | null, labels: TocLabels) {
+export function useEditorBootstrap(
+  code: string | undefined,
+  filter: ParsedFilter | null,
+  labels: TocLabels,
+) {
   bootstrapEditor(code, filter, labels)
 }

@@ -81,12 +81,20 @@ export function Editor({ loadError }: { loadError: string | null }) {
       </div>
 
       <div className={layout.content}>
-        {sidebar.open && <div className={layout.backdrop} onClick={() => void sidebar.collapse()} />}
+        {sidebar.open && (
+          <div className={layout.backdrop} onClick={() => void sidebar.collapse()} />
+        )}
 
         <aside
           id={SIDEBAR_ID}
           aria-hidden={sidebar.closed || undefined}
-          style={sidebar.closed ? { display: 'none' } : sidebar.open ? { display: 'flex', flexDirection: 'column' } : undefined}
+          style={
+            sidebar.closed
+              ? { display: 'none' }
+              : sidebar.open
+                ? { display: 'flex', flexDirection: 'column' }
+                : undefined
+          }
           className={cx(shared.ornateFrame, layout.sidebar)}
         >
           <div className={cx(shared.headerGlow, layout.branding)}>
@@ -103,7 +111,10 @@ export function Editor({ loadError }: { loadError: string | null }) {
             </div>
             <h1 className={cx(shared.titleHero, layout.title)}>Diablo IV</h1>
             <p className={cx(shared.titleSub, layout.subtitle)}>Filter Editor</p>
-            <nav aria-label="Primary" className={cx(shared.navTabs, shared.ornateFrame, shared.ornateFrameStrong)}>
+            <nav
+              aria-label="Primary"
+              className={cx(shared.navTabs, shared.ornateFrame, shared.ornateFrameStrong)}
+            >
               <Link to="/" search={viewSearch} className={shared.navTabLink}>
                 View
               </Link>
@@ -259,7 +270,11 @@ export function Editor({ loadError }: { loadError: string | null }) {
           </div>
 
           <div className={layout.footer}>
-            <button type="button" className={cx(shared.btnSecondary, layout.footerButton)} onClick={() => setDialog('import')}>
+            <button
+              type="button"
+              className={cx(shared.btnSecondary, layout.footerButton)}
+              onClick={() => setDialog('import')}
+            >
               ↓ Import
             </button>
             <button
@@ -272,7 +287,11 @@ export function Editor({ loadError }: { loadError: string | null }) {
           </div>
         </aside>
 
-        <main id="main-content" style={sidebar.closed ? { gridColumn: '1 / -1' } : undefined} className={layout.main}>
+        <main
+          id="main-content"
+          style={sidebar.closed ? { gridColumn: '1 / -1' } : undefined}
+          className={layout.main}
+        >
           <div className={layout.mainInner}>
             {sidebar.closed && (
               <button
@@ -291,7 +310,11 @@ export function Editor({ loadError }: { loadError: string | null }) {
             )}
             {rules.length > 0 ? (
               // onMove keeps the moved rule selected (fixes the audit's bug #2).
-              <RuleEditor index={selectedIndex} total={rules.length} onMove={(from, to) => setSelected((s) => selectionAfterMove(s, from, to))} />
+              <RuleEditor
+                index={selectedIndex}
+                total={rules.length}
+                onMove={(from, to) => setSelected((s) => selectionAfterMove(s, from, to))}
+              />
             ) : (
               <div className={cx(shared.ornateFrame, layout.emptyState)}>
                 <p className={layout.emptyText}>
@@ -304,7 +327,9 @@ export function Editor({ loadError }: { loadError: string | null }) {
       </div>
 
       {dialog === 'import' && <ImportDialog onClose={() => setDialog(null)} />}
-      {dialog && dialog !== 'import' && <ExportDialog code={dialog.exportCode} onClose={() => setDialog(null)} />}
+      {dialog && dialog !== 'import' && (
+        <ExportDialog code={dialog.exportCode} onClose={() => setDialog(null)} />
+      )}
     </div>
   )
 }

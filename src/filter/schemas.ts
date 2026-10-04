@@ -1,14 +1,14 @@
-import { z } from "zod";
+import { z } from 'zod'
 
-export const AffixCategorySchema = z.enum(["stat", "offense", "defense", "utility"]);
+export const AffixCategorySchema = z.enum(['stat', 'offense', 'defense', 'utility'])
 export const AffixEntrySchema = z.object({
   name: z.string(),
   cat: AffixCategorySchema,
   raw: z.string(),
-});
-export const AffixDbSchema = z.record(z.coerce.number(), AffixEntrySchema);
+})
+export const AffixDbSchema = z.record(z.coerce.number(), AffixEntrySchema)
 
-export const ParsedColorSchema = z.object({ hex: z.string() });
+export const ParsedColorSchema = z.object({ hex: z.string() })
 
 export const FilterConditionSchema = z.object({
   filterType: z.number(),
@@ -34,7 +34,7 @@ export const FilterConditionSchema = z.object({
    * direction: 1 = "at least" minGaCount, anything else = "fewer than".
    * Also seen on filterType=3. Preserved for lossless round-trips. */
   field6: z.number().optional(),
-});
+})
 
 export const FilterRuleSchema = z.object({
   name: z.string(),
@@ -45,19 +45,19 @@ export const FilterRuleSchema = z.object({
   color: ParsedColorSchema.optional(),
   enabled: z.boolean(),
   conditions: z.array(FilterConditionSchema),
-});
+})
 
 export const ParsedFilterSchema = z.object({
   name: z.string(),
   rules: z.array(FilterRuleSchema),
   /** Opaque top-level varint fields (e.g. field 3 and 4 in Raxx's filter) preserved for lossless round-trips. */
   topLevelFlags: z.array(z.object({ f: z.number(), v: z.number() })).optional(),
-});
+})
 
-export type AffixCategory = z.infer<typeof AffixCategorySchema>;
-export type AffixEntry = z.infer<typeof AffixEntrySchema>;
-export type AffixDb = z.infer<typeof AffixDbSchema>;
-export type ParsedColor = z.infer<typeof ParsedColorSchema>;
-export type FilterCondition = z.infer<typeof FilterConditionSchema>;
-export type FilterRule = z.infer<typeof FilterRuleSchema>;
-export type ParsedFilter = z.infer<typeof ParsedFilterSchema>;
+export type AffixCategory = z.infer<typeof AffixCategorySchema>
+export type AffixEntry = z.infer<typeof AffixEntrySchema>
+export type AffixDb = z.infer<typeof AffixDbSchema>
+export type ParsedColor = z.infer<typeof ParsedColorSchema>
+export type FilterCondition = z.infer<typeof FilterConditionSchema>
+export type FilterRule = z.infer<typeof FilterRuleSchema>
+export type ParsedFilter = z.infer<typeof ParsedFilterSchema>

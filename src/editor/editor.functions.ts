@@ -14,7 +14,14 @@ import { type TocLabels, emptyLabels } from './toc-labels.ts'
  * and the client never downloads the whole TOC (plan D6).
  */
 export const getEditor = createServerFn({ method: 'GET' })
-  .validator(z.object({ code: z.string().max(64 * 1024).optional() }))
+  .validator(
+    z.object({
+      code: z
+        .string()
+        .max(64 * 1024)
+        .optional(),
+    }),
+  )
   .handler(async ({ data }) => {
     const code = data.code?.trim() || undefined
     let filter: ParsedFilter | null = null
@@ -32,9 +39,15 @@ export const getEditor = createServerFn({ method: 'GET' })
     if (filter) {
       const index = await getTocIndex()
       const ids = referencedIds(filter)
-      const byKind = { affix: ids.affixes, itemType: ids.itemTypes, item: ids.items, talismanSet: ids.talismanSets }
+      const byKind = {
+        affix: ids.affixes,
+        itemType: ids.itemTypes,
+        item: ids.items,
+        talismanSet: ids.talismanSets,
+      }
       for (const kind of TOC_KINDS) {
-        for (const entry of resolveTocEntries(index, kind, [...byKind[kind]])) labels[kind][entry.id] = entry
+        for (const entry of resolveTocEntries(index, kind, [...byKind[kind]]))
+          labels[kind][entry.id] = entry
       }
     }
     return { code: filter ? code : undefined, filter, error, labels }

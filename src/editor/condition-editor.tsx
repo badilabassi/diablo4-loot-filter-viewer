@@ -9,7 +9,10 @@ import { editorStore } from './editor-store.ts'
 import { useEditor } from './editor-state.tsx'
 import { MultiPicker } from './multi-picker.tsx'
 
-type CommitInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'defaultValue' | 'onChange'> & {
+type CommitInputProps = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'value' | 'defaultValue' | 'onChange'
+> & {
   value: string | number
   onCommit: (value: string) => void
 }
@@ -44,7 +47,13 @@ export function CommitInput({ value, onCommit, ...rest }: CommitInputProps) {
 }
 
 /** Ported 1:1 from the Remix ConditionEditor. */
-export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; condIndex: number }) {
+export function ConditionEditor({
+  ruleIndex,
+  condIndex,
+}: {
+  ruleIndex: number
+  condIndex: number
+}) {
   const c = useEditor((s) => s.filter.rules[ruleIndex]?.conditions[condIndex])
   if (!c) return null
 
@@ -133,7 +142,9 @@ export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; c
                     patch({ qualityFlags: checked ? cur & ~flag : cur | flag })
                   }}
                 />
-                <span style={{ color, fontSize: '12px', fontFamily: 'var(--font-cinzel)' }}>{name}</span>
+                <span style={{ color, fontSize: '12px', fontFamily: 'var(--font-cinzel)' }}>
+                  {name}
+                </span>
               </label>
             )
           })}
@@ -154,7 +165,9 @@ export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; c
                     patch({ itemProperties: checked ? cur & ~bit : cur | bit })
                   }}
                 />
-                <span style={{ color, fontSize: '12px', fontFamily: 'var(--font-cinzel)' }}>{name}</span>
+                <span style={{ color, fontSize: '12px', fontFamily: 'var(--font-cinzel)' }}>
+                  {name}
+                </span>
               </label>
             )
           })}
@@ -203,7 +216,13 @@ export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; c
 
       {c.filterType === 6 && (
         <>
-          <MultiPicker ruleIndex={ruleIndex} condIndex={condIndex} field="affixIds" kind="affix" placeholder="Add affix…" />
+          <MultiPicker
+            ruleIndex={ruleIndex}
+            condIndex={condIndex}
+            field="affixIds"
+            kind="affix"
+            placeholder="Add affix…"
+          />
           <label className={styles.field}>
             Must have at least
             <CommitInput
@@ -246,7 +265,11 @@ export function ConditionEditor({ ruleIndex, condIndex }: { ruleIndex: number; c
       {c.filterType === 8 && (
         <>
           <label className={styles.field}>
-            <input type="checkbox" checked={c.itemIds.length === 0} onChange={() => patch({ itemIds: [] })} />
+            <input
+              type="checkbox"
+              checked={c.itemIds.length === 0}
+              onChange={() => patch({ itemIds: [] })}
+            />
             <span style={{ color: '#e822a8', fontFamily: 'var(--font-cinzel)' }}>Is Ancestral</span>
           </label>
           <MultiPicker

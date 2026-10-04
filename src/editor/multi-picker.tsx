@@ -31,7 +31,14 @@ const hexLabel = (id: number) => `0x${id.toString(16).toUpperCase()}`
  * the client; this one asks the server (searchToc / resolveToc) and caches the
  * labels it gets back in tocLabelStore.
  */
-export function MultiPicker({ ruleIndex, condIndex, field, kind, placeholder, pillColor }: MultiPickerProps) {
+export function MultiPicker({
+  ruleIndex,
+  condIndex,
+  field,
+  kind,
+  placeholder,
+  pillColor,
+}: MultiPickerProps) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<TocEntry[]>([])

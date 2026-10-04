@@ -2,7 +2,13 @@ import type { FilterNames } from './names.ts'
 import styles from './affix-chip.module.css'
 
 /** Server-safe. `affix` is undefined when the id isn't in the TOC index. */
-export function AffixChip({ snoId, affix }: { snoId: number; affix: FilterNames['affixes'][number] | undefined }) {
+export function AffixChip({
+  snoId,
+  affix,
+}: {
+  snoId: number
+  affix: FilterNames['affixes'][number] | undefined
+}) {
   return (
     <span
       className={styles.chip}

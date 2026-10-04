@@ -74,5 +74,9 @@ export const GLOW: Record<RuleTagKey, GlowSpec> = {
 export function glowVars(tag: RuleTagKey | null): CSSProperties | undefined {
   if (!tag) return undefined
   const g = GLOW[tag]
-  return { ['--glow-accent']: g.accent, ['--glow-soft']: g.soft, ['--glow-strong']: g.strong } as CSSProperties
+  return {
+    ['--glow-accent']: g.accent,
+    ['--glow-soft']: g.soft,
+    ['--glow-strong']: g.strong,
+  } as CSSProperties
 }

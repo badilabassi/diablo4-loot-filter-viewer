@@ -49,15 +49,23 @@ describe('searchTocEntries', () => {
   })
 
   it('skips excluded (already selected) ids', () => {
-    assert.deepEqual(searchTocEntries(index, 'affix', 'crit', [1]).map((e) => e.id), [3])
+    assert.deepEqual(
+      searchTocEntries(index, 'affix', 'crit', [1]).map((e) => e.id),
+      [3],
+    )
   })
 
   it('lists entries for an empty query', () => {
-    assert.deepEqual(searchTocEntries(index, 'affix', '').map((e) => e.id), [1, 2, 3])
+    assert.deepEqual(
+      searchTocEntries(index, 'affix', '').map((e) => e.id),
+      [1, 2, 3],
+    )
   })
 
   it('searches the requested kind only', () => {
-    assert.deepEqual(searchTocEntries(index, 'item', 'crest'), [{ id: 20, label: 'Harlequin Crest' }])
+    assert.deepEqual(searchTocEntries(index, 'item', 'crest'), [
+      { id: 20, label: 'Harlequin Crest' },
+    ])
     assert.deepEqual(searchTocEntries(index, 'itemType', 'crest'), [])
   })
 })
@@ -65,14 +73,20 @@ describe('searchTocEntries', () => {
 describe('resolveTocEntries', () => {
   it('returns entries in the requested order and omits unknown ids', () => {
     const index = buildTocIndex(DATA)
-    assert.deepEqual(resolveTocEntries(index, 'affix', [3, 999, 1]).map((e) => e.id), [3, 1])
+    assert.deepEqual(
+      resolveTocEntries(index, 'affix', [3, 999, 1]).map((e) => e.id),
+      [3, 1],
+    )
   })
 })
 
 describe('getTocIndex (bundled seed)', () => {
   // getCachedTocData() revalidates against GitHub in the background; keep tests offline.
   beforeAll(() => {
-    vi.stubGlobal('fetch', vi.fn(async () => new Response(null, { status: 503 })))
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(null, { status: 503 })),
+    )
   })
   afterAll(() => {
     vi.unstubAllGlobals()

@@ -113,7 +113,11 @@ export function RuleEditor({
         </select>
         {r.type === 2 && (
           <label className={styles.colorLabel}>
-            <span aria-hidden="true" className={styles.colorSwatch} style={{ background: r.color?.hex ?? '#ffffff' }} />
+            <span
+              aria-hidden="true"
+              className={styles.colorSwatch}
+              style={{ background: r.color?.hex ?? '#ffffff' }}
+            />
             <CommitInput
               type="color"
               value={r.color?.hex ?? '#ffffff'}
@@ -134,7 +138,9 @@ export function RuleEditor({
           <input
             type="checkbox"
             checked={r.enabled}
-            aria-label={r.enabled ? 'Rule enabled — click to disable' : 'Rule disabled — click to enable'}
+            aria-label={
+              r.enabled ? 'Rule enabled — click to disable' : 'Rule disabled — click to enable'
+            }
             onChange={(e) => editorStore.updateRule(i, { enabled: e.currentTarget.checked })}
           />
           {r.enabled ? 'On' : 'Off'}
@@ -147,7 +153,12 @@ export function RuleEditor({
         >
           ⧉
         </button>
-        <button type="button" aria-label="Remove rule" className={shared.iconBtn} onClick={() => editorStore.removeRule(i)}>
+        <button
+          type="button"
+          aria-label="Remove rule"
+          className={shared.iconBtn}
+          onClick={() => editorStore.removeRule(i)}
+        >
           ×
         </button>
       </div>
@@ -164,7 +175,13 @@ export function RuleEditor({
             >
               <span
                 aria-hidden="true"
-                style={{ width: '16px', height: '16px', borderRadius: '4px', background: c, display: 'block' }}
+                style={{
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '4px',
+                  background: c,
+                  display: 'block',
+                }}
               />
             </button>
           ))}

@@ -13,7 +13,13 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { buildTocData, fetchCommitHash, D4C_REPO, D4C_AFFIXES_URL, D4C_UNIQUES_URL } from '../src/data/toc.server.ts'
+import {
+  buildTocData,
+  fetchCommitHash,
+  D4C_REPO,
+  D4C_AFFIXES_URL,
+  D4C_UNIQUES_URL,
+} from '../src/data/toc.server.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
@@ -26,10 +32,7 @@ console.log(`  ${D4C_AFFIXES_URL}`)
 console.log(`  ${D4C_UNIQUES_URL}`)
 
 console.log('Fetching D4Companion data + commit hash...')
-const [data, commitHash] = await Promise.all([
-  buildTocData(),
-  fetchCommitHash(owner, repo, branch),
-])
+const [data, commitHash] = await Promise.all([buildTocData(), fetchCommitHash(owner, repo, branch)])
 
 if (commitHash) {
   data.commitHash = commitHash

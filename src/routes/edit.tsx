@@ -2,7 +2,11 @@ import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
 
 import { Editor } from '../editor/editor.tsx'
-import { EditorStateProvider, bootstrapEditor, useEditorBootstrap } from '../editor/editor-state.tsx'
+import {
+  EditorStateProvider,
+  bootstrapEditor,
+  useEditorBootstrap,
+} from '../editor/editor-state.tsx'
 import { editorStore } from '../editor/editor-store.ts'
 import { getEditor } from '../editor/editor.functions.ts'
 import { canonicalFor, seo } from '../ui/seo.ts'

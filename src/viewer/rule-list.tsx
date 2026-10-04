@@ -34,7 +34,9 @@ export function RuleList({
       <div className={styles.header}>
         <span className={styles.filterName}>{filter.name}</span>
         <span className={styles.active}>● Active</span>
-        <span className={styles.ruleCount}>{filter.rules.filter((r) => r.type !== 3).length} rules</span>
+        <span className={styles.ruleCount}>
+          {filter.rules.filter((r) => r.type !== 3).length} rules
+        </span>
         <a href={editHref} className={cx(shared.btnSecondary, styles.editLink)}>
           Edit →
         </a>

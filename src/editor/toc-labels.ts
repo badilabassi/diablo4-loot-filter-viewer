@@ -24,5 +24,6 @@ export function rememberLabels(kind: TocKind, entries: readonly TocEntry[]) {
 }
 
 export function rememberAllLabels(labels: TocLabels) {
-  for (const kind of Object.keys(labels) as TocKind[]) rememberLabels(kind, Object.values(labels[kind]))
+  for (const kind of Object.keys(labels) as TocKind[])
+    rememberLabels(kind, Object.values(labels[kind]))
 }

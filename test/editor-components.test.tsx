@@ -21,7 +21,14 @@ vi.mock('../src/data/toc.functions.ts', () => ({
   resolveToc: (...args: unknown[]) => resolveToc(...(args as [])),
 }))
 
-const cond = { filterType: 7, subtypeIds: [], affixIds: [7, 255], itemIds: [], talismanSetIds: [], optionalAffixIds: [] }
+const cond = {
+  filterType: 7,
+  subtypeIds: [],
+  affixIds: [7, 255],
+  itemIds: [],
+  talismanSetIds: [],
+  optionalAffixIds: [],
+}
 const FILTER: ParsedFilter = {
   name: 'Fixture',
   rules: [
@@ -31,7 +38,11 @@ const FILTER: ParsedFilter = {
 }
 
 function wrap(node: ReactNode) {
-  return render(<EditorStateProvider initial={{ filter: FILTER, labels: emptyLabels() }}>{node}</EditorStateProvider>)
+  return render(
+    <EditorStateProvider initial={{ filter: FILTER, labels: emptyLabels() }}>
+      {node}
+    </EditorStateProvider>,
+  )
 }
 
 beforeEach(() => {
@@ -47,7 +58,10 @@ describe('RuleEditor', () => {
     wrap(<RuleEditor index={0} total={2} onMove={(from, to) => moves.push([from, to])} />)
     fireEvent.click(screen.getByRole('button', { name: 'Move rule down' }))
     assert.deepEqual(moves, [[0, 1]])
-    assert.deepEqual(editorStore.getState().filter.rules.map((r) => r.name), ['B', 'A'])
+    assert.deepEqual(
+      editorStore.getState().filter.rules.map((r) => r.name),
+      ['B', 'A'],
+    )
   })
 
   it('writes name and enabled edits to the store', () => {
@@ -72,7 +86,15 @@ describe('ConditionEditor', () => {
 })
 
 describe('MultiPicker', () => {
-  const picker = () => <MultiPicker ruleIndex={0} condIndex={0} field="affixIds" kind="affix" placeholder="Add affix" />
+  const picker = () => (
+    <MultiPicker
+      ruleIndex={0}
+      condIndex={0}
+      field="affixIds"
+      kind="affix"
+      placeholder="Add affix"
+    />
+  )
 
   it('labels known ids and falls back to the hex id for unknown ones', () => {
     rememberLabels('affix', [{ id: 7, label: 'Maximum Life', sub: 'defense' }])
@@ -93,7 +115,9 @@ describe('MultiPicker', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Add affix' }))
     })
-    assert.deepEqual(searchToc.mock.calls[0], [{ data: { kind: 'affix', query: '', exclude: [7, 255] } }])
+    assert.deepEqual(searchToc.mock.calls[0], [
+      { data: { kind: 'affix', query: '', exclude: [7, 255] } },
+    ])
     fireEvent.click(await screen.findByRole('option', { name: /Attack Speed/ }))
     assert.deepEqual(editorStore.getState().filter.rules[0]!.conditions[0]!.affixIds, [7, 255, 42])
   })
@@ -105,13 +129,18 @@ describe('ConditionEditor defaults (diablofilter.com decoder semantics)', () => 
     fireEvent.change(screen.getByLabelText('Condition type'), { target: { value: '4' } })
     const c = editorStore.getState().filter.rules[0]!.conditions[0]!
     assert.equal(c.field6, 1)
-    assert.equal((screen.getByLabelText('At least or fewer than') as HTMLSelectElement).value, 'atLeast')
+    assert.equal(
+      (screen.getByLabelText('At least or fewer than') as HTMLSelectElement).value,
+      'atLeast',
+    )
   })
 
   it('switching the direction to "fewer than" clears the flag', () => {
     wrap(<ConditionEditor ruleIndex={0} condIndex={0} />)
     fireEvent.change(screen.getByLabelText('Condition type'), { target: { value: '4' } })
-    fireEvent.change(screen.getByLabelText('At least or fewer than'), { target: { value: 'fewerThan' } })
+    fireEvent.change(screen.getByLabelText('At least or fewer than'), {
+      target: { value: 'fewerThan' },
+    })
     assert.equal(editorStore.getState().filter.rules[0]!.conditions[0]!.field6, 0)
   })
 

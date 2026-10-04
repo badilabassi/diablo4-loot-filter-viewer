@@ -1,5 +1,11 @@
 import type { ParsedFilter } from '../filter/schemas.ts'
-import type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet } from '../filter/toc-types.ts'
+import type {
+  TocAffix,
+  TocData,
+  TocItem,
+  TocItemType,
+  TocTalismanSet,
+} from '../filter/toc-types.ts'
 import { type FilterNames, referencedIds } from '../viewer/names.ts'
 import { getCachedTocData } from './toc-cache.server.ts'
 
@@ -41,7 +47,8 @@ export function buildTocIndex(data: TocData): TocIndex {
     },
     entryById: {} as TocIndex['entryById'],
   }
-  for (const kind of TOC_KINDS) index.entryById[kind] = new Map(index.entries[kind].map((e) => [e.id, e]))
+  for (const kind of TOC_KINDS)
+    index.entryById[kind] = new Map(index.entries[kind].map((e) => [e.id, e]))
   indexes.set(data, index)
   return index
 }
@@ -75,7 +82,11 @@ export function searchTocEntries(
 }
 
 /** Entries for the given ids, in the given order. Unknown ids are omitted. */
-export function resolveTocEntries(index: TocIndex, kind: TocKind, ids: readonly number[]): TocEntry[] {
+export function resolveTocEntries(
+  index: TocIndex,
+  kind: TocKind,
+  ids: readonly number[],
+): TocEntry[] {
   return ids.flatMap((id) => {
     const entry = index.entryById[kind].get(id)
     return entry ? [entry] : []

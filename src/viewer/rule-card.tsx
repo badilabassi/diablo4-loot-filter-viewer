@@ -13,7 +13,15 @@ import styles from './rule-card.module.css'
  * Server-safe. Ported from the Remix RuleCard; expand/collapse is native
  * <details>, so the card needs no client JavaScript.
  */
-export function RuleCard({ rule: r, names, delay }: { rule: FilterRule; names: FilterNames; delay: number }) {
+export function RuleCard({
+  rule: r,
+  names,
+  delay,
+}: {
+  rule: FilterRule
+  names: FilterNames
+  delay: number
+}) {
   const isRecolor = r.type === 2
   const swatchColor = r.color?.hex ?? '#ffffff'
   const tags = inferRuleTags(r)
@@ -61,7 +69,12 @@ export function RuleCard({ rule: r, names, delay }: { rule: FilterRule; names: F
                 <span
                   key={t.key}
                   className={styles.tag}
-                  style={{ border: `1px solid ${c.border}`, color: c.color, background: c.bg, boxShadow: `0 0 8px ${c.bg}` }}
+                  style={{
+                    border: `1px solid ${c.border}`,
+                    color: c.color,
+                    background: c.bg,
+                    boxShadow: `0 0 8px ${c.bg}`,
+                  }}
                 >
                   {t.label}
                 </span>
@@ -86,7 +99,10 @@ export function RuleCard({ rule: r, names, delay }: { rule: FilterRule; names: F
         <div className={styles.meta}>
           <div>
             <span className={shared.metaLabel}>Status</span>
-            <p className={styles.metaValue} style={{ color: r.enabled ? '#4caf50' : 'var(--d4-text3)' }}>
+            <p
+              className={styles.metaValue}
+              style={{ color: r.enabled ? '#4caf50' : 'var(--d4-text3)' }}
+            >
               {r.enabled ? 'Enabled' : 'Disabled'}
             </p>
           </div>

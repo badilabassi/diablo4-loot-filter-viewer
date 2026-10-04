@@ -51,7 +51,10 @@ describe('canonical URLs', () => {
   })
 
   it('read the origin from the root match loader data', () => {
-    assert.equal(canonicalFor([{ loaderData: { origin: 'https://example.test' } }], '/'), 'https://example.test/')
+    assert.equal(
+      canonicalFor([{ loaderData: { origin: 'https://example.test' } }], '/'),
+      'https://example.test/',
+    )
   })
 
   it('are omitted when the root match has no origin yet', () => {

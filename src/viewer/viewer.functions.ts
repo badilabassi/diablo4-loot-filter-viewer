@@ -13,7 +13,11 @@ export const MAX_CODE_LENGTH = 64 * 1024
 const input = z.object({ code: z.string().max(MAX_CODE_LENGTH).optional() })
 
 async function renderViewer(code: string | undefined) {
-  const { filter, names, editHref, error, status, age } = buildViewerModel(code, await getTocIndex(), Date.now())
+  const { filter, names, editHref, error, status, age } = buildViewerModel(
+    code,
+    await getTocIndex(),
+    Date.now(),
+  )
   const Content = await renderServerComponent(createElement(RuleList, { filter, names, editHref }))
   return { Content, error, editHref, status, age }
 }

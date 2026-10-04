@@ -29,13 +29,27 @@ function buildFixtureBytes(): Uint8Array {
 
   return new Uint8Array([
     // rule A, wrapped as top-level field 1 (wire type 2)
-    0x0a, ruleA.length, ...ruleA,
+    0x0a,
+    ruleA.length,
+    ...ruleA,
     // unknown fixed64 field: field 7, wire type 1 -> tag = (7 << 3) | 1 = 0x39
-    0x39, 0, 0, 0, 0, 0, 0, 0, 0,
+    0x39,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
     // rule B, wrapped as top-level field 1 (wire type 2)
-    0x0a, ruleB.length, ...ruleB,
+    0x0a,
+    ruleB.length,
+    ...ruleB,
     // filter name, top-level field 2 (wire type 2) -> tag = (2 << 3) | 2 = 0x12
-    0x12, filterName.length, ...filterName,
+    0x12,
+    filterName.length,
+    ...filterName,
   ])
 }
 
@@ -185,7 +199,12 @@ describe('proto: filterType=9 Talisman Set Bonus', () => {
  */
 describe('proto: rule color channel order', () => {
   it('decodes a real "Pink Good" rule color to a pink hex, not purple', () => {
-    const rule = [...encodeString(1, 'Pink Good Rama'), ...encodeVarint(2, 2), ...encodeFixed32(3, 0xffff38a0), ...encodeVarint(5, 1)]
+    const rule = [
+      ...encodeString(1, 'Pink Good Rama'),
+      ...encodeVarint(2, 2),
+      ...encodeFixed32(3, 0xffff38a0),
+      ...encodeVarint(5, 1),
+    ]
     const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
     const parsed = parseFilterB64(toBase64(new Uint8Array(top)))
 
@@ -193,7 +212,12 @@ describe('proto: rule color channel order', () => {
   })
 
   it('decodes a real "Red Good Uniques" rule color to a red hex, not blue', () => {
-    const rule = [...encodeString(1, 'Red Good Uniques'), ...encodeVarint(2, 2), ...encodeFixed32(3, 0xffff3b3b), ...encodeVarint(5, 1)]
+    const rule = [
+      ...encodeString(1, 'Red Good Uniques'),
+      ...encodeVarint(2, 2),
+      ...encodeFixed32(3, 0xffff3b3b),
+      ...encodeVarint(5, 1),
+    ]
     const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
     const parsed = parseFilterB64(toBase64(new Uint8Array(top)))
 
@@ -201,7 +225,12 @@ describe('proto: rule color channel order', () => {
   })
 
   it('round-trips a real custom color losslessly', () => {
-    const rule = [...encodeString(1, 'Pink Good Rama'), ...encodeVarint(2, 2), ...encodeFixed32(3, 0xffff38a0), ...encodeVarint(5, 1)]
+    const rule = [
+      ...encodeString(1, 'Pink Good Rama'),
+      ...encodeVarint(2, 2),
+      ...encodeFixed32(3, 0xffff38a0),
+      ...encodeVarint(5, 1),
+    ]
     const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
     const b64 = toBase64(new Uint8Array(top))
 
@@ -213,7 +242,11 @@ describe('proto: rule color channel order', () => {
 
 describe('proto: rule color field is optional', () => {
   it('parses a rule with no color field (field 3 absent) as color: undefined', () => {
-    const rule = [...encodeString(1, 'No Color Field'), ...encodeVarint(2, 0), ...encodeVarint(5, 1)]
+    const rule = [
+      ...encodeString(1, 'No Color Field'),
+      ...encodeVarint(2, 0),
+      ...encodeVarint(5, 1),
+    ]
     const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
     const parsed = parseFilterB64(toBase64(new Uint8Array(top)))
 
@@ -221,7 +254,11 @@ describe('proto: rule color field is optional', () => {
   })
 
   it('round-trips an absent color field without introducing one', () => {
-    const rule = [...encodeString(1, 'No Color Field'), ...encodeVarint(2, 0), ...encodeVarint(5, 1)]
+    const rule = [
+      ...encodeString(1, 'No Color Field'),
+      ...encodeVarint(2, 0),
+      ...encodeVarint(5, 1),
+    ]
     const top = [...encodeBytes(1, rule), ...encodeString(2, 'Test')]
     const b64 = toBase64(new Uint8Array(top))
 
@@ -248,7 +285,18 @@ describe('proto: rule color field is optional', () => {
 function filterWithCondition(condBytes: number[]): string {
   const name = [...new TextEncoder().encode('R')]
   // Rule: field 1 name, field 2 type 0, field 4 condition, field 5 enabled 1.
-  const rule = [0x0a, name.length, ...name, 0x10, 0x00, 0x22, condBytes.length, ...condBytes, 0x28, 0x01]
+  const rule = [
+    0x0a,
+    name.length,
+    ...name,
+    0x10,
+    0x00,
+    0x22,
+    condBytes.length,
+    ...condBytes,
+    0x28,
+    0x01,
+  ]
   // Plus a filter name (field 2): real filters always have one, and the encoder
   // writes a default when it's missing.
   return toBase64(new Uint8Array([0x0a, rule.length, ...rule, 0x12, 0x01, 0x46]))
@@ -257,7 +305,16 @@ const fixed32 = (n: number) => [n & 0xff, (n >>> 8) & 0xff, (n >>> 16) & 0xff, (
 
 describe('proto: condition field 4 per the diablofilter.com decoder', () => {
   // filterType 7 with two affix ids (field 2, fixed32) and field 4 = 3.
-  const optional = filterWithCondition([0x08, 0x07, 0x15, ...fixed32(1829570), 0x15, ...fixed32(1829574), 0x20, 0x03])
+  const optional = filterWithCondition([
+    0x08,
+    0x07,
+    0x15,
+    ...fixed32(1829570),
+    0x15,
+    ...fixed32(1829574),
+    0x20,
+    0x03,
+  ])
 
   it('reads Has Optional Affixes field 4 as the minimum count', () => {
     assert.equal(parseFilterB64(optional).rules[0]?.conditions[0]?.minFromList, 3)

@@ -24,7 +24,10 @@ export function createStore<T>(initial: T) {
  * values (`s.filter = { ...s.filter, name }`) rather than edit nested objects in
  * place, or past snapshots would change with them.
  */
-export function createTemporalStore<T extends object>(initial: T, partialize: (s: T) => Partial<T>) {
+export function createTemporalStore<T extends object>(
+  initial: T,
+  partialize: (s: T) => Partial<T>,
+) {
   const store = createStore(initial)
   const past: Partial<T>[] = []
   const future: Partial<T>[] = []

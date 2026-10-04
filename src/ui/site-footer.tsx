@@ -8,8 +8,8 @@ export function SiteFooter() {
   return (
     <footer role="contentinfo" className={styles.footer}>
       <p className={styles.paragraph}>
-        An unofficial community project — not affiliated with, endorsed by, or sponsored by
-        Blizzard Entertainment.
+        An unofficial community project — not affiliated with, endorsed by, or sponsored by Blizzard
+        Entertainment.
       </p>
       <p className={styles.paragraph}>
         <a
@@ -31,9 +31,9 @@ export function SiteFooter() {
         </a>
       </p>
       <p className={styles.legal}>
-        Diablo®, Diablo IV®, and Blizzard Entertainment® are trademarks or registered trademarks
-        of Blizzard Entertainment, Inc. in the U.S. and other countries. This site is fan-made
-        software for personal use with the game.
+        Diablo®, Diablo IV®, and Blizzard Entertainment® are trademarks or registered trademarks of
+        Blizzard Entertainment, Inc. in the U.S. and other countries. This site is fan-made software
+        for personal use with the game.
       </p>
     </footer>
   )

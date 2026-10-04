@@ -22,11 +22,15 @@
       background: linear-gradient(180deg, var(--glow-accent) 0%, transparent 100%);
       box-shadow: 0 0 16px var(--glow-soft);
       opacity: 0.75;
-      transition: opacity 200ms ease, box-shadow 200ms ease;
+      transition:
+        opacity 200ms ease,
+        box-shadow 200ms ease;
     }
     &:hover::after {
       opacity: 1;
-      box-shadow: 0 0 24px var(--glow-strong), 0 0 10px var(--glow-accent);
+      box-shadow:
+        0 0 24px var(--glow-strong),
+        0 0 10px var(--glow-accent);
     }
     &[open] {
       box-shadow:
@@ -36,7 +40,9 @@
     }
     &[open]::after {
       opacity: 1;
-      box-shadow: 0 0 28px var(--glow-strong), 0 0 8px var(--glow-accent);
+      box-shadow:
+        0 0 28px var(--glow-strong),
+        0 0 8px var(--glow-accent);
     }
   }
 
@@ -131,7 +137,9 @@
 
   .chevron {
     color: var(--d4-gold2);
-    transition: transform 200ms ease, color 150ms ease;
+    transition:
+      transform 200ms ease,
+      color 150ms ease;
   }
 
   .card[open] .chevron {

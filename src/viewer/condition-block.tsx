@@ -12,7 +12,9 @@ const hex = (id: number) => `0x${id.toString(16).toUpperCase()}`
 export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: FilterNames }) {
   const ct = COND_TYPES[cond.filterType] ?? { label: `Filter ${cond.filterType}`, icon: '?' }
   const qMatched =
-    cond.qualityFlags != null ? QUALITY_FLAGS.filter(([flag]) => ((cond.qualityFlags ?? 0) & flag) !== 0) : []
+    cond.qualityFlags != null
+      ? QUALITY_FLAGS.filter(([flag]) => ((cond.qualityFlags ?? 0) & flag) !== 0)
+      : []
   // Item Properties bits; any bit without a known name is shown by its value.
   const props = cond.itemProperties ?? 0
   const pMatched = ITEM_PROPERTIES.filter(([bit]) => (props & bit) !== 0)
@@ -94,7 +96,11 @@ export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: 
           {uniqueSubtypes.map((id) => {
             const name = names.itemTypes[id] ?? ITEM_TYPES[id]
             return (
-              <span key={id} className={cx(styles.pill, styles.itemType)} title={`ItemType SNO: ${hex(id)}`}>
+              <span
+                key={id}
+                className={cx(styles.pill, styles.itemType)}
+                title={`ItemType SNO: ${hex(id)}`}
+              >
                 {name ?? (
                   <>
                     <em className={styles.unknown}>Unknown type</em>
@@ -159,7 +165,11 @@ export function ConditionBlock({ cond, names }: { cond: FilterCondition; names: 
       {uniqueTalismanSets.length > 0 && (
         <div className={styles.chips}>
           {uniqueTalismanSets.map((id) => (
-            <span key={id} className={cx(styles.pill, styles.talismanSet)} title={`Talisman Set SNO: ${hex(id)}`}>
+            <span
+              key={id}
+              className={cx(styles.pill, styles.talismanSet)}
+              title={`Talisman Set SNO: ${hex(id)}`}
+            >
               {names.talismanSets[id] ?? (
                 <>
                   <em className={styles.unknown}>Unknown set</em>

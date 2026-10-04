@@ -218,11 +218,19 @@
     }
     &[data-selected] {
       border: 1px solid rgba(196, 120, 32, 0.55);
-      background: linear-gradient(90deg, rgba(196, 120, 32, 0.12) 0%, rgba(196, 120, 32, 0.04) 100%);
+      background: linear-gradient(
+        90deg,
+        rgba(196, 120, 32, 0.12) 0%,
+        rgba(196, 120, 32, 0.04) 100%
+      );
     }
     &[data-selected]:hover {
       border-color: rgba(196, 120, 32, 0.4);
-      background: linear-gradient(90deg, rgba(196, 120, 32, 0.15) 0%, rgba(196, 120, 32, 0.06) 100%);
+      background: linear-gradient(
+        90deg,
+        rgba(196, 120, 32, 0.15) 0%,
+        rgba(196, 120, 32, 0.06) 100%
+      );
     }
     &[data-disabled] {
       opacity: 0.5;
@@ -230,7 +238,9 @@
     }
     &[data-drag-over] {
       border: 1px solid rgba(196, 120, 32, 0.85);
-      box-shadow: 0 0 0 1px rgba(196, 120, 32, 0.35), inset 0 0 10px rgba(196, 120, 32, 0.08);
+      box-shadow:
+        0 0 0 1px rgba(196, 120, 32, 0.35),
+        inset 0 0 10px rgba(196, 120, 32, 0.08);
     }
     &[data-dragging] {
       opacity: 0.35;

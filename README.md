@@ -23,11 +23,11 @@ pnpm seed        # refresh src/data/toc-seed.json from upstream
 
 ## Routes
 
-| Path | Description |
-|------|-------------|
-| `/` | Viewer. `/?code=<base64>` renders the filter on the server; works without JavaScript |
-| `/edit` | Rule editor. `/edit?code=<base64>` opens that filter |
-| `/api/toc` | Affix & item index JSON (CDN-cached for a month) |
+| Path       | Description                                                                          |
+| ---------- | ------------------------------------------------------------------------------------ |
+| `/`        | Viewer. `/?code=<base64>` renders the filter on the server; works without JavaScript |
+| `/edit`    | Rule editor. `/edit?code=<base64>` opens that filter                                 |
+| `/api/toc` | Affix & item index JSON (CDN-cached for a month)                                     |
 
 ## After a game patch
 

@@ -26,7 +26,11 @@ export interface ViewerModel {
  * Everything the viewer shows for a filter code, computed on the server. Kept
  * free of server-function and RSC APIs so it can be unit tested directly.
  */
-export function buildViewerModel(rawCode: string | undefined, index: TocIndex, now: number): ViewerModel {
+export function buildViewerModel(
+  rawCode: string | undefined,
+  index: TocIndex,
+  now: number,
+): ViewerModel {
   const code = rawCode?.trim() || undefined
   let filter: ParsedFilter | null = null
   let error: string | null = null
@@ -42,7 +46,11 @@ export function buildViewerModel(rawCode: string | undefined, index: TocIndex, n
     error,
     names: filter ? namesForFilter(index, filter) : NO_NAMES,
     editHref: editHrefFor(filter ? code : undefined),
-    status: { affixes: index.data.affixes.length, items: index.data.items.length, ts: index.data.ts },
+    status: {
+      affixes: index.data.affixes.length,
+      items: index.data.items.length,
+      ts: index.data.ts,
+    },
     age: seededAge(index.data.ts, now),
   }
 }

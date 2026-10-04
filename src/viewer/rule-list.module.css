@@ -7,7 +7,12 @@
     margin-bottom: 16px;
     padding: 12px 16px;
     border-radius: 8px;
-    background: linear-gradient(90deg, rgba(196, 120, 32, 0.14) 0%, rgba(196, 120, 32, 0.04) 55%, transparent 100%);
+    background: linear-gradient(
+      90deg,
+      rgba(196, 120, 32, 0.14) 0%,
+      rgba(196, 120, 32, 0.04) 55%,
+      transparent 100%
+    );
     border: 1px solid rgba(196, 120, 32, 0.32);
   }
 

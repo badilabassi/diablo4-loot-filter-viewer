@@ -15,7 +15,11 @@ describe('useStore', () => {
     }
     const view = render(<Count />)
     assert.equal(view.container.textContent, '0')
-    act(() => store.mutate((s) => { s.count = 3 }))
+    act(() =>
+      store.mutate((s) => {
+        s.count = 3
+      }),
+    )
     assert.equal(view.container.textContent, '3')
     act(() => store.undo())
     assert.equal(view.container.textContent, '0')
@@ -28,7 +32,11 @@ describe('useStore', () => {
     }
     const view = render(<UndoState />)
     assert.equal(view.container.textContent, 'false')
-    act(() => store.mutate((s) => { s.count = 1 }))
+    act(() =>
+      store.mutate((s) => {
+        s.count = 1
+      }),
+    )
     assert.equal(view.container.textContent, 'true')
   })
 
@@ -40,7 +48,10 @@ describe('useStore', () => {
       subscribe: (l: () => void) => {
         listeners++
         const off = store.subscribe(l)
-        return () => { listeners--; off() }
+        return () => {
+          listeners--
+          off()
+        }
       },
     }
     function Count() {

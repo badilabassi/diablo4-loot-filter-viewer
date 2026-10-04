@@ -56,7 +56,10 @@ describe('bootstrapEditor', () => {
 
   it('replaces the editor when a different filter arrives', () => {
     m.bootstrapEditor(EXAMPLE_FILTER, parseFilterB64(EXAMPLE_FILTER), noLabels())
-    const other = serializeFilter({ name: 'Other', rules: [{ name: 'Only', type: 0, enabled: true, conditions: [] }] })
+    const other = serializeFilter({
+      name: 'Other',
+      rules: [{ name: 'Only', type: 0, enabled: true, conditions: [] }],
+    })
     m.bootstrapEditor(other, parseFilterB64(other), noLabels())
     assert.equal(m.editorStore.getState().filter.name, 'Other')
     assert.equal(m.editorStore.canUndo(), false)

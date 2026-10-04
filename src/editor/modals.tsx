@@ -41,7 +41,9 @@ function Dialog({
     }
     if (e.key !== 'Tab' || !dialogRef.current) return
     const focusable = Array.from(
-      dialogRef.current.querySelectorAll<HTMLElement>('button:not([disabled]),textarea:not([disabled])'),
+      dialogRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]),textarea:not([disabled])',
+      ),
     )
     if (!focusable.length) return
     const first = focusable[0]!
@@ -109,7 +111,12 @@ export function ImportDialog({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <Dialog id="import-modal" title="Import Filter" initialFocusId="import-code-input" onClose={onClose}>
+    <Dialog
+      id="import-modal"
+      title="Import Filter"
+      initialFocusId="import-code-input"
+      onClose={onClose}
+    >
       <label className={cx(shared.metaLabel, layout.dialogLabel)} htmlFor="import-code-input">
         Filter Code (base64)
       </label>
@@ -145,11 +152,22 @@ export function ExportDialog({ code, onClose }: { code: string; onClose: () => v
   }, [copied])
 
   return (
-    <Dialog id="export-modal" title="Export Filter" initialFocusId="export-modal-close" onClose={onClose}>
+    <Dialog
+      id="export-modal"
+      title="Export Filter"
+      initialFocusId="export-modal-close"
+      onClose={onClose}
+    >
       <label className={cx(shared.metaLabel, layout.dialogLabel)} htmlFor="export-code-output">
         Filter Code (base64)
       </label>
-      <textarea id="export-code-output" readOnly rows={5} value={code} className={cx(shared.input, layout.exportField)} />
+      <textarea
+        id="export-code-output"
+        readOnly
+        rows={5}
+        value={code}
+        className={cx(shared.input, layout.exportField)}
+      />
       <div className={layout.dialogActions}>
         <button type="button" className={shared.btnSecondary} onClick={onClose}>
           Close

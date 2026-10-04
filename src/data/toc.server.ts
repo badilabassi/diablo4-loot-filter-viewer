@@ -2,7 +2,13 @@
 
 import { inferCat } from '../filter/toc-labels.ts'
 import { ITEM_TYPES } from '../filter/constants.ts'
-import type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet } from '../filter/toc-types.ts'
+import type {
+  TocAffix,
+  TocData,
+  TocItem,
+  TocItemType,
+  TocTalismanSet,
+} from '../filter/toc-types.ts'
 
 export type { TocAffix, TocData, TocItem, TocItemType, TocTalismanSet }
 
@@ -117,17 +123,47 @@ function humanizeItem(filename: string): string {
   }
 
   const SLOTS = [
-    'Helm', 'Chest', 'Gloves', 'Pants', 'Legs', 'Boots', 'Ring', 'Amulet',
-    'Weapon', 'Offhand', 'Shield', 'Focus', 'Staff', 'Axe', 'Sword', 'Mace',
-    'Scythe', 'Glaive', 'Wand', 'Bow', 'Crossbow', 'Dagger', 'Flail',
-    'Polearm', 'Quarterstaff',
+    'Helm',
+    'Chest',
+    'Gloves',
+    'Pants',
+    'Legs',
+    'Boots',
+    'Ring',
+    'Amulet',
+    'Weapon',
+    'Offhand',
+    'Shield',
+    'Focus',
+    'Staff',
+    'Axe',
+    'Sword',
+    'Mace',
+    'Scythe',
+    'Glaive',
+    'Wand',
+    'Bow',
+    'Crossbow',
+    'Dagger',
+    'Flail',
+    'Polearm',
+    'Quarterstaff',
   ]
   const CLASSES = [
-    'Warlock', 'Druid', 'Sorc', 'Necro', 'Rogue', 'Barb', 'Spiritborn',
-    'Paladin', 'Amazon',
+    'Warlock',
+    'Druid',
+    'Sorc',
+    'Necro',
+    'Rogue',
+    'Barb',
+    'Spiritborn',
+    'Paladin',
+    'Amazon',
   ]
   const parts = s.split('_')
-  let slot = '', cls = '', rarity = ''
+  let slot = '',
+    cls = '',
+    rarity = ''
   for (const p of parts) {
     if (SLOTS.some((x) => x.toLowerCase() === p.toLowerCase())) slot = p
     if (CLASSES.some((x) => x.toLowerCase() === p.toLowerCase())) cls = p
@@ -160,7 +196,9 @@ function humanizeTalismanSet(raw: string): string {
   const classMatch = raw.match(/^Talisman_([A-Za-z]+)_(\d+)$/)
   if (classMatch) {
     const cls = TALISMAN_CLASS_NAMES[classMatch[1]!] ?? classMatch[1]!
-    const roman = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'][Number(classMatch[2])] ?? classMatch[2]
+    const roman =
+      ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'][Number(classMatch[2])] ??
+      classMatch[2]
     return `${cls} Talisman Set ${roman}`
   }
   const genericMatch = raw.match(/^Talisman_Small_Generic(\d+)$/)
